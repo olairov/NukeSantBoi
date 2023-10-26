@@ -7,9 +7,9 @@ public class MapGenerator : MonoBehaviour
     public Sprite lastBackgroundLayer1, lastBackgroundLayer2, lastBackgroundLayer3;
 
     //Interactable objects prefabs:
-    [SerializeField] private GameObject buildingPrefab, wideBuildingPrefab, enemyPrefab, skystraperPrefab, obstaclePrefab;
+    [SerializeField] private GameObject buildingPrefab, wideBuildingPrefab, enemyPrefab, skystraperPrefab, obstaclePrefab, warningPrefab;
 
-    private Transform buildingsContainer, enemiesContainer, obstaclesContainer, backgroundContainer;
+    private Transform buildingsContainer, enemiesContainer, obstaclesContainer, backgroundContainer, warningsContainer;
 
     [SerializeField] private float speedIncreaseFactor;
     private float timeForNextBuilding, timeForNextEnemy = 6, timeForNextObstacle = 2, timeForNextLayer1, timeForNextLayer2, timeForNextLayer3;
@@ -22,6 +22,9 @@ public class MapGenerator : MonoBehaviour
         enemiesContainer = GameObject.Find("EnemiesContainer").transform;
         obstaclesContainer = GameObject.Find("ObstaclesContainer").transform;
         backgroundContainer = GameObject.Find("BackgroundContainer").transform;
+        warningsContainer = GameObject.Find("NotPhysicElementsContainer").transform;
+
+        FirstGeneration();
     }
 
     void Update()
@@ -47,7 +50,11 @@ public class MapGenerator : MonoBehaviour
         {
             Instantiate(skystraperPrefab, buildingsContainer);
             buildingsFromSkystraper = 0;
-            timeForNextEnemy = 3;
+
+            if (timeForNextEnemy < 1.2f) GenerateEnemies();
+            timeForNextEnemy = 4;
+
+            if (!PlayerController.dead) Instantiate(warningPrefab, Camera.main.ScreenToWorldPoint(new Vector3(Screen.width * 0.75f, Screen.height * 0.75f, 7)), Quaternion.Euler(0, 0, 180), warningsContainer);
         }
         else
         {
@@ -108,5 +115,24 @@ public class MapGenerator : MonoBehaviour
         Instantiate(layer3Background, backgroundContainer).GetComponent<BackgroundController>().LastBackground = lastBackgroundLayer3;
 
         timeForNextLayer3 = 8f / ObjectPassingBy.speedMultiplyer;
+    }
+
+    void FirstGeneration()
+    {
+        float startX = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, 0)).x;
+        float finishX = Camera.main.ScreenToWorldPoint(Vector3.zero).x;
+
+        for (float actualX = startX; actualX > finishX; actualX -= 7.5f)
+        {
+            if (Random.value < 0.7f) Instantiate(buildingPrefab, new Vector3(actualX, 0, 0), Quaternion.identity, buildingsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
+            else Instantiate(wideBuildingPrefab, new Vector2(actualX, 0), Quaternion.identity, buildingsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
+        }
+
+        for (float actualX = startX + 5; actualX > finishX - 30; actualX -= 24.5f)
+        {
+            Instantiate(layer1Background, new Vector3(actualX, 0, 1), Quaternion.identity, backgroundContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
+            Instantiate(layer2Background, new Vector3(actualX, 0, 2), Quaternion.identity, backgroundContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
+            Instantiate(layer3Background, new Vector3(actualX, 0, 3), Quaternion.identity, backgroundContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
+        }
     }
 }

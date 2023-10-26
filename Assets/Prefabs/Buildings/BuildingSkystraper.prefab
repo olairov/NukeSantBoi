@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1161062619281861206}
   - component: {fileID: 1161062619281861289}
   m_Layer: 3
-  m_Name: Skystraper
+  m_Name: BuildingSkystraper
   m_TagString: Skystraper
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -116,7 +116,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   skystraperUpperPart: {fileID: 1161062619281861293, guid: ae6ce79881c9aa9449388614e0b6f4af, type: 3}
-  pointsPrefab: {fileID: 4647419456881299642, guid: 540c197054bb22043b79d055dbb818f8, type: 3}
+  pointsPrefab: {fileID: 4555584897471348912, guid: 540c197054bb22043b79d055dbb818f8, type: 3}
 --- !u!61 &1161062619281861289
 BoxCollider2D:
   m_ObjectHideFlags: 0

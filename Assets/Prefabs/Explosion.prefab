@@ -139,6 +139,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   passingSpeed: 5
   appearingObject: 1
+  background: 0
 --- !u!114 &4883915366579793915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,3 +152,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9238542665e328344a5b367cd8e3c089, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pointsPrefab: {fileID: 4555584897471348912, guid: 540c197054bb22043b79d055dbb818f8, type: 3}

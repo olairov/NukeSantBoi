@@ -1,13 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 
 public class Building : MonoBehaviour
 {
     [SerializeField] private Color flashColor;
-    [SerializeField] private GameObject skystraperUpperPart, pointsPrefab;
-    private Transform pointsContainer;
+    [SerializeField] private GameObject skystraperUpperPart;
 
     private float rotationSpeed, fallingSpeed, timeSinceDestruction;
 
@@ -15,7 +13,7 @@ public class Building : MonoBehaviour
 
     void Start()
     {
-        if (transform.name.StartsWith("Sky")) iStrapSky = true;
+        if (transform.name.Contains("Sky")) iStrapSky = true;
         CreateStats();
     }
 
@@ -44,8 +42,6 @@ public class Building : MonoBehaviour
         StartCoroutine(Flash(upperPartTransform));
 
         FallStats();
-
-        Instantiate(pointsPrefab, transform.position + new Vector3(1.5f, GetComponent<SpriteRenderer>().size.y / 2 + 1, 0), Quaternion.identity, pointsContainer).GetComponent<TMP_Text>().text = "+5";
     }
 
     void FallStats()
@@ -61,7 +57,7 @@ public class Building : MonoBehaviour
 
         Transform upperPartTransform = Instantiate(skystraperUpperPart, transform.parent).transform;
         upperPartTransform.position = new Vector3(transform.position.x, otherY + 15, transform.position.z);
-        upperPartTransform.GetComponent<Rigidbody2D>().AddForce(Vector3.up * 6, ForceMode2D.Impulse);
+        upperPartTransform.GetComponent<Rigidbody2D>().AddForce(Vector3.up * 7, ForceMode2D.Impulse);
         upperPartTransform.GetComponent<Rigidbody2D>().AddTorque(Random.Range(80, 180));
         if (Random.value > 0.5f) upperPartTransform.GetComponent<Rigidbody2D>().angularVelocity *= -1;
 

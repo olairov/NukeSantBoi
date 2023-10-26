@@ -149,6 +149,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   passingSpeed: 8
   appearingObject: 0
+  background: 0
 --- !u!114 &2503070929597295560
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,5 +163,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   burnColor: {r: 0.2735849, g: 0.19486472, b: 0.19486472, a: 1}
+  pointsPrefab: {fileID: 4555584897471348912, guid: 540c197054bb22043b79d055dbb818f8, type: 3}
   moveSpeed: 10
   rotSpeed: 1.5

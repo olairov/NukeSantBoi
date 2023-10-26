@@ -28,7 +28,13 @@ public class PlayerController : MonoBehaviour
         if (timeUntilNextBomb > 0) timeUntilNextBomb -= Time.deltaTime;
         else timeUntilNextBomb = 0;
 
-        if (transform.position.y < Camera.main.ScreenToWorldPoint(Vector3.zero).y || transform.position.y > Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y) GenerateExplosion();
+        if (transform.position.y < Camera.main.ScreenToWorldPoint(Vector3.zero).y || transform.position.y > Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y)
+        {
+            GenerateExplosion();
+
+            // Die just then for avoiding multiple explosions in the same place.
+            Die();
+        }
         if (transform.position.y < Camera.main.ScreenToWorldPoint(Vector3.zero).y - 10) Destroy(gameObject);
     }
 
@@ -37,12 +43,12 @@ public class PlayerController : MonoBehaviour
         int movement = (int)Input.GetAxisRaw("Horizontal");
         if (Input.GetAxisRaw("Vertical") != 0) movement = -(int)Input.GetAxisRaw("Vertical");
 
-        if ((movement < 0 && transform.eulerAngles.z < 230) || (movement > 0 && transform.eulerAngles.z > 130)) rb.AddTorque(-movement * rotSpeed);
+        if ((movement < 0 && transform.eulerAngles.z < 230) || (movement > 0 && transform.eulerAngles.z > 130)) rb.AddTorque(-movement * rotSpeed * Time.deltaTime);
 
         Deviation(Input.GetButton("Horizontal"));
 
         float lastYpos = transform.position.y;
-        Vector3 forceToAdd = new Vector3(0, (transform.eulerAngles.z - 180) / 90 * moveSpeed * Time.deltaTime, 0);
+        Vector3 forceToAdd = new Vector3(0, (transform.eulerAngles.z - 180) / 90 * moveSpeed * ObjectPassingBy.speedMultiplyer * Time.deltaTime, 0);
         transform.position += forceToAdd;
 
         Yvelocity = (transform.position.y - lastYpos) / Time.deltaTime;
