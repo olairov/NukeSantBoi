@@ -52,7 +52,7 @@ public class ObstacleScript : MonoBehaviour
         timeForChange = Random.Range(0.5f, 3f);
     }
 
-    void Die()
+    public void Die()
     {
         if (dead) return;
         dead = true;
@@ -69,10 +69,5 @@ public class ObstacleScript : MonoBehaviour
         transform.GetChild(0).GetComponent<SpriteRenderer>().color = burnColor;
         transform.GetComponent<Collider2D>().enabled = false;
         transform.GetComponent<ObjectPassingBy>().enabled = false;
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.tag == "Explosion") Die();
     }
 }

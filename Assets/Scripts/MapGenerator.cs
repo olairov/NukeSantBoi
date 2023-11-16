@@ -11,10 +11,17 @@ public class MapGenerator : MonoBehaviour
 
     private Transform buildingsContainer, enemiesContainer, obstaclesContainer, backgroundContainer, warningsContainer;
 
+    static public float playerDistanceToObjective;
     [SerializeField] private float speedIncreaseFactor;
     private float timeForNextBuilding, timeForNextEnemy = 6, timeForNextObstacle = 2, timeForNextLayer1, timeForNextLayer2, timeForNextLayer3;
 
     private int buildingsFromSkystraper;
+
+    private bool isPaused;
+    public bool SetIsPaused
+    {
+        set { isPaused = value; }
+    }
 
     void Start()
     {
@@ -25,10 +32,15 @@ public class MapGenerator : MonoBehaviour
         warningsContainer = GameObject.Find("NotPhysicElementsContainer").transform;
 
         FirstGeneration();
+
+        playerDistanceToObjective = 0;
+        ObjectPassingBy.speedMultiplyer = 1;
     }
 
     void Update()
     {
+        if (isPaused) return;
+        
         if (!PlayerController.dead) ObjectPassingBy.speedMultiplyer += Time.deltaTime * speedIncreaseFactor;
         else ObjectPassingBy.speedMultiplyer /= Time.deltaTime / 4 + 1;
 

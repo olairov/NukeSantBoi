@@ -42,6 +42,8 @@ public class EnemyPlaneController : MonoBehaviour
 
         Vector3 forceToAdd = new Vector3(0, -(transform.eulerAngles.z - 90) / 90 * moveSpeed * Time.deltaTime, 0);
         transform.position += forceToAdd;
+
+        transform.eulerAngles = new Vector3(0, 0, transform.eulerAngles.z);
     }
 
     void GoAway()
@@ -52,7 +54,7 @@ public class EnemyPlaneController : MonoBehaviour
         transform.position += forceToAdd;
     }
 
-    void Die()
+    public void Die()
     {
         if (dead) return;
         dead = true;
@@ -67,10 +69,5 @@ public class EnemyPlaneController : MonoBehaviour
         transform.GetComponent<SpriteRenderer>().color = burnColor;
         transform.GetComponent<Collider2D>().enabled = false;
         transform.GetComponent<ObjectPassingBy>().enabled = false;
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.tag == "Explosion") Die();
     }
 }

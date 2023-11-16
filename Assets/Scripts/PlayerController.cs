@@ -8,47 +8,73 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform bombContainer;
     [SerializeField] private Color burnColor;
 
+    private ChargeController chargeScript;
+
     [SerializeField] private float rotSpeed, moveSpeed, bombThrowForce, deviationSpeed, bombReloadTime;
     private float deviationTime, deviationRandomForce, deviationExtraForce = 1, rotationDifference, timeUntilNextBomb, Yvelocity;
 
     static public bool dead;
+    private bool isPaused;
+    public bool SetIsPaused
+    {
+        set { isPaused = value; }
+    }
 
     private Rigidbody2D rb;
 
     void Start()
     {
         rb = transform.GetComponent<Rigidbody2D>();
+
+        chargeScript = GameObject.Find("Canvas/Charge").GetComponent<ChargeController>();
+        chargeScript.SetDefaultTimeUntilNextBomb = bombReloadTime;
+        
+        transform.position = new Vector3(Camera.main.ScreenToWorldPoint(new Vector2(Screen.width / 5, 0)).x, 2, transform.position.z);
+
+        dead = false;
     }
 
     void Update()
     {
-        if (!dead) RotateAndMove();
+        if (!dead)RotateAndMove();
 
-        if ((Input.GetButtonDown("Jump") || Input.GetButtonDown("Fire1")) && timeUntilNextBomb == 0 && !dead) DropBomb();
+        if ((Input.GetButtonDown("Jump") || Input.GetButtonDown("Fire1")) && timeUntilNextBomb == 0 && !dead && !isPaused) DropBomb();
         if (timeUntilNextBomb > 0) timeUntilNextBomb -= Time.deltaTime;
         else timeUntilNextBomb = 0;
 
-        if (transform.position.y < Camera.main.ScreenToWorldPoint(Vector3.zero).y || transform.position.y > Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y)
+        if ((transform.position.y < Camera.main.ScreenToWorldPoint(Vector3.zero).y || transform.position.y > Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y) && !isPaused)
         {
             GenerateExplosion();
 
             // Die just then for avoiding multiple explosions in the same place.
             Die();
         }
-        if (transform.position.y < Camera.main.ScreenToWorldPoint(Vector3.zero).y - 10) Destroy(gameObject);
+        if (transform.position.y < Camera.main.ScreenToWorldPoint(Vector3.zero).y - 10)
+        {
+            GameObject.Find("________________Canvas________________").GetComponent<HudController>().DeadPanelOut();
+            Destroy(gameObject);
+        }
+
+        // Appear from left
+
+        MapGenerator.playerDistanceToObjective += (1 - MapGenerator.playerDistanceToObjective) * Time.deltaTime;
+        transform.position = new Vector3(Mathf.Lerp(Camera.main.ScreenToWorldPoint(new Vector2(-1, 0)).x, Camera.main.ScreenToWorldPoint(new Vector2(Screen.width / 5, 0)).x, MapGenerator.playerDistanceToObjective), transform.position.y, transform.position.z);
     }
 
     void RotateAndMove()
     {
-        int movement = (int)Input.GetAxisRaw("Horizontal");
-        if (Input.GetAxisRaw("Vertical") != 0) movement = -(int)Input.GetAxisRaw("Vertical");
+        if (!isPaused)
+        {
+            int movement = (int)Input.GetAxisRaw("Horizontal");
+            if (Input.GetAxisRaw("Vertical") != 0) movement = -(int)Input.GetAxisRaw("Vertical");
 
-        if ((movement < 0 && transform.eulerAngles.z < 230) || (movement > 0 && transform.eulerAngles.z > 130)) rb.AddTorque(-movement * rotSpeed * Time.deltaTime);
+            if ((movement < 0 && transform.eulerAngles.z < 230) || (movement > 0 && transform.eulerAngles.z > 130)) rb.AddTorque(-movement * rotSpeed * Time.deltaTime);
 
-        Deviation(Input.GetButton("Horizontal"));
+            Deviation(Input.GetButton("Horizontal"));
+        }
 
         float lastYpos = transform.position.y;
-        Vector3 forceToAdd = new Vector3(0, (transform.eulerAngles.z - 180) / 90 * moveSpeed * ObjectPassingBy.speedMultiplyer * Time.deltaTime, 0);
+        Vector3 forceToAdd = new Vector3(0, (transform.eulerAngles.z - 180) / 90 * moveSpeed * ((ObjectPassingBy.speedMultiplyer - 1) / 2 + 1) * Time.deltaTime, 0);
         transform.position += forceToAdd;
 
         Yvelocity = (transform.position.y - lastYpos) / Time.deltaTime;
@@ -63,12 +89,14 @@ public class PlayerController : MonoBehaviour
         newBomb.GetComponent<Rigidbody2D>().velocity = bombStartVelocity * ObjectPassingBy.speedMultiplyer / 1.5f;
 
         timeUntilNextBomb = bombReloadTime / ObjectPassingBy.speedMultiplyer;
+
+        chargeScript.DropBomb(timeUntilNextBomb);
     }
 
     void Deviation(bool isMoving)
     {
         if (deviationTime <= 0) ChangeDeviation();
-        deviationTime -= Time.deltaTime;
+        deviationTime -= Time.unscaledDeltaTime;
 
         if (Input.GetButtonDown("Horizontal")) rotationDifference = transform.eulerAngles.z;
         if (Input.GetButtonUp("Horizontal"))
@@ -80,8 +108,8 @@ public class PlayerController : MonoBehaviour
         if (deviationExtraForce > 1) deviationExtraForce -= Time.deltaTime * 7;
         else deviationExtraForce = 1;
 
-        if (isMoving) rb.AddTorque(deviationRandomForce * deviationSpeed * deviationExtraForce * 0.3f);
-        else rb.AddTorque(deviationRandomForce * deviationSpeed * deviationExtraForce);
+        if (isMoving) rb.AddTorque(deviationRandomForce * deviationSpeed * deviationExtraForce * 0.3f * Time.deltaTime);
+        else rb.AddTorque(deviationRandomForce * deviationSpeed * deviationExtraForce * Time.deltaTime);
     }
 
     void ChangeDeviation()

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ObjectPassingBy : MonoBehaviour
 {
-    public static float speedMultiplyer = 1;
+    public static float speedMultiplyer;
     [SerializeField] private float passingSpeed;
     private float appearingDistance = 10;
 
@@ -20,7 +20,7 @@ public class ObjectPassingBy : MonoBehaviour
 
     private void Update()
     {
-        transform.position += new Vector3(-passingSpeed, 0, 0) * Time.deltaTime * speedMultiplyer;
+        transform.position += new Vector3(-passingSpeed, 0, 0) * Time.deltaTime * speedMultiplyer * MapGenerator.playerDistanceToObjective;
 
         if (transform.position.x < Camera.main.ScreenToWorldPoint(Vector3.zero).x - appearingDistance) Destroy(gameObject);
     }

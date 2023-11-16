@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: 8916123517466623645}
   m_Layer: 3
   m_Name: Obstacle
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -207,8 +207,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   passingSpeed: 5
-  appearingObject: 0
   background: 0
+  appearingObject: 0
 --- !u!114 &8916123517466623644
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -222,7 +222,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   burnColor: {r: 0.15111288, g: 0.09233714, b: 0.23584908, a: 1}
-  pointsPrefab: {fileID: 4555584897471348912, guid: 540c197054bb22043b79d055dbb818f8, type: 3}
   speed: 150
   rotSpeed: 20
 --- !u!58 &8916123517466623645

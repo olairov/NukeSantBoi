@@ -9,7 +9,8 @@ public class Building : MonoBehaviour
 
     private float rotationSpeed, fallingSpeed, timeSinceDestruction;
 
-    private bool dead, iStrapSky;
+    public bool dead;
+    private bool iStrapSky;
 
     void Start()
     {
@@ -31,7 +32,7 @@ public class Building : MonoBehaviour
         transform.position = new Vector3(transform.position.x, Camera.main.ScreenToWorldPoint(Vector3.zero).y + randomY, transform.position.z);
     }
 
-    void Destruct(float otherY)
+    public void Destruct(float otherY)
     {
         if (dead) return;
         dead = true;
@@ -74,7 +75,7 @@ public class Building : MonoBehaviour
 
     IEnumerator Flash(Transform upperPartTransform)
     {
-        SpriteRenderer mySpriteRenderer = transform.GetComponent<SpriteRenderer>();
+        SpriteRenderer mySpriteRenderer = transform.GetComponentInChildren<SpriteRenderer>();
         Color originalCol = mySpriteRenderer.color;
         SpriteRenderer upperPartSpriteRenderer = null;
         Color originalUpperPartColor = Color.white;
@@ -92,13 +93,5 @@ public class Building : MonoBehaviour
 
         mySpriteRenderer.color = originalCol;
         if (upperPartTransform != null) upperPartSpriteRenderer.color = originalUpperPartColor;
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.tag == "Explosion")
-        {
-            Destruct(other.transform.position.y);
-        }
     }
 }
