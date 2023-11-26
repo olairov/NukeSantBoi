@@ -17,7 +17,8 @@ public class HudController : MonoBehaviour
 
     private int points;
 
-    private float deadPanelOutProgress, optionsPanelProgress, actualTimescale = 1;
+    private float deadPanelOutProgress, optionsPanelProgress;
+    public float actualTimescale = 1;
 
     private bool isPaused, isInOptions, pretendsToBePaused, canDisableOptionsMenu;
     public bool SetInOptions

@@ -9,11 +9,14 @@ public class MapGenerator : MonoBehaviour
     //Interactable objects prefabs:
     [SerializeField] private GameObject buildingPrefab, wideBuildingPrefab, enemyPrefab, skystraperPrefab, obstaclePrefab, warningPrefab;
 
-    private Transform buildingsContainer, enemiesContainer, obstaclesContainer, backgroundContainer, warningsContainer;
+    //Other Prefabs:
+    [SerializeField] private GameObject wind1pref, wind2pref, wind3pref, wind4pref;
+
+    private Transform buildingsContainer, enemiesContainer, obstaclesContainer, backgroundContainer, warningsContainer, particlesContainer;
 
     static public float playerDistanceToObjective;
     [SerializeField] private float speedIncreaseFactor;
-    private float timeForNextBuilding, timeForNextEnemy = 6, timeForNextObstacle = 2, timeForNextLayer1, timeForNextLayer2, timeForNextLayer3;
+    private float timeForNextBuilding, timeForNextEnemy = 6, timeForNextObstacle = 2, timeForNextParticle, timeForNextLayer1, timeForNextLayer2, timeForNextLayer3;
 
     private int buildingsFromSkystraper;
 
@@ -30,6 +33,7 @@ public class MapGenerator : MonoBehaviour
         obstaclesContainer = GameObject.Find("ObstaclesContainer").transform;
         backgroundContainer = GameObject.Find("BackgroundContainer").transform;
         warningsContainer = GameObject.Find("NotPhysicElementsContainer").transform;
+        particlesContainer = GameObject.Find("ParticlesContainer").transform;
 
         FirstGeneration();
 
@@ -46,6 +50,8 @@ public class MapGenerator : MonoBehaviour
 
         GenerateBuildings();
         GenerateObstacles();
+        GenerateWindParticles();
+
         if(!PlayerController.dead) GenerateEnemies();
 
         Layer1BackgroundGeneration();
@@ -97,6 +103,21 @@ public class MapGenerator : MonoBehaviour
         Instantiate(obstaclePrefab, obstaclesContainer);
 
         timeForNextObstacle = Random.Range(1.2f, 4.8f);
+    }
+
+    void GenerateWindParticles()
+    {
+        timeForNextParticle -= Time.deltaTime;
+        if (timeForNextParticle > 0) return;
+
+        float randValue = Random.value;
+
+        if (randValue > 0.75f) Instantiate(wind1pref, particlesContainer);
+        else if (randValue > 0.5f) Instantiate(wind2pref, particlesContainer);
+        else if (randValue > 0.25f) Instantiate(wind3pref, particlesContainer);
+        else Instantiate(wind4pref, particlesContainer);
+
+        timeForNextParticle = Random.Range(0.4f, 0.6f) / ObjectPassingBy.speedMultiplyer;
     }
 
     void Layer1BackgroundGeneration()

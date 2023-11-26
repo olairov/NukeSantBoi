@@ -7,14 +7,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject bombPrefab, explosionPrefab;
     [SerializeField] private Transform bombContainer;
     [SerializeField] private Color burnColor;
+    private Transform cameraParentTransform;
 
     private ChargeController chargeScript;
 
     [SerializeField] private float rotSpeed, moveSpeed, bombThrowForce, deviationSpeed, bombReloadTime;
-    private float deviationTime, deviationRandomForce, deviationExtraForce = 1, rotationDifference, timeUntilNextBomb, Yvelocity;
+    private float deviationTime, deviationRandomForce, deviationExtraForce = 1, rotationDifference, timeUntilNextBomb, Yvelocity, lastCameraYpos;
 
     static public bool dead;
-    private bool isPaused;
+    private bool isPaused, willShotWhenPossible;
     public bool SetIsPaused
     {
         set { isPaused = value; }
@@ -31,6 +32,9 @@ public class PlayerController : MonoBehaviour
         
         transform.position = new Vector3(Camera.main.ScreenToWorldPoint(new Vector2(Screen.width / 5, 0)).x, 2, transform.position.z);
 
+        cameraParentTransform = Camera.main.transform.parent;
+
+        lastCameraYpos = cameraParentTransform.position.y;
         dead = false;
     }
 
@@ -38,9 +42,14 @@ public class PlayerController : MonoBehaviour
     {
         if (!dead)RotateAndMove();
 
-        if ((Input.GetButtonDown("Jump") || Input.GetButtonDown("Fire1")) && timeUntilNextBomb == 0 && !dead && !isPaused) DropBomb();
+        if ((Input.GetButtonDown("Jump") || Input.GetButtonDown("Fire1")) && !dead && !isPaused) DropBomb();
         if (timeUntilNextBomb > 0) timeUntilNextBomb -= Time.deltaTime;
-        else timeUntilNextBomb = 0;
+        else
+        {
+            timeUntilNextBomb = 0;
+            if (willShotWhenPossible && !dead && !isPaused) DropBomb();
+            willShotWhenPossible = false;
+        }
 
         if ((transform.position.y < Camera.main.ScreenToWorldPoint(Vector3.zero).y || transform.position.y > Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y) && !isPaused)
         {
@@ -74,14 +83,29 @@ public class PlayerController : MonoBehaviour
         }
 
         float lastYpos = transform.position.y;
-        Vector3 forceToAdd = new Vector3(0, (transform.eulerAngles.z - 180) / 90 * moveSpeed * ((ObjectPassingBy.speedMultiplyer - 1) / 2 + 1) * Time.deltaTime, 0);
+        Vector3 forceToAdd = new Vector3(0, (transform.eulerAngles.z - 180) / 90 * moveSpeed * ((ObjectPassingBy.speedMultiplyer - 1) / 2.5f + 1) * Time.deltaTime, 0);
         transform.position += forceToAdd;
+
+        UpdateYposInFunctionOfCameraPos();
 
         Yvelocity = (transform.position.y - lastYpos) / Time.deltaTime;
     }
 
+    void UpdateYposInFunctionOfCameraPos()
+    {
+        transform.position = new Vector3(transform.position.x, transform.position.y - (cameraParentTransform.position.y - lastCameraYpos), transform.position.z);
+
+        lastCameraYpos = cameraParentTransform.position.y;
+    }
+
     void DropBomb()
     {
+        if (timeUntilNextBomb != 0)
+        {
+            if (timeUntilNextBomb < 0.2f) willShotWhenPossible = true;
+            return;
+        }
+
         Vector2 direction = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
         Vector2 bombStartVelocity = direction.normalized * bombThrowForce + new Vector2(0, Yvelocity);
 

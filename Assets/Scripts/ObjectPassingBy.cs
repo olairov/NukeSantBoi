@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class ObjectPassingBy : MonoBehaviour
 {
+    private Transform cameraTransform;
+
     public static float speedMultiplyer;
-    [SerializeField] private float passingSpeed;
-    private float appearingDistance = 10;
+    public float passingSpeed;
+    private float appearingDistance = 10, lastCameraYpos;
 
     [SerializeField] private bool background;
     public bool appearingObject;
@@ -16,12 +18,27 @@ public class ObjectPassingBy : MonoBehaviour
         if (background) appearingDistance = 30;
 
         if (!appearingObject) transform.position = new Vector3(Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, 0, 0)).x + appearingDistance, transform.position.y, transform.position.z);
+
+        cameraTransform = Camera.main.transform.parent;
     }
 
     private void Update()
     {
+        UpdateXpos();
+        UpdateYpos();
+    }
+
+    void UpdateXpos()
+    {
         transform.position += new Vector3(-passingSpeed, 0, 0) * Time.deltaTime * speedMultiplyer * MapGenerator.playerDistanceToObjective;
 
         if (transform.position.x < Camera.main.ScreenToWorldPoint(Vector3.zero).x - appearingDistance) Destroy(gameObject);
+    }
+
+    void UpdateYpos()
+    {
+        transform.position = new Vector3(transform.position.x, transform.position.y - (cameraTransform.position.y - lastCameraYpos) * passingSpeed, transform.position.z);
+
+        lastCameraYpos = cameraTransform.position.y;
     }
 }

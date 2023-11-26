@@ -5,7 +5,9 @@ using UnityEngine;
 public class Building : MonoBehaviour
 {
     [SerializeField] private Color flashColor;
-    [SerializeField] private GameObject skystraperUpperPart;
+    [SerializeField] private GameObject skystraperUpperPart, smokeParticles, shardsParticles;
+
+    private Transform particlesContainer;
 
     private float rotationSpeed, fallingSpeed, timeSinceDestruction;
 
@@ -14,6 +16,8 @@ public class Building : MonoBehaviour
 
     void Start()
     {
+        particlesContainer = GameObject.Find("ParticlesContainer").transform;
+
         if (transform.name.Contains("Sky")) iStrapSky = true;
         CreateStats();
     }
@@ -32,17 +36,29 @@ public class Building : MonoBehaviour
         transform.position = new Vector3(transform.position.x, Camera.main.ScreenToWorldPoint(Vector3.zero).y + randomY, transform.position.z);
     }
 
-    public void Destruct(float otherY)
+    public void Destruct(Vector2 otherPos)
     {
+        EnableParticles(otherPos);
+
         if (dead) return;
         dead = true;
 
         Transform upperPartTransform = null;
-        if (iStrapSky) upperPartTransform = SkystraperFallStats(otherY);
+        if (iStrapSky) upperPartTransform = SkystraperFallStats(otherPos.y);
 
         StartCoroutine(Flash(upperPartTransform));
 
         FallStats();
+    }
+
+    void EnableParticles(Vector2 explosionPos)
+    {
+        Instantiate(smokeParticles, new Vector3(transform.position.x, Camera.main.ScreenToWorldPoint(Vector3.zero).y -1, -20), Quaternion.identity, particlesContainer);
+
+        float shardsZrotation = -(explosionPos.x - transform.position.x) * 30 + 90;
+        if (shardsZrotation < 20) shardsZrotation = 20;
+        else if (shardsZrotation > 160) shardsZrotation = 160;
+        Instantiate(shardsParticles, new Vector3(explosionPos.x, explosionPos.y - 0.5f, shardsParticles.transform.position.z), Quaternion.Euler(0, 0, shardsZrotation), particlesContainer);
     }
 
     void FallStats()
