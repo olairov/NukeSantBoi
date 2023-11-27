@@ -83,13 +83,18 @@ public class PlayerController : MonoBehaviour
             int movement = (int)Input.GetAxisRaw("Horizontal");
             if (Input.GetAxisRaw("Vertical") != 0) movement = -(int)Input.GetAxisRaw("Vertical");
 
-            if (movement < 0 || (movement > 0 && transform.eulerAngles.z > 130)) rb.AddTorque(-movement * rotSpeed * Time.deltaTime);
+            rb.AddTorque(-movement * rotSpeed * Time.deltaTime);
 
             Deviation(Input.GetButton("Horizontal"));
         }
 
         float lastYpos = transform.position.y;
         float forceToAddFormula = Mathf.Cos(-transform.eulerAngles.z / (Mathf.PI * 18.24f) - Mathf.PI / 2) * 10;
+
+        float downForceWhenBackwards = Mathf.Cos((transform.eulerAngles.z - 180) / (Mathf.PI * 18.24f)) * 1f - 0.4f;
+        if (downForceWhenBackwards > 0) downForceWhenBackwards = 0;
+        rb.AddForce(new Vector2(0, downForceWhenBackwards * Time.deltaTime * 60));
+
         Vector3 forceToAdd = new Vector3(0, forceToAddFormula * moveSpeed * ((ObjectPassingBy.speedMultiplier - 1) / 2.5f + 1) * Time.deltaTime, 0);
         transform.position += forceToAdd;
 
