@@ -8,6 +8,7 @@ public class HudController : MonoBehaviour
     private PlayerController playerScript;
     private MapGenerator mapGeneratorScript;
     private PlayerSoundsController playerSoundsScript;
+    private TargetController targetScript;
     
     [SerializeField] private GameObject pointsSumPrefab;
 
@@ -45,6 +46,7 @@ public class HudController : MonoBehaviour
         playerScript = GameObject.Find("Player").GetComponent<PlayerController>();
         playerSoundsScript = GameObject.Find("Player/Sounds").GetComponent<PlayerSoundsController>();
         mapGeneratorScript = GameObject.Find("__________________Map___________________").GetComponent<MapGenerator>();
+        targetScript = GameObject.Find("Target").GetComponent<TargetController>();
 
         cameraComponent = cameraTransform.GetComponentInChildren<Camera>();
 
@@ -92,16 +94,22 @@ public class HudController : MonoBehaviour
         else Pause();
     }
 
-    void Pause()
+    public void Pause()
     {
         if (PlayerController.dead) return;
         
         pretendsToBePaused = true;
+
+        targetScript.SetIsPaused = true;
+        Cursor.visible = true;
     }
 
     public void Continue()
     {
         pretendsToBePaused = false;
+
+        targetScript.SetIsPaused = false;
+        Cursor.visible = false;
     }
 
     void AdjustTimeScale()
@@ -179,6 +187,7 @@ public class HudController : MonoBehaviour
     public void DeadPanelOut()
     {
         deadPanelOutProgress = 0;
+        Cursor.visible = true;
 
         DeadPanelStats();
     }

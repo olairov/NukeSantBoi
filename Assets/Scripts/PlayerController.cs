@@ -15,10 +15,14 @@ public class PlayerController : MonoBehaviour
     private float deviationTime, deviationRandomForce, deviationExtraForce = 1, rotationDifference, timeUntilNextBomb, Yvelocity, lastCameraYpos;
 
     static public bool dead;
-    private bool isPaused, willShotWhenPossible;
+    private bool isPaused, willShotWhenPossible, mouseIsUnaccessible;
     public bool SetIsPaused
     {
         set { isPaused = value; }
+    }
+    public bool SetMouseIsUnaccessible
+    {
+        set { mouseIsUnaccessible = value; }
     }
 
     private Rigidbody2D rb;
@@ -42,7 +46,9 @@ public class PlayerController : MonoBehaviour
     {
         if (!dead)RotateAndMove();
 
-        if ((Input.GetButtonDown("Jump") || Input.GetButtonDown("Fire1")) && !dead && !isPaused) DropBomb();
+        if (Input.GetButtonDown("Jump") && !dead && !isPaused) DropBomb();
+        if (Input.GetButtonDown("Fire1") && !dead && !isPaused) DropBomb();
+
         if (timeUntilNextBomb > 0) timeUntilNextBomb -= Time.deltaTime;
         else
         {
@@ -77,13 +83,14 @@ public class PlayerController : MonoBehaviour
             int movement = (int)Input.GetAxisRaw("Horizontal");
             if (Input.GetAxisRaw("Vertical") != 0) movement = -(int)Input.GetAxisRaw("Vertical");
 
-            if ((movement < 0 && transform.eulerAngles.z < 230) || (movement > 0 && transform.eulerAngles.z > 130)) rb.AddTorque(-movement * rotSpeed * Time.deltaTime);
+            if (movement < 0 || (movement > 0 && transform.eulerAngles.z > 130)) rb.AddTorque(-movement * rotSpeed * Time.deltaTime);
 
             Deviation(Input.GetButton("Horizontal"));
         }
 
         float lastYpos = transform.position.y;
-        Vector3 forceToAdd = new Vector3(0, (transform.eulerAngles.z - 180) / 90 * moveSpeed * ((ObjectPassingBy.speedMultiplyer - 1) / 2.5f + 1) * Time.deltaTime, 0);
+        float forceToAddFormula = Mathf.Cos(-transform.eulerAngles.z / (Mathf.PI * 18.24f) - Mathf.PI / 2) * 10;
+        Vector3 forceToAdd = new Vector3(0, forceToAddFormula * moveSpeed * ((ObjectPassingBy.speedMultiplier - 1) / 2.5f + 1) * Time.deltaTime, 0);
         transform.position += forceToAdd;
 
         UpdateYposInFunctionOfCameraPos();
@@ -110,9 +117,9 @@ public class PlayerController : MonoBehaviour
         Vector2 bombStartVelocity = direction.normalized * bombThrowForce + new Vector2(0, Yvelocity);
 
         GameObject newBomb = Instantiate(bombPrefab, transform.position, Quaternion.identity, bombContainer);
-        newBomb.GetComponent<Rigidbody2D>().velocity = bombStartVelocity * ObjectPassingBy.speedMultiplyer / 1.5f;
+        newBomb.GetComponent<Rigidbody2D>().velocity = bombStartVelocity * ObjectPassingBy.speedMultiplier / 1.5f;
 
-        timeUntilNextBomb = bombReloadTime / ObjectPassingBy.speedMultiplyer;
+        timeUntilNextBomb = bombReloadTime / ObjectPassingBy.speedMultiplier;
 
         chargeScript.DropBomb(timeUntilNextBomb);
     }

@@ -43,7 +43,7 @@ public class ChargeController : MonoBehaviour
             playerPowerFieldAnim.SetTrigger("Recharge");
         }
 
-        int numberOfCellsEnabled = (int)(5 - timeUntilNextBomb / (defaultTimeUntilNextBomb / ObjectPassingBy.speedMultiplyer) * 5) - 1;
+        int numberOfCellsEnabled = (int)(5 - timeUntilNextBomb / (defaultTimeUntilNextBomb / ObjectPassingBy.speedMultiplier) * 5) - 1;
 
         for (int idx = cells.Count - 1; idx >= 0; idx--)
         {

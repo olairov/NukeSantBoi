@@ -12,11 +12,11 @@ public class MapGenerator : MonoBehaviour
     //Other Prefabs:
     [SerializeField] private GameObject wind1pref, wind2pref, wind3pref, wind4pref;
 
-    private Transform buildingsContainer, enemiesContainer, obstaclesContainer, backgroundContainer, warningsContainer, particlesContainer;
+    private Transform playerTransform ,buildingsContainer, enemiesContainer, obstaclesContainer, backgroundContainer, warningsContainer, particlesContainer;
 
     static public float playerDistanceToObjective;
     [SerializeField] private float speedIncreaseFactor;
-    private float timeForNextBuilding, timeForNextEnemy = 6, timeForNextObstacle = 2, timeForNextParticle, timeForNextLayer1, timeForNextLayer2, timeForNextLayer3;
+    private float realSpeedMultiplier, timeForNextBuilding, timeForNextEnemy = 6, timeForNextObstacle = 2, timeForNextParticle, timeForNextLayer1, timeForNextLayer2, timeForNextLayer3;
 
     private int buildingsFromSkystraper;
 
@@ -28,6 +28,7 @@ public class MapGenerator : MonoBehaviour
 
     void Start()
     {
+        playerTransform = GameObject.Find("Player").transform;
         buildingsContainer = GameObject.Find("BuildingsContainer").transform;
         enemiesContainer = GameObject.Find("EnemiesContainer").transform;
         obstaclesContainer = GameObject.Find("ObstaclesContainer").transform;
@@ -38,15 +39,24 @@ public class MapGenerator : MonoBehaviour
         FirstGeneration();
 
         playerDistanceToObjective = 0;
-        ObjectPassingBy.speedMultiplyer = 1;
+        realSpeedMultiplier = 1;
+        ObjectPassingBy.speedMultiplier = 1;
     }
 
     void Update()
     {
         if (isPaused) return;
         
-        if (!PlayerController.dead) ObjectPassingBy.speedMultiplyer += Time.deltaTime * speedIncreaseFactor;
-        else ObjectPassingBy.speedMultiplyer /= Time.deltaTime / 4 + 1;
+        if (!PlayerController.dead)
+        {
+            realSpeedMultiplier += Time.deltaTime * speedIncreaseFactor;
+
+            float speedMultiplierFactor = Mathf.Cos((playerTransform.eulerAngles.z - 180) / (Mathf.PI * 18.24f)) * 0.8f + 0.6f;
+            if (speedMultiplierFactor > 1) speedMultiplierFactor = 1;
+
+            ObjectPassingBy.speedMultiplier = realSpeedMultiplier * speedMultiplierFactor;
+        }
+        else ObjectPassingBy.speedMultiplier /= Time.deltaTime / 4 + 1;
 
         GenerateBuildings();
         GenerateObstacles();
@@ -64,7 +74,7 @@ public class MapGenerator : MonoBehaviour
         timeForNextBuilding -= Time.deltaTime;
         if (timeForNextBuilding > 0) return;
 
-        if (Random.value * ObjectPassingBy.speedMultiplyer < 0.15f && buildingsFromSkystraper > 3 * ObjectPassingBy.speedMultiplyer)
+        if (Random.value * ObjectPassingBy.speedMultiplier < 0.15f && buildingsFromSkystraper > 3 * ObjectPassingBy.speedMultiplier)
         {
             Instantiate(skystraperPrefab, buildingsContainer);
             buildingsFromSkystraper = 0;
@@ -80,7 +90,7 @@ public class MapGenerator : MonoBehaviour
             else Instantiate(wideBuildingPrefab, buildingsContainer);
         }
 
-        timeForNextBuilding = Random.Range(1.2f, 2.4f) / ObjectPassingBy.speedMultiplyer;
+        timeForNextBuilding = Random.Range(1.2f, 2.4f) / ObjectPassingBy.speedMultiplier;
 
         buildingsFromSkystraper++;
     }
@@ -117,7 +127,7 @@ public class MapGenerator : MonoBehaviour
         else if (randValue > 0.25f) Instantiate(wind3pref, particlesContainer);
         else Instantiate(wind4pref, particlesContainer);
 
-        timeForNextParticle = Random.Range(0.4f, 0.6f) / ObjectPassingBy.speedMultiplyer;
+        timeForNextParticle = Random.Range(0.4f, 0.6f) / ObjectPassingBy.speedMultiplier;
     }
 
     void Layer1BackgroundGeneration()
@@ -127,7 +137,7 @@ public class MapGenerator : MonoBehaviour
 
         Instantiate(layer1Background, backgroundContainer).GetComponent<BackgroundController>().LastBackground = lastBackgroundLayer1;
 
-        timeForNextLayer1 = 5f / ObjectPassingBy.speedMultiplyer;
+        timeForNextLayer1 = 5f / ObjectPassingBy.speedMultiplier;
     }
 
     void Layer2BackgroundGeneration()
@@ -137,7 +147,7 @@ public class MapGenerator : MonoBehaviour
 
         Instantiate(layer2Background, backgroundContainer).GetComponent<BackgroundController>().LastBackground = lastBackgroundLayer2;
 
-        timeForNextLayer2 = 7f / ObjectPassingBy.speedMultiplyer;
+        timeForNextLayer2 = 7f / ObjectPassingBy.speedMultiplier;
     }
 
     void Layer3BackgroundGeneration()
@@ -147,7 +157,7 @@ public class MapGenerator : MonoBehaviour
 
         Instantiate(layer3Background, backgroundContainer).GetComponent<BackgroundController>().LastBackground = lastBackgroundLayer3;
 
-        timeForNextLayer3 = 8f / ObjectPassingBy.speedMultiplyer;
+        timeForNextLayer3 = 8f / ObjectPassingBy.speedMultiplier;
     }
 
     void FirstGeneration()
