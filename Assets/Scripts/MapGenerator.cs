@@ -14,7 +14,7 @@ public class MapGenerator : MonoBehaviour
 
     private Transform playerTransform ,buildingsContainer, enemiesContainer, obstaclesContainer, backgroundContainer, warningsContainer, particlesContainer;
 
-    static public float playerDistanceToObjective;
+    static public float playerDistanceToStandardPos;
     [SerializeField] private float speedIncreaseFactor;
     private float realSpeedMultiplier, timeForNextBuilding, timeForNextEnemy = 6, timeForNextObstacle = 2, timeForNextParticle, timeForNextLayer1, timeForNextLayer2, timeForNextLayer3;
 
@@ -38,7 +38,7 @@ public class MapGenerator : MonoBehaviour
 
         FirstGeneration();
 
-        playerDistanceToObjective = 0;
+        playerDistanceToStandardPos = 0;
         realSpeedMultiplier = 1;
         ObjectPassingBy.speedMultiplier = 1;
     }

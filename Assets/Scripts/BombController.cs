@@ -22,7 +22,7 @@ public class BombController : MonoBehaviour
 
     void UpdateRotation()
     {
-        transform.up = rb.velocity + new Vector2(5, 0);
+        transform.up = rb.velocity + new Vector2(5 * ObjectPassingBy.speedMultiplier, 0);
         transform.eulerAngles = new Vector3(0, 0, transform.eulerAngles.z + 110);
     }
 

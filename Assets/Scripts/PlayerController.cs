@@ -11,8 +11,8 @@ public class PlayerController : MonoBehaviour
 
     private ChargeController chargeScript;
 
-    [SerializeField] private float rotSpeed, moveSpeed, bombThrowForce, deviationSpeed, bombReloadTime;
-    private float deviationTime, deviationRandomForce, deviationExtraForce = 1, rotationDifference, timeUntilNextBomb, Yvelocity, lastCameraYpos;
+    [SerializeField] private float rotSpeed, moveSpeed, bombThrowForce, deviationSpeed, bombReloadTime, downForceWhenBackwardsMagnitude;
+    private float deviationTime, deviationRandomForce, deviationExtraForce = 1, rotationDifference, timeUntilNextBomb, Yvelocity, lastCameraYpos, downForceWhenBackwards;
 
     static public bool dead;
     private bool isPaused, willShotWhenPossible, mouseIsUnaccessible;
@@ -72,8 +72,8 @@ public class PlayerController : MonoBehaviour
 
         // Appear from left
 
-        MapGenerator.playerDistanceToObjective += (1 - MapGenerator.playerDistanceToObjective) * Time.deltaTime;
-        transform.position = new Vector3(Mathf.Lerp(Camera.main.ScreenToWorldPoint(new Vector2(-1, 0)).x, Camera.main.ScreenToWorldPoint(new Vector2(Screen.width / 5, 0)).x, MapGenerator.playerDistanceToObjective), transform.position.y, transform.position.z);
+        MapGenerator.playerDistanceToStandardPos += (1 - MapGenerator.playerDistanceToStandardPos) * Time.deltaTime;
+        transform.position = new Vector3(Mathf.Lerp(Camera.main.ScreenToWorldPoint(new Vector2(-1, 0)).x, Camera.main.ScreenToWorldPoint(new Vector2(Screen.width / 5, 0)).x, MapGenerator.playerDistanceToStandardPos), transform.position.y, transform.position.z);
     }
 
     void RotateAndMove()
@@ -89,11 +89,9 @@ public class PlayerController : MonoBehaviour
         }
 
         float lastYpos = transform.position.y;
-        float forceToAddFormula = Mathf.Cos(-transform.eulerAngles.z / (Mathf.PI * 18.24f) - Mathf.PI / 2) * 10;
+        float forceToAddFormula = Mathf.Cos(-transform.eulerAngles.z / (Mathf.PI * 18.24f) - Mathf.PI / 2);
 
-        float downForceWhenBackwards = Mathf.Cos((transform.eulerAngles.z - 180) / (Mathf.PI * 18.24f)) * 1f - 0.4f;
-        if (downForceWhenBackwards > 0) downForceWhenBackwards = 0;
-        rb.AddForce(new Vector2(0, downForceWhenBackwards * Time.deltaTime * 60));
+        LoopDownForce();
 
         Vector3 forceToAdd = new Vector3(0, forceToAddFormula * moveSpeed * ((ObjectPassingBy.speedMultiplier - 1) / 2.5f + 1) * Time.deltaTime, 0);
         transform.position += forceToAdd;
@@ -101,6 +99,15 @@ public class PlayerController : MonoBehaviour
         UpdateYposInFunctionOfCameraPos();
 
         Yvelocity = (transform.position.y - lastYpos) / Time.deltaTime;
+    }
+
+    void LoopDownForce()
+    {
+        float additionDownForceWhenBackwards = Mathf.Cos((transform.eulerAngles.z - 180) / (Mathf.PI * 18.24f)) * 0.8f - 0.2f;
+        downForceWhenBackwards += additionDownForceWhenBackwards * Time.deltaTime * downForceWhenBackwardsMagnitude;
+        if (downForceWhenBackwards > 0) downForceWhenBackwards = 0;
+
+        transform.position += new Vector3(0, downForceWhenBackwards, 0);
     }
 
     void UpdateYposInFunctionOfCameraPos()

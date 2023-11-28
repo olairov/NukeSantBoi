@@ -4413,10 +4413,11 @@ MonoBehaviour:
   bombContainer: {fileID: 2065473935}
   burnColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   rotSpeed: 1400
-  moveSpeed: 0.8
+  moveSpeed: 8
   bombThrowForce: 7
   deviationSpeed: 200
   bombReloadTime: 2
+  downForceWhenBackwardsMagnitude: 0.002
 --- !u!61 &1045594952
 BoxCollider2D:
   m_ObjectHideFlags: 0
