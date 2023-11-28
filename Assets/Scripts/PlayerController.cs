@@ -89,7 +89,7 @@ public class PlayerController : MonoBehaviour
         }
 
         float lastYpos = transform.position.y;
-        float forceToAddFormula = Mathf.Cos(-transform.eulerAngles.z / (Mathf.PI * 18.24f) - Mathf.PI / 2);
+        float forceToAddFormula = Mathf.Cos(-transform.eulerAngles.z / 57.3f - Mathf.PI / 2);
 
         LoopDownForce();
 
@@ -103,7 +103,8 @@ public class PlayerController : MonoBehaviour
 
     void LoopDownForce()
     {
-        float additionDownForceWhenBackwards = Mathf.Cos((transform.eulerAngles.z - 180) / (Mathf.PI * 18.24f)) * 0.8f - 0.2f;
+        float additionDownForceWhenBackwards = Mathf.Cos((transform.eulerAngles.z - 180) / 57.3f) * 0.8f - 0.2f;
+        if (additionDownForceWhenBackwards > 0) additionDownForceWhenBackwards *= 3;
         downForceWhenBackwards += additionDownForceWhenBackwards * Time.deltaTime * downForceWhenBackwardsMagnitude;
         if (downForceWhenBackwards > 0) downForceWhenBackwards = 0;
 

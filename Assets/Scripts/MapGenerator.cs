@@ -16,7 +16,7 @@ public class MapGenerator : MonoBehaviour
 
     static public float playerDistanceToStandardPos;
     [SerializeField] private float speedIncreaseFactor;
-    private float realSpeedMultiplier, timeForNextBuilding, timeForNextEnemy = 6, timeForNextObstacle = 2, timeForNextParticle, timeForNextLayer1, timeForNextLayer2, timeForNextLayer3;
+    private float realSpeedMultiplier, timeForNextBuilding, timeForNextEnemy, timeForNextObstacle, timeForNextParticle, timeForNextLayer1, timeForNextLayer2, timeForNextLayer3;
 
     private int buildingsFromSkystraper;
 
@@ -51,7 +51,7 @@ public class MapGenerator : MonoBehaviour
         {
             realSpeedMultiplier += Time.deltaTime * speedIncreaseFactor;
 
-            float speedMultiplierFactor = Mathf.Cos((playerTransform.eulerAngles.z - 180) / (Mathf.PI * 18.24f)) * 1f + 0.6f;
+            float speedMultiplierFactor = Mathf.Cos((playerTransform.eulerAngles.z - 180) / 57.3f) * 1f + 0.6f;
             if (speedMultiplierFactor > 1) speedMultiplierFactor = 1;
 
             ObjectPassingBy.speedMultiplier = realSpeedMultiplier * speedMultiplierFactor;
