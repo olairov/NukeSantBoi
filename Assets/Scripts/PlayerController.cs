@@ -132,7 +132,7 @@ public class PlayerController : MonoBehaviour
         GameObject newBomb = Instantiate(bombPrefab, transform.position, Quaternion.identity, bombContainer);
         newBomb.GetComponent<Rigidbody2D>().velocity = bombStartVelocity * ObjectPassingBy.speedMultiplier / 1.5f;
 
-        timeUntilNextBomb = bombReloadTime / ObjectPassingBy.speedMultiplier;
+        timeUntilNextBomb = bombReloadTime / ObjectPassingBy.realSpeedMultiplier;
 
         chargeScript.DropBomb(timeUntilNextBomb);
     }

@@ -153,4 +153,5 @@ MonoBehaviour:
   passingSpeed: 0
   realPassingSpeed: 0
   background: 0
+  fakePassingSpeed: 1
   appearingObject: 1

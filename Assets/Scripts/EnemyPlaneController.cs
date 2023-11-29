@@ -40,8 +40,6 @@ public class EnemyPlaneController : MonoBehaviour
             transform.up += rotationAdding;
         }
 
-        float forceToAddFormula = Mathf.Cos((playerTransform.eulerAngles.z) / 57.3f) * 1f + 0.6f;
-
         Vector3 forceToAdd = new Vector3(0, -(transform.eulerAngles.z - 90) / 90 * moveSpeed, 0) * Time.deltaTime;
         transform.position += forceToAdd;
 
