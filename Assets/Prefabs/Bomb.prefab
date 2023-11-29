@@ -151,5 +151,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   passingSpeed: 0
+  realPassingSpeed: 0
   background: 0
   appearingObject: 1
