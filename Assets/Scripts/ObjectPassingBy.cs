@@ -6,6 +6,8 @@ public class ObjectPassingBy : MonoBehaviour
 {
     private Transform cameraTransform;
 
+    private Vector3 realVelocity;
+
     public static float speedMultiplier, realSpeedMultiplier;
     public float passingSpeed, realPassingSpeed;
     private float appearingDistance = 10, lastCameraYpos;
@@ -30,11 +32,17 @@ public class ObjectPassingBy : MonoBehaviour
 
     void UpdateXpos()
     {
-        if (fakePassingSpeed) transform.position += new Vector3(-passingSpeed, 0, 0) * Time.deltaTime * speedMultiplier * MapGenerator.playerDistanceToStandardPos;
+        Vector3 startPos = transform.position;
+
         transform.position += new Vector3(-passingSpeed, 0, 0) * Time.deltaTime * speedMultiplier * MapGenerator.playerDistanceToStandardPos;
         transform.position += new Vector3(-realPassingSpeed, 0, 0) * Time.deltaTime;
 
         if (transform.position.x < Camera.main.ScreenToWorldPoint(Vector3.zero).x - appearingDistance) Destroy(gameObject);
+
+        if (!fakePassingSpeed) return;
+
+        //realVelocity = new Vector2(transform.position.x - ) - startPos;
+        transform.position += realVelocity * Time.deltaTime * speedMultiplier * MapGenerator.playerDistanceToStandardPos;
     }
 
     void UpdateYpos()
