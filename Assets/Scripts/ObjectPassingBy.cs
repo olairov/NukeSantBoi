@@ -10,7 +10,7 @@ public class ObjectPassingBy : MonoBehaviour
     public float passingSpeed, realPassingSpeed;
     private float appearingDistance = 10, lastCameraYpos;
 
-    [SerializeField] private bool background;
+    [SerializeField] private bool background, fakePassingSpeed;
     public bool appearingObject;
 
     private void Start()
@@ -30,6 +30,7 @@ public class ObjectPassingBy : MonoBehaviour
 
     void UpdateXpos()
     {
+        if (fakePassingSpeed) transform.position += new Vector3(-passingSpeed, 0, 0) * Time.deltaTime * speedMultiplier * MapGenerator.playerDistanceToStandardPos;
         transform.position += new Vector3(-passingSpeed, 0, 0) * Time.deltaTime * speedMultiplier * MapGenerator.playerDistanceToStandardPos;
         transform.position += new Vector3(-realPassingSpeed, 0, 0) * Time.deltaTime;
 
