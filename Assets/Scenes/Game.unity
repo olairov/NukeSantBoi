@@ -4417,7 +4417,7 @@ MonoBehaviour:
   bombThrowForce: 7
   deviationSpeed: 200
   bombReloadTime: 2
-  downForceWhenBackwardsMagnitude: 0.002
+  downForceWhenBackwardsMagnitude: 0.005
 --- !u!61 &1045594952
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4814,7 +4814,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   passingSpeed: 0
+  realPassingSpeed: 0
   background: 0
+  fakePassingSpeed: 0
   appearingObject: 0
 --- !u!4 &1179924540
 Transform:
@@ -7553,7 +7555,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   passingSpeed: 0
+  realPassingSpeed: 0
   background: 0
+  fakePassingSpeed: 0
   appearingObject: 0
 --- !u!1 &2069427280
 GameObject:

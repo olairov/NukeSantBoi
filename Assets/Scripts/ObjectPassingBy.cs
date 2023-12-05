@@ -50,7 +50,7 @@ public class ObjectPassingBy : MonoBehaviour
         Debug.Log(speedMultiplierFactor);
         if (speedMultiplierFactor < 0) speedMultiplierFactor = 0;
 
-        transform.position += new Vector3(speedMultiplierFactor * realSpeedMultiplier * Time.deltaTime, 0, 0);
+        transform.position += new Vector3(speedMultiplierFactor * realSpeedMultiplier * 2.5f * Time.deltaTime, 0, 0);
     }
 
     void UpdateYpos()

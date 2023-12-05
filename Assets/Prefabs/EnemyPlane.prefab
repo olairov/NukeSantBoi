@@ -147,10 +147,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9eb5c201e1fc764f8b229c1f2b6cbc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  passingSpeed: 2.5
-  realPassingSpeed: 7.5
+  passingSpeed: 5
+  realPassingSpeed: 5
   background: 0
-  fakePassingSpeed: 1
+  fakePassingSpeed: 0
   appearingObject: 0
 --- !u!114 &2503070929597295560
 MonoBehaviour:

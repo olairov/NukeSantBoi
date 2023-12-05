@@ -129,8 +129,7 @@ public class PlayerController : MonoBehaviour
         Vector2 direction = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
         Vector2 bombStartVelocity = direction.normalized * bombThrowForce + new Vector2(0, Yvelocity);
 
-        GameObject newBomb = Instantiate(bombPrefab, transform.position, Quaternion.identity, bombContainer);
-        newBomb.GetComponent<Rigidbody2D>().velocity = bombStartVelocity * ObjectPassingBy.speedMultiplier / 1.5f;
+        Instantiate(bombPrefab, transform.position, Quaternion.identity, bombContainer).GetComponent<Rigidbody2D>().velocity = bombStartVelocity * (ObjectPassingBy.realSpeedMultiplier / 1.5f);
 
         timeUntilNextBomb = bombReloadTime / ObjectPassingBy.realSpeedMultiplier;
 
