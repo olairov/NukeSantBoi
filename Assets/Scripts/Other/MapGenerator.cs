@@ -51,7 +51,7 @@ public class MapGenerator : MonoBehaviour
         {
             ObjectPassingBy.realSpeedMultiplier += Time.deltaTime * speedIncreaseFactor;
 
-            float speedMultiplierFactor = Mathf.Cos((playerTransform.eulerAngles.z - 180) / 57.3f) * 1f + 0.6f;
+            float speedMultiplierFactor = Mathf.Cos((playerTransform.eulerAngles.z - 180) / 57.3f) * 1.2f + 0.5f;
             if (speedMultiplierFactor > 1) speedMultiplierFactor = 1;
 
             ObjectPassingBy.speedMultiplier = ObjectPassingBy.realSpeedMultiplier * speedMultiplierFactor;

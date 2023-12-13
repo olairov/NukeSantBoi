@@ -147,8 +147,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9eb5c201e1fc764f8b229c1f2b6cbc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  passingSpeed: 5
-  realPassingSpeed: 5
+  passingSpeed: 4
+  realPassingSpeed: 6
   background: 0
   fakePassingSpeed: 0
   appearingObject: 0

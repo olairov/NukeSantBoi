@@ -10,7 +10,7 @@ public class ObjectPassingBy : MonoBehaviour
 
     public static float speedMultiplier, realSpeedMultiplier;
     public float passingSpeed, realPassingSpeed;
-    private float appearingDistance = 10, lastCameraYpos;
+    private float appearingDistance = 10, lastCameraYpos, speedMultiplierFactor;
 
     [SerializeField] private bool background, fakePassingSpeed;
     public bool appearingObject;
@@ -46,8 +46,7 @@ public class ObjectPassingBy : MonoBehaviour
 
         if (!fakePassingSpeed || playerTransform == null) return;
 
-        float speedMultiplierFactor = Mathf.Cos(playerTransform.eulerAngles.z / 57.3f) * 1f + 0.6f;
-        Debug.Log(speedMultiplierFactor);
+        if (!PlayerController.dead) speedMultiplierFactor = Mathf.Cos(playerTransform.eulerAngles.z / 57.3f) * 1f + 0.6f;
         if (speedMultiplierFactor < 0) speedMultiplierFactor = 0;
 
         transform.position += new Vector3(speedMultiplierFactor * realSpeedMultiplier * 2.5f * Time.deltaTime, 0, 0);

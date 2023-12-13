@@ -41,13 +41,11 @@ public class PauseTriggerButton : MonoBehaviour
     public void Pointed()
     {
         pointed = true;
-        playerScript.SetMouseIsUnaccessible = true;
     }
 
     public void Unpointed()
     {
         pointed = false;
-        playerScript.SetMouseIsUnaccessible = false;
     }
 
     public void Pressed()

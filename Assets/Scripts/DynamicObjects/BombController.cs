@@ -28,8 +28,8 @@ public class BombController : MonoBehaviour
     {
         Vector2 velocity = (transform.position - lastFramePos) / Time.deltaTime;
 
-        /*transform.up = rb.velocity + new Vector2(5 * ObjectPassingBy.speedMultiplier, 0);
-        transform.eulerAngles = new Vector3(0, 0, transform.eulerAngles.z + 110);*/
+        transform.up = rb.velocity + new Vector2(5 * ObjectPassingBy.realSpeedMultiplier, 0);
+        transform.eulerAngles = new Vector3(0, 0, transform.eulerAngles.z + 110);
 
         lastFramePos = transform.position;
     }
