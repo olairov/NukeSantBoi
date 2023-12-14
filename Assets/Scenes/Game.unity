@@ -4454,10 +4454,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1045594947}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7e89f64cd95cc847bc5a10c9557ee52, type: 3}
+  m_Script: {fileID: 11500000, guid: 138a0a1760ae0b64d9c5aac7cd0b804c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pointPrefab: {fileID: 751558376058882269, guid: 37bd20802c127e6469d0f42332ec6515, type: 3}
+  pointsPrefab: {fileID: 3919572110361848426, guid: 540c197054bb22043b79d055dbb818f8, type: 3}
 --- !u!1 &1080161555
 GameObject:
   m_ObjectHideFlags: 0

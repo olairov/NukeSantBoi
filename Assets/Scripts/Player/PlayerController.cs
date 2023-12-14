@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour
     private float deviationTime, deviationRandomForce, deviationExtraForce = 1, rotationDifference, timeUntilNextBomb, Yvelocity, lastCameraYpos, downForceWhenBackwards;
 
     static public bool dead;
-    private bool isPaused, willShotWhenPossible, goingUpwards = true;
+    private bool isPaused, willShotWhenPossible;
     public bool SetIsPaused
     {
         set { isPaused = value; }
@@ -79,21 +79,13 @@ public class PlayerController : MonoBehaviour
             int movement = (int)Input.GetAxisRaw("Horizontal");
             if (Input.GetAxisRaw("Vertical") != 0) movement = -(int)Input.GetAxisRaw("Vertical");
 
-            // Determine wether it is going upwards or not. Not totally accurate, as deviation is ignored.
-            if (movement < 0) goingUpwards = true;
-            else if (movement > 0) goingUpwards = false;
-
             rb.AddTorque(-movement * rotSpeed * Time.deltaTime);
-            if (transform.eulerAngles.z > 360) transform.eulerAngles -= new Vector3(0, 0, 360);
-            if (transform.eulerAngles.z < 0) transform.eulerAngles += new Vector3(0, 0, 360);
 
             Deviation(Input.GetButton("Horizontal"));
         }
 
         float lastYpos = transform.position.y;
-        float forceToAddFormula = 0;
-        forceToAddFormula = Mathf.Cos(-transform.eulerAngles.z / 57.3f - Mathf.PI / 2);
-        forceToAddFormula = Mathf.Cos(-transform.eulerAngles.z / 57.3f - Mathf.PI / 2);
+        float forceToAddFormula = Mathf.Cos(-transform.eulerAngles.z / 57.3f - Mathf.PI / 2);
 
         LoopDownForce();
 
