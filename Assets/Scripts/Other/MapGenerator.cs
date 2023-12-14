@@ -90,7 +90,7 @@ public class MapGenerator : MonoBehaviour
             else Instantiate(wideBuildingPrefab, buildingsContainer);
         }
 
-        timeForNextBuilding = Random.Range(1.2f, 2.4f);
+        timeForNextBuilding = Random.Range(1.6f, 2.2f);
 
         buildingsFromSkystraper++;
     }

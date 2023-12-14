@@ -9,31 +9,40 @@ public class LoopChecker : MonoBehaviour
 
     private HudController hudScript;
 
+    private Rigidbody2D rb;
+
     private Transform pointsContainer;
+
+    private float realZrot;
 
     void Start()
     {
         pointsContainer = GameObject.Find("NotPhysicElementsContainer").transform;
         hudScript = GameObject.Find("________________Canvas________________").GetComponent<HudController>();
+        rb = GetComponent<Rigidbody2D>();
     }
 
     void Update()
     {
-        CheckLoop(transform.eulerAngles.z - 180);
+        if (PlayerController.dead) return;
+
+        realZrot += rb.angularVelocity * Time.unscaledDeltaTime;
+
+        CheckLoop();
     }
 
-    void CheckLoop(float zRot)
+    void CheckLoop()
     {
-        Debug.Log(transform.eulerAngles.z);
-        if (zRot > 360)
+        Debug.Log(realZrot);
+        if (realZrot > 340)
         {
-            transform.eulerAngles -= new Vector3(0, 0, 360);
+            realZrot -= 360;
             AddPointsWhenLoop();
             Debug.Log("Looped");
         }
-        if (zRot < -360)
+        if (realZrot < -310)
         {
-            transform.eulerAngles += new Vector3(0, 0, 360);
+            realZrot += 360;
             AddPointsWhenLoop();
             Debug.Log("Looped");
         }

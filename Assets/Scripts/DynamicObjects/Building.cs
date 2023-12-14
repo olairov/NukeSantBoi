@@ -5,35 +5,59 @@ using UnityEngine;
 public class Building : MonoBehaviour
 {
     [SerializeField] private Color flashColor;
-    [SerializeField] private GameObject skystraperUpperPart, smokeParticles, shardsParticles;
+    [SerializeField] private GameObject skystraperUpperPart, smokeParticles, shardsParticles, skyStraperPieces;
+    [SerializeField] private Sprite buildingSprite2, buildingSprite3, backBuildingSprite2, backBuildingSprite3;
 
-    private Transform particlesContainer;
+    private Transform particlesContainer, myBackSprite;
 
-    private float rotationSpeed, fallingSpeed, timeSinceDestruction;
+    private float rotationSpeed, fallingSpeed, timeSinceDestruction, cameraWidthInUnits;
 
     public bool dead;
-    private bool iStrapSky;
+    private bool iStrapSky, isWide;
 
     void Start()
     {
         particlesContainer = GameObject.Find("ParticlesContainer").transform;
+        myBackSprite = transform.GetChild(1);
+
+        cameraWidthInUnits = (Camera.main.ScreenToWorldPoint(Vector3.one * Screen.width).x - Camera.main.ScreenToWorldPoint(Vector3.zero).x);
 
         if (transform.name.Contains("Sky")) iStrapSky = true;
+        if (transform.name.Contains("Wide")) isWide = true;
         CreateStats();
     }
 
     void Update()
     {
+        DisplaceBackSprite();
         if (dead) Fall();
     }
 
     void CreateStats()
     {
-        float randomY = Random.Range(-3f, 3f);
-        if (transform.name.StartsWith("Wide")) randomY = Random.Range(-1f, 2f);
+        float randomY = Random.Range(-1.5f, 3f);
+        if (isWide) randomY = Random.Range(0f, 2f);
         if (iStrapSky) randomY = 0;
 
-        transform.position = new Vector3(transform.position.x, Camera.main.ScreenToWorldPoint(Vector3.zero).y + randomY, transform.position.z);
+        transform.position = new Vector3(transform.position.x, Camera.main.ScreenToWorldPoint(Vector3.zero).y + randomY, -0.5f);
+
+        if (iStrapSky) return;
+        float randomValue = Random.value;
+        if (randomValue > 0.66f)
+        {
+            transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = buildingSprite3;
+            myBackSprite.GetComponent<SpriteRenderer>().sprite = backBuildingSprite3;
+        }
+        else if (randomValue > 0.33f)
+        {
+            transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = buildingSprite2;
+            myBackSprite.GetComponent<SpriteRenderer>().sprite = backBuildingSprite2;
+        }
+        else if (!isWide)
+        {
+            transform.GetChild(0).GetComponent<SpriteRenderer>().size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 14);
+            myBackSprite.GetComponent<SpriteRenderer>().size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 14);
+        }
     }
 
     public void Destruct(Vector2 otherPos)
@@ -61,6 +85,11 @@ public class Building : MonoBehaviour
         Instantiate(shardsParticles, new Vector3(explosionPos.x, explosionPos.y - 0.5f, shardsParticles.transform.position.z), Quaternion.Euler(0, 0, shardsZrotation), particlesContainer);
     }
 
+    void DisplaceBackSprite()
+    {
+        myBackSprite.localPosition = new Vector3(Mathf.Lerp(0.5f, -0.5f, transform.position.x / cameraWidthInUnits + 0.5f), myBackSprite.localPosition.y, myBackSprite.localPosition.z);
+    }
+
     void FallStats()
     {
         rotationSpeed = Random.Range(8f, 16f);
@@ -70,13 +99,15 @@ public class Building : MonoBehaviour
 
     Transform SkystraperFallStats(float otherY)
     {
-        transform.position = new Vector3(transform.position.x, otherY - 25, transform.position.z);
+        transform.position = new Vector3(transform.position.x, otherY - 25.7f, transform.position.z);
 
         Transform upperPartTransform = Instantiate(skystraperUpperPart, transform.parent).transform;
-        upperPartTransform.position = new Vector3(transform.position.x, otherY + 15, transform.position.z);
+        upperPartTransform.position = new Vector3(transform.position.x, otherY + 15.7f, transform.position.z);
         upperPartTransform.GetComponent<Rigidbody2D>().AddForce(Vector3.up * 7, ForceMode2D.Impulse);
         upperPartTransform.GetComponent<Rigidbody2D>().AddTorque(Random.Range(80, 180));
         if (Random.value > 0.5f) upperPartTransform.GetComponent<Rigidbody2D>().angularVelocity *= -1;
+
+        Instantiate(skyStraperPieces, new Vector3(transform.position.x, otherY, -12), Quaternion.identity, particlesContainer);
 
         return upperPartTransform;
     }
@@ -101,6 +132,8 @@ public class Building : MonoBehaviour
             upperPartSpriteRenderer = upperPartTransform.GetComponent<SpriteRenderer>();
             originalUpperPartColor = upperPartSpriteRenderer.color;
             upperPartSpriteRenderer.color = flashColor;
+            transform.Find("BrokenSprite").GetComponent<SpriteRenderer>().color = flashColor;
+            upperPartTransform.Find("BrokenSprite").GetComponent<SpriteRenderer>().color = flashColor;
         }
 
         mySpriteRenderer.color = flashColor;
@@ -108,6 +141,11 @@ public class Building : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
 
         mySpriteRenderer.color = originalCol;
-        if (upperPartTransform != null) upperPartSpriteRenderer.color = originalUpperPartColor;
+        if (upperPartTransform != null)
+        {
+            upperPartSpriteRenderer.color = originalUpperPartColor;
+            upperPartTransform.Find("BrokenSprite").GetComponent<SpriteRenderer>().color = originalUpperPartColor;
+            transform.Find("BrokenSprite").GetComponent<SpriteRenderer>().color = originalCol;
+        }
     }
 }
