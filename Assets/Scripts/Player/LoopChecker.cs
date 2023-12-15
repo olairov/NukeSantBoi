@@ -33,18 +33,15 @@ public class LoopChecker : MonoBehaviour
 
     void CheckLoop()
     {
-        Debug.Log(realZrot);
         if (realZrot > 340)
         {
             realZrot -= 360;
             AddPointsWhenLoop();
-            Debug.Log("Looped");
         }
         if (realZrot < -310)
         {
             realZrot += 360;
             AddPointsWhenLoop();
-            Debug.Log("Looped");
         }
     }
 
