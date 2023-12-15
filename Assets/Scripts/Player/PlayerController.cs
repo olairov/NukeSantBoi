@@ -101,10 +101,10 @@ public class PlayerController : MonoBehaviour
     {
         float additionDownForceWhenBackwards = Mathf.Cos((transform.eulerAngles.z - 180) / 57.3f) * 0.8f - 0.2f;
         if (additionDownForceWhenBackwards > 0) additionDownForceWhenBackwards *= 3;
-        downForceWhenBackwards += additionDownForceWhenBackwards * Time.deltaTime * downForceWhenBackwardsMagnitude;
+        downForceWhenBackwards += additionDownForceWhenBackwards * downForceWhenBackwardsMagnitude * Time.deltaTime;
         if (downForceWhenBackwards > 0) downForceWhenBackwards = 0;
 
-        transform.position += new Vector3(0, downForceWhenBackwards, 0);
+        transform.position += new Vector3(0, downForceWhenBackwards * Time.timeScale, 0);
     }
 
     void UpdateYposInFunctionOfCameraPos()

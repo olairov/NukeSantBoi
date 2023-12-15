@@ -26,7 +26,7 @@ public class LoopChecker : MonoBehaviour
     {
         if (PlayerController.dead) return;
 
-        realZrot += rb.angularVelocity * Time.unscaledDeltaTime;
+        realZrot += rb.angularVelocity * Time.deltaTime;
 
         CheckLoop();
     }

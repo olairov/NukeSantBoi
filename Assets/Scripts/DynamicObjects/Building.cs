@@ -39,7 +39,7 @@ public class Building : MonoBehaviour
         if (isWide) randomY = Random.Range(0f, 2f);
         if (iStrapSky) randomY = 0;
 
-        transform.position = new Vector3(transform.position.x, Camera.main.ScreenToWorldPoint(Vector3.zero).y + randomY, iStrapSky ? -3f : -0.5f);
+        transform.position = new Vector3(transform.position.x, Camera.main.ScreenToWorldPoint(Vector3.zero).y + randomY, iStrapSky ? -8f : -0.5f);
 
         if (iStrapSky) return;
         float randomValue = Random.value;
