@@ -16,7 +16,7 @@ public class BombController : MonoBehaviour
 
         lastFramePos = transform.position;
 
-        //transform.position += (Vector3)rb.velocity / 10;
+        transform.position += (Vector3)rb.velocity / 10;
     }
 
     void Update()

@@ -22,7 +22,11 @@ public class PlayerBoostController : MonoBehaviour
     void Update()
     {
         if (imEnemy ? !myPlaneController.dead : !PlayerController.dead) GoBackwards();
-        else transform.GetChild(0).gameObject.SetActive(false);
+        else
+        {
+            transform.GetChild(0).gameObject.SetActive(false);
+            transform.GetChild(1).gameObject.SetActive(false);
+        }
     }
 
     void GoBackwards()
@@ -32,7 +36,9 @@ public class PlayerBoostController : MonoBehaviour
 
         for (int positionNum = 0; positionNum < transform.GetChild(0).GetComponent<TrailRenderer>().positionCount; positionNum++)
         {
-            myTrail.SetPosition(positionNum, new Vector3(myTrail.GetPosition(positionNum).x - boostSpeed * Time.deltaTime * ObjectPassingBy.speedMultiplier, myTrail.GetPosition(positionNum).y, myTrail.GetPosition(positionNum).z));
+            myTrail.SetPosition(positionNum, new Vector3(imEnemy? myTrail.GetPosition(positionNum).x - boostSpeed * Time.deltaTime * ObjectPassingBy.speedMultiplier - 5 * Time.deltaTime * ObjectPassingBy.speedMultiplier : myTrail.GetPosition(positionNum).x - boostSpeed * Time.deltaTime * ObjectPassingBy.speedMultiplier, myTrail.GetPosition(positionNum).y, myTrail.GetPosition(positionNum).z));
         }
+
+        transform.Find("Light/LightRays").eulerAngles = new Vector3(0, 0, 180);
     }
 }

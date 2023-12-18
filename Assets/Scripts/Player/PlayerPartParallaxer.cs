@@ -25,8 +25,6 @@ public class PlayerPartParallaxer : MonoBehaviour
 
     void ChangeRotation()
     {
-        if (controlledByRotationForce) {if (myEnemyPlaneController.dutyFinished) return; }
-
         float lerpValue = controlledByRotationForce? myEnemyPlaneController.rotationSpeed / 100 + 0.5f : Input.GetAxis("Horizontal") / 2 + 0.5f;
         lerpValue = Mathf.Clamp01(lerpValue);
 

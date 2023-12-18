@@ -137,7 +137,7 @@ public class Building : MonoBehaviour
     {
         rotationSpeed = Random.Range(8f, 16f);
         fallingSpeed = -Random.Range(3, 6);
-        if (Random.value > 0.5f) rotationSpeed *= -1;
+        if (iStrapSky? true : Random.value > 0.5f) rotationSpeed *= -1;
     }
 
     Transform SkystraperFallStats(float otherY)

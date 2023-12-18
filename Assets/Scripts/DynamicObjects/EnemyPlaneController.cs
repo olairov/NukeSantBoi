@@ -49,30 +49,34 @@ public class EnemyPlaneController : MonoBehaviour
         float lastRotation = transform.eulerAngles.z;
         if (!PlayerController.dead) dirToPlayer = playerTransform.position - transform.position;
 
+        Vector3 forceToAdd = new Vector3(0, -(transform.eulerAngles.z - 90) / 90 * moveSpeed, 0) * Time.deltaTime;
+
         if (!dutyFinished)
         {
             if (dirToPlayer.x > 1 || PlayerController.dead)
             {
                 dutyFinished = true;
-                for (int childNum = 0; childNum < transform.Find("Parts").childCount - 1; childNum++) transform.Find("Parts").GetChild(childNum + 1).GetComponent<PlayerPartParallaxer>().enabled = false;
+                rb.angularVelocity = rotationSpeed;
+                //for (int childNum = 0; childNum < transform.Find("Parts").childCount - 1; childNum++) transform.Find("Parts").GetChild(childNum + 1).GetComponent<PlayerPartParallaxer>().enabled = false;
             }
-            else if ((dirToPlayer.y < 0 && transform.eulerAngles.z < 145) || (dirToPlayer.y > 0 && transform.eulerAngles.z > 45))
+            else
             {
                 Vector3 rotationAdding = dirToPlayer * Time.deltaTime * rotSpeed;
                 transform.up += rotationAdding;
             }
-        }/*
+        }
         else
         {
-            Vector3 rotationAdding = new Vector3(-Mathf.Lerp(dirToPlayer.x, -1, Mathf.Clamp01((Time.time - timeSinceFinished) / 50)), -Mathf.Lerp(dirToPlayer.y, 0, Mathf.Clamp01((Time.time - timeSinceFinished) / 50)), -Mathf.Lerp(dirToPlayer.z, 0, Mathf.Clamp01((Time.time - timeSinceFinished) / 50))) * Time.deltaTime * rotSpeed;
-            transform.up += rotationAdding;
-        }*/
+            if (transform.eulerAngles.z > 90) rb.AddTorque(-moveSpeed * 15 * Mathf.Abs(forceToAdd.y / Time.deltaTime) * Time.deltaTime);
+            else rb.AddTorque(moveSpeed * 15 * Mathf.Abs(forceToAdd.y / Time.deltaTime) * Time.deltaTime);
+        }
 
-        Vector3 forceToAdd = new Vector3(0, -(transform.eulerAngles.z - 90) / 90 * moveSpeed, 0) * Time.deltaTime;
+        if (transform.eulerAngles.z > 240) forceToAdd = new Vector3(0, 1 * moveSpeed * Time.deltaTime, 0);
         transform.position += forceToAdd;
 
         transform.eulerAngles = new Vector3(0, 0, transform.eulerAngles.z);
         rotationSpeed = (transform.eulerAngles.z - lastRotation) / Time.unscaledDeltaTime;
+        if (dutyFinished) rotationSpeed = rb.angularVelocity;
     }
 
     public void Die()
