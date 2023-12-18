@@ -11,6 +11,8 @@ public class EnemyPlaneController : MonoBehaviour
 
     public bool dead, dutyFinished;
 
+    private Vector3 dirToPlayer;
+
     private Transform playerTransform;
 
     private Rigidbody2D rb;
@@ -37,38 +39,40 @@ public class EnemyPlaneController : MonoBehaviour
 
     void Update()
     {
-        float lastRotation = transform.eulerAngles.z;
-        if (!PlayerController.dead && !dutyFinished) { if (!dead) RotateAndMove(); }
-        else if (!dead) GoAway();
-
-        rotationSpeed = (transform.eulerAngles.z - lastRotation) / Time.deltaTime;
+        if (!dead) RotateAndMove();
 
         if (transform.position.y < Camera.main.ScreenToWorldPoint(Vector3.zero).y - 1 || transform.position.y > Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y + 1) Destroy(gameObject);
     }
 
     void RotateAndMove()
     {
-        Vector3 dirToPlayer = playerTransform.position - transform.position;
+        float lastRotation = transform.eulerAngles.z;
+        if (!PlayerController.dead) dirToPlayer = playerTransform.position - transform.position;
 
-        if (dirToPlayer.x > 1) dutyFinished = true;
-        else if ((dirToPlayer.y < 0 && transform.eulerAngles.z < 145) || (dirToPlayer.y > 0 && transform.eulerAngles.z > 45))
+        if (!dutyFinished)
         {
-            Vector3 rotationAdding = dirToPlayer * Time.deltaTime * rotSpeed;
+            if (dirToPlayer.x > 1 || PlayerController.dead)
+            {
+                dutyFinished = true;
+                for (int childNum = 0; childNum < transform.Find("Parts").childCount - 1; childNum++) transform.Find("Parts").GetChild(childNum + 1).GetComponent<PlayerPartParallaxer>().enabled = false;
+            }
+            else if ((dirToPlayer.y < 0 && transform.eulerAngles.z < 145) || (dirToPlayer.y > 0 && transform.eulerAngles.z > 45))
+            {
+                Vector3 rotationAdding = dirToPlayer * Time.deltaTime * rotSpeed;
+                transform.up += rotationAdding;
+            }
+        }/*
+        else
+        {
+            Vector3 rotationAdding = new Vector3(-Mathf.Lerp(dirToPlayer.x, -1, Mathf.Clamp01((Time.time - timeSinceFinished) / 50)), -Mathf.Lerp(dirToPlayer.y, 0, Mathf.Clamp01((Time.time - timeSinceFinished) / 50)), -Mathf.Lerp(dirToPlayer.z, 0, Mathf.Clamp01((Time.time - timeSinceFinished) / 50))) * Time.deltaTime * rotSpeed;
             transform.up += rotationAdding;
-        }
+        }*/
 
         Vector3 forceToAdd = new Vector3(0, -(transform.eulerAngles.z - 90) / 90 * moveSpeed, 0) * Time.deltaTime;
         transform.position += forceToAdd;
 
         transform.eulerAngles = new Vector3(0, 0, transform.eulerAngles.z);
-    }
-
-    void GoAway()
-    {
-        transform.eulerAngles += new Vector3(0, 0, -50 * Time.deltaTime);
-
-        Vector3 forceToAdd = new Vector3(0, -(transform.eulerAngles.z - 90) / 90 * moveSpeed * Time.deltaTime, 0);
-        transform.position += forceToAdd;
+        rotationSpeed = (transform.eulerAngles.z - lastRotation) / Time.unscaledDeltaTime;
     }
 
     public void Die()

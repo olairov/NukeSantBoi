@@ -19,25 +19,16 @@ public class PlayerPartParallaxer : MonoBehaviour
 
     void Update()
     {
-        if (controlledByRotationForce) { if (!myEnemyPlaneController.dutyFinished) ChangeRotation(); }
-        else ChangeRotation();
+        if (controlledByRotationForce) ChangeRotation();
+        else if (!PlayerController.dead) ChangeRotation();
     }
 
     void ChangeRotation()
     {
-        float lerpValue = 0;
+        if (controlledByRotationForce) {if (myEnemyPlaneController.dutyFinished) return; }
 
-        if (controlledByRotationForce)
-        {
-            lerpValue = myEnemyPlaneController.rotationSpeed / 200 + 0.5f;
-            lerpValue = Mathf.Clamp01(lerpValue);
-        }
-        else
-        {
-            lerpValue = Input.GetAxis("Horizontal");
-            if (Input.GetAxisRaw("Vertical") != 0) lerpValue = -Input.GetAxis("Vertical");
-            lerpValue = lerpValue / 2 + 0.5f;
-        }
+        float lerpValue = controlledByRotationForce? myEnemyPlaneController.rotationSpeed / 100 + 0.5f : Input.GetAxis("Horizontal") / 2 + 0.5f;
+        lerpValue = Mathf.Clamp01(lerpValue);
 
         transform.localEulerAngles = new Vector3(Mathf.Lerp(startXrot, endXrot, lerpValue), 0, 180);
         if (startYpos != 0 && endYpos != 0) transform.localPosition = new Vector3(transform.localPosition.x, Mathf.Lerp(startYpos, endYpos, lerpValue), transform.localPosition.z);

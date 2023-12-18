@@ -486,6 +486,7 @@ MonoBehaviour:
   rotSpeed: 1.5
   rotationSpeed: 0
   dead: 0
+  dutyFinished: 0
 --- !u!1 &3613115406100938453
 GameObject:
   m_ObjectHideFlags: 0

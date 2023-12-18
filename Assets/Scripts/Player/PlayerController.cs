@@ -80,7 +80,6 @@ public class PlayerController : MonoBehaviour
         if (!isPaused)
         {
             int movement = (int)Input.GetAxisRaw("Horizontal");
-            if (Input.GetAxisRaw("Vertical") != 0) movement = -(int)Input.GetAxisRaw("Vertical");
 
             rb.AddTorque(-movement * rotSpeed * Time.deltaTime);
 

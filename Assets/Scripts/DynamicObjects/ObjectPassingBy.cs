@@ -35,8 +35,6 @@ public class ObjectPassingBy : MonoBehaviour
 
     void UpdateXpos()
     {
-        Vector3 realVelocity = transform.position - lastFramePos;
-        
         transform.position += new Vector3(-passingSpeed, 0, 0) * Time.deltaTime * speedMultiplier * MapGenerator.playerDistanceToStandardPos;
         transform.position += new Vector3(-realPassingSpeed, 0, 0) * Time.deltaTime;
 
