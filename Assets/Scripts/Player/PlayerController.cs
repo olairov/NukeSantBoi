@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     private ChargeController chargeScript;
 
     [SerializeField] private float rotSpeed, moveSpeed, bombThrowForce, deviationSpeed, bombReloadTime, downForceWhenBackwardsMagnitude;
-    private float deviationTime, deviationRandomForce, deviationExtraForce = 1, rotationDifference, timeUntilNextBomb, Yvelocity, lastCameraYpos, downForceWhenBackwards, lastDownForceWhenFrontflip;
+    private float deviationTime, deviationRandomForce, deviationExtraForce = 1, rotationDifference, timeUntilNextBomb, Yvelocity, lastCameraYpos, downForceWhenBackwards, lastDownForceWhenFrontflip, leftCameraCornerXpos, targetCameraXpos;
 
     static public bool dead;
     private bool isPaused, willShotWhenPossible;
@@ -36,6 +36,9 @@ public class PlayerController : MonoBehaviour
 
         lastCameraYpos = cameraParentTransform.position.y;
         dead = false;
+
+        leftCameraCornerXpos = Camera.main.ScreenToWorldPoint(new Vector2(-1, 0)).x;
+        targetCameraXpos = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width / 5, 0)).x;
     }
 
     void Update()
@@ -69,7 +72,7 @@ public class PlayerController : MonoBehaviour
         // Appear from left
 
         MapGenerator.playerDistanceToStandardPos += (1 - MapGenerator.playerDistanceToStandardPos) * Time.deltaTime;
-        transform.position = new Vector3(Mathf.Lerp(Camera.main.ScreenToWorldPoint(new Vector2(-1, 0)).x, Camera.main.ScreenToWorldPoint(new Vector2(Screen.width / 5, 0)).x, MapGenerator.playerDistanceToStandardPos), transform.position.y, transform.position.z);
+        transform.position = new Vector3(Mathf.Lerp(leftCameraCornerXpos, targetCameraXpos, MapGenerator.playerDistanceToStandardPos), transform.position.y, transform.position.z);
     }
 
     void RotateAndMove()
@@ -104,7 +107,7 @@ public class PlayerController : MonoBehaviour
         downForceWhenBackwards += additionDownForceWhenBackwards * downForceWhenBackwardsMagnitude * Time.deltaTime;
         if (downForceWhenBackwards > 0) downForceWhenBackwards = 0;
 
-        transform.position += new Vector3(0, downForceWhenBackwards * Time.timeScale, 0);
+        transform.position += new Vector3(0, downForceWhenBackwards * Time.deltaTime, 0);
     }
 
     void UpdateYposInFunctionOfCameraPos()
@@ -160,10 +163,10 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            deviationTime = 0.2f;
+            deviationTime = 0.18f;
 
-            if (deviationRandomForce < 0) deviationRandomForce = 1.3f;
-            else deviationRandomForce = -1.3f;
+            if (deviationRandomForce < 0) deviationRandomForce = 0.5f;
+            else deviationRandomForce = -0.5f;
         }
     }
 
@@ -179,7 +182,7 @@ public class PlayerController : MonoBehaviour
         if (dead) return;
         dead = true;
 
-        transform.GetComponent<SpriteRenderer>().color = burnColor;
+        for (int childNum = 0; childNum < transform.Find("Parts").childCount; childNum++) transform.Find("Parts").GetChild(childNum).GetComponent<SpriteRenderer>().color = burnColor;
 
         RandomDeathImpulse();
     }

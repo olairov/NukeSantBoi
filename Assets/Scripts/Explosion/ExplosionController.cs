@@ -16,7 +16,7 @@ public class ExplosionController : MonoBehaviour
 
     private int pointsToAdd;
 
-    private bool alreadyEnabledHitbox, alreadyAddedPoints, alreadyCollided;
+    private bool alreadyEnabledHitbox, alreadyAddedPoints, alreadyCollided, collidedWithPlayer, alreadySentVignetteEffectAnim;
 
     void Start()
     {
@@ -24,7 +24,6 @@ public class ExplosionController : MonoBehaviour
         
         pointsContainer = GameObject.Find("NotPhysicElementsContainer").transform;
         hudScript = GameObject.Find("________________Canvas________________").GetComponent<HudController>();
-        GameObject.Find("Camera/CameraRiser/Main Camera/VignetteEffect").GetComponent<Animator>().SetTrigger("Explosion");
 
         mySprite = transform.GetComponent<SpriteRenderer>();
 
@@ -55,6 +54,12 @@ public class ExplosionController : MonoBehaviour
             transform.GetComponent<Collider2D>().enabled = false;
 
             alreadyAddedPoints = true;
+        }
+
+        if (alreadyCollided && !alreadySentVignetteEffectAnim)
+        {
+            GameObject.Find("Camera/CameraRiser/Main Camera/VignetteEffect").GetComponent<VignetteEffectController>().Explosion(collidedWithPlayer);
+            alreadySentVignetteEffectAnim = true;
         }
 
         AdjustTimescale();
@@ -107,6 +112,8 @@ public class ExplosionController : MonoBehaviour
             pointsToAdd += 5;
             other.GetComponent<EnemyPlaneController>().Die();
         }
+
+        if (other.CompareTag("Player")) collidedWithPlayer = true;
 
         alreadyCollided = true;
     }

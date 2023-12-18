@@ -15,6 +15,8 @@ public class BombController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
 
         lastFramePos = transform.position;
+
+        //transform.position += (Vector3)rb.velocity / 10;
     }
 
     void Update()

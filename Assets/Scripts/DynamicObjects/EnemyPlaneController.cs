@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class EnemyPlaneController : MonoBehaviour
 {
-    [SerializeField] private Color burnColor;
+    [SerializeField] private Color burnColor, possibleColor1, possibleColor2, possibleColor3;
 
     [SerializeField] private float moveSpeed, rotSpeed;
-    private bool dead, dutyFinished;
+    public float rotationSpeed;
+
+    public bool dead, dutyFinished;
 
     private Transform playerTransform;
 
@@ -18,13 +20,28 @@ public class EnemyPlaneController : MonoBehaviour
         playerTransform = GameObject.Find("Player").transform;
         rb = transform.GetComponent<Rigidbody2D>();
 
+        ChoseColor();
+
         transform.position = new Vector3(transform.position.x, Random.Range(Camera.main.ScreenToWorldPoint(Vector3.zero).y, Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y), transform.position.z);
+    }
+
+    void ChoseColor()
+    {
+        Color chosenColor = possibleColor1;
+        float randValue = Random.value;
+        if (randValue > 0.66f) chosenColor = possibleColor2;
+        else if (randValue > 0.33f) chosenColor = possibleColor3;
+
+        for (int childNum = 0; childNum < transform.Find("Parts").childCount; childNum++) transform.Find("Parts").GetChild(childNum).GetComponent<SpriteRenderer>().color = chosenColor;
     }
 
     void Update()
     {
+        float lastRotation = transform.eulerAngles.z;
         if (!PlayerController.dead && !dutyFinished) { if (!dead) RotateAndMove(); }
         else if (!dead) GoAway();
+
+        rotationSpeed = (transform.eulerAngles.z - lastRotation) / Time.deltaTime;
 
         if (transform.position.y < Camera.main.ScreenToWorldPoint(Vector3.zero).y - 1 || transform.position.y > Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y + 1) Destroy(gameObject);
     }
@@ -48,7 +65,7 @@ public class EnemyPlaneController : MonoBehaviour
 
     void GoAway()
     {
-        transform.up += Vector3.up * Time.deltaTime;
+        transform.eulerAngles += new Vector3(0, 0, -50 * Time.deltaTime);
 
         Vector3 forceToAdd = new Vector3(0, -(transform.eulerAngles.z - 90) / 90 * moveSpeed * Time.deltaTime, 0);
         transform.position += forceToAdd;
@@ -66,7 +83,8 @@ public class EnemyPlaneController : MonoBehaviour
         if (Random.value > 0.5f) rb.angularVelocity *= -1;
         rb.AddForce(new Vector2(Random.Range(-2, 3), 5), ForceMode2D.Impulse);
 
-        transform.GetComponent<SpriteRenderer>().color = burnColor;
+        for (int childNum = 0; childNum < transform.Find("Parts").childCount; childNum++) transform.Find("Parts").GetChild(childNum).GetComponent<SpriteRenderer>().color = burnColor;
+
         transform.GetComponent<Collider2D>().enabled = false;
         transform.GetComponent<ObjectPassingBy>().enabled = false;
     }

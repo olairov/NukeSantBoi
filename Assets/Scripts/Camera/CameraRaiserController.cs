@@ -19,6 +19,8 @@ public class CameraRaiserController : MonoBehaviour
     void Update()
     {
         ChangePos();
+
+        if (PlayerController.dead) transform.parent.GetComponent<Animator>().SetTrigger("Crash");
     }
 
     private void ChangePos()

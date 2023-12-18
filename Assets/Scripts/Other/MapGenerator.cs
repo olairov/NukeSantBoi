@@ -4,7 +4,7 @@ public class MapGenerator : MonoBehaviour
 {
     //Background objects prefabs:
     [SerializeField] private GameObject layer1Background, layer2Background, layer3Background;
-    public Sprite lastBackgroundLayer1, lastBackgroundLayer2, lastBackgroundLayer3;
+    public Sprite lastBackgroundLayer1, lastBackgroundLayer2, lastBackgroundLayer3, lastBuildingSprite, lastWideBuildingSprite;
 
     //Interactable objects prefabs:
     [SerializeField] private GameObject buildingPrefab, wideBuildingPrefab, enemyPrefab, skystraperPrefab, obstaclePrefab, warningPrefab;
@@ -86,8 +86,16 @@ public class MapGenerator : MonoBehaviour
         }
         else
         {
-            if (Random.value < 0.7f) Instantiate(buildingPrefab, buildingsContainer);
-            else Instantiate(wideBuildingPrefab, buildingsContainer);
+            if (Random.value < 0.7f)
+            {
+                if (lastBuildingSprite == null) Instantiate(buildingPrefab, buildingsContainer);
+                else Instantiate(buildingPrefab, buildingsContainer).GetComponent<Building>().lastSprite = lastBuildingSprite;
+            }
+            else
+            {
+                if (lastBuildingSprite == null) Instantiate(buildingPrefab, buildingsContainer);
+                else Instantiate(wideBuildingPrefab, buildingsContainer).GetComponent<Building>().lastSprite = lastWideBuildingSprite;
+            }
         }
 
         timeForNextBuilding = Random.Range(1.6f, 2.2f);

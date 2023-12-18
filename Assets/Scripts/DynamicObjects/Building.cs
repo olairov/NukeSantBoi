@@ -7,6 +7,9 @@ public class Building : MonoBehaviour
     [SerializeField] private Color flashColor;
     [SerializeField] private GameObject skystraperUpperPart, smokeParticles, shardsParticles, skyStraperPieces;
     [SerializeField] private Sprite buildingSprite2, buildingSprite3, backBuildingSprite2, backBuildingSprite3;
+    public Sprite lastSprite;
+
+    private MapGenerator mapGeneratorScript;
 
     private Transform particlesContainer, myBackSprite;
 
@@ -17,8 +20,11 @@ public class Building : MonoBehaviour
 
     void Start()
     {
+        mapGeneratorScript = GameObject.Find("__________________Map___________________").GetComponent<MapGenerator>();
         particlesContainer = GameObject.Find("ParticlesContainer").transform;
         myBackSprite = transform.GetChild(1);
+
+        
 
         cameraWidthInUnits = (Camera.main.ScreenToWorldPoint(Vector3.one * Screen.width).x - Camera.main.ScreenToWorldPoint(Vector3.zero).x);
 
@@ -42,22 +48,59 @@ public class Building : MonoBehaviour
         transform.position = new Vector3(transform.position.x, Camera.main.ScreenToWorldPoint(Vector3.zero).y + randomY, iStrapSky ? -8f : -0.5f);
 
         if (iStrapSky) return;
-        float randomValue = Random.value;
-        if (randomValue > 0.66f)
+
+        SpriteRenderer mySpriteRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
+        SpriteRenderer myBackSpriteRenderer = myBackSprite.GetComponent<SpriteRenderer>();
+
+        int idx = 0;
+        while (true)
         {
-            transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = buildingSprite3;
-            myBackSprite.GetComponent<SpriteRenderer>().sprite = backBuildingSprite3;
+            float randomValue = Random.value;
+
+            if (randomValue > 0.66f)
+            {
+                mySpriteRenderer.sprite = buildingSprite3;
+                myBackSpriteRenderer.sprite = backBuildingSprite3;
+
+                if (!isWide)
+                {
+                    mySpriteRenderer.size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 10);
+                    myBackSpriteRenderer.size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 10);
+                }
+            }
+            else if (randomValue > 0.33f)
+            {
+                mySpriteRenderer.sprite = buildingSprite2;
+                myBackSpriteRenderer.sprite = backBuildingSprite2;
+
+                if (!isWide)
+                {
+                    mySpriteRenderer.size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 10);
+                    myBackSpriteRenderer.size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 10);
+                }
+            }
+            else
+            {
+                if (!isWide)
+                {
+                    mySpriteRenderer.size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 14);
+                    myBackSpriteRenderer.size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 14);
+                }
+            }
+
+            if (isWide && mySpriteRenderer.sprite != mapGeneratorScript.lastWideBuildingSprite) break;
+            else if (!isWide && mySpriteRenderer.sprite != mapGeneratorScript.lastBuildingSprite) break;
+
+            idx++;
+            if (idx > 9)
+            {
+                Debug.Log("WhyDidIGetThere?");
+                break;
+            }
         }
-        else if (randomValue > 0.33f)
-        {
-            transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = buildingSprite2;
-            myBackSprite.GetComponent<SpriteRenderer>().sprite = backBuildingSprite2;
-        }
-        else if (!isWide)
-        {
-            transform.GetChild(0).GetComponent<SpriteRenderer>().size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 14);
-            myBackSprite.GetComponent<SpriteRenderer>().size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 14);
-        }
+
+        if (isWide) mapGeneratorScript.lastWideBuildingSprite = mySpriteRenderer.sprite;
+        else mapGeneratorScript.lastBuildingSprite = mySpriteRenderer.sprite;
     }
 
     public void Destruct(Vector2 otherPos)

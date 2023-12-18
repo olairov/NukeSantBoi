@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class ObstacleScript : MonoBehaviour
 {
-    [SerializeField] private Color burnColor;
+    [SerializeField] private Color burnColor, possibleColor1, possibleColor2, possibleColor3, possibleColor4, possibleColor5;
 
     private Rigidbody2D rb;
 
     private Vector3 actualDirection;
 
     [SerializeField] private float speed, rotSpeed;
-    private float timeForChange, timeForRotChange = 1;
-    private int rotationDir = 1;
+    private float timeForChange;
 
     private bool dead;
 
@@ -20,26 +19,17 @@ public class ObstacleScript : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
 
+        ChoseColor();
+
         transform.position = new Vector3(transform.position.x, Random.Range(Camera.main.ScreenToWorldPoint(Vector3.zero).y + 4, Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y - 1), transform.position.z);
     }
 
     void Update()
     {
         rb.AddForce(actualDirection * Time.deltaTime * speed);
-        rb.AddTorque(Time.deltaTime * rotationDir * rotSpeed);
+        transform.eulerAngles = new Vector3(0, 0, Mathf.Cos(Time.time * rotSpeed) * 12);
 
-        RotionChange();
         DirChange();
-    }
-
-    void RotionChange()
-    {
-        timeForRotChange -= Time.deltaTime;
-        if (timeForRotChange > 0) return;
-
-        rotationDir *= -1;
-
-        timeForRotChange = 2;
     }
 
     void DirChange()
@@ -47,9 +37,20 @@ public class ObstacleScript : MonoBehaviour
         timeForChange -= Time.deltaTime;
         if (timeForChange > 0) return;
 
-        actualDirection = new Vector3(Random.Range(1f, 1f), Random.Range(1f, 1f), 0).normalized;
+        actualDirection = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0).normalized;
 
-        timeForChange = Random.Range(0.5f, 3f);
+        timeForChange = Random.Range(0.5f, 2f);
+    }
+
+    void ChoseColor()
+    {
+        float randValue = Random.value;
+
+        if (randValue > 0.8f) transform.GetComponent<SpriteRenderer>().color = possibleColor1;
+        else if (randValue > 0.6f) transform.GetComponent<SpriteRenderer>().color = possibleColor2;
+        else if (randValue > 0.4f) transform.GetComponent<SpriteRenderer>().color = possibleColor3;
+        else if (randValue > 0.2f) transform.GetComponent<SpriteRenderer>().color = possibleColor4;
+        else transform.GetComponent<SpriteRenderer>().color = possibleColor5;
     }
 
     public void Die()

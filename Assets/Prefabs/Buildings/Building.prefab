@@ -153,10 +153,12 @@ MonoBehaviour:
   skystraperUpperPart: {fileID: 1161062619281861293, guid: ae6ce79881c9aa9449388614e0b6f4af, type: 3}
   smokeParticles: {fileID: 964766084372196553, guid: 3ca2ad5e7a6843840a66f9a12518a74b, type: 3}
   shardsParticles: {fileID: 8017182100323422166, guid: 90de008cf96bb004b873425d23e8ae10, type: 3}
+  skyStraperPieces: {fileID: 0}
   buildingSprite2: {fileID: -773216641, guid: 33293665203b12f4885ddbdaa702205f, type: 3}
   buildingSprite3: {fileID: 1628079857, guid: 51b299089f3b6164197a119648542a81, type: 3}
   backBuildingSprite2: {fileID: -1754880918, guid: 33293665203b12f4885ddbdaa702205f, type: 3}
   backBuildingSprite3: {fileID: -1089298751, guid: 51b299089f3b6164197a119648542a81, type: 3}
+  lastSprite: {fileID: 0}
   dead: 0
 --- !u!61 &1161062619281861289
 BoxCollider2D:
@@ -171,7 +173,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.23544264}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -182,7 +184,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 3, y: 10}
+  m_Size: {x: 3, y: 9.529115}
   m_EdgeRadius: 0
 --- !u!1 &3592316377046205127
 GameObject:

@@ -9,6 +9,8 @@ public class HudController : MonoBehaviour
     private MapGenerator mapGeneratorScript;
     private PlayerSoundsController playerSoundsScript;
     private TargetController targetScript;
+
+    private TMP_Text pauseHighscore;
     
     [SerializeField] private GameObject pointsSumPrefab;
 
@@ -42,7 +44,8 @@ public class HudController : MonoBehaviour
         pauseMenu = canvasTransform.Find("pauseMenu").transform;
         deadMenu = canvasTransform.Find("deadMenu").transform;
         optionsMenu = canvasTransform.Find("optionsMenu").transform;
-
+        
+        pauseMenu.Find("Highscore").GetComponent<TMP_Text>().text = PlayerPrefs.GetInt("Highscore").ToString();
         playerScript = GameObject.Find("Player").GetComponent<PlayerController>();
         playerSoundsScript = GameObject.Find("Player/Sounds").GetComponent<PlayerSoundsController>();
         mapGeneratorScript = GameObject.Find("__________________Map___________________").GetComponent<MapGenerator>();
@@ -143,7 +146,7 @@ public class HudController : MonoBehaviour
     void CameraPauseAdjust()
     {
         cameraComponent.orthographicSize = Mathf.Lerp(5.8f, 7, actualTimescale);
-        cameraTransform.eulerAngles = new Vector3(0, 0, Mathf.Lerp(-8, 0, actualTimescale));
+        cameraTransform.GetChild(0).localEulerAngles = new Vector3(0, 0, Mathf.Lerp(-8, 0, actualTimescale));
 
         if (actualTimescale >= 1 || optionsPanelProgress >= 1) pauseMenu.gameObject.SetActive(false);
         else
