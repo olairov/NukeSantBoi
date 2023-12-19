@@ -6257,6 +6257,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1230839071}
+  - component: {fileID: 1230839072}
   m_Layer: 0
   m_Name: WindContainer
   m_TagString: Untagged
@@ -6280,6 +6281,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1230839072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1230839070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac81104d0224a2440ab0a81e9b805dfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1246553028
 GameObject:
   m_ObjectHideFlags: 0
@@ -7842,7 +7855,7 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1576424118}
   serializedVersion: 8
-  lengthInSec: 5
+  lengthInSec: 300
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0

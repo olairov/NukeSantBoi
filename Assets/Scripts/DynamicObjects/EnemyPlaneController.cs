@@ -67,8 +67,8 @@ public class EnemyPlaneController : MonoBehaviour
         }
         else
         {
-            if (transform.eulerAngles.z > 90) rb.AddTorque(-moveSpeed * 15 * Mathf.Abs(forceToAdd.y / Time.deltaTime) * Time.deltaTime);
-            else rb.AddTorque(moveSpeed * 15 * Mathf.Abs(forceToAdd.y / Time.deltaTime) * Time.deltaTime);
+            if (transform.eulerAngles.z > 90) rb.AddTorque(-moveSpeed * 15 * Mathf.Abs(forceToAdd.y / Time.unscaledDeltaTime) * Time.deltaTime);
+            else rb.AddTorque(moveSpeed * 15 * Mathf.Abs(forceToAdd.y / Time.unscaledDeltaTime) * Time.deltaTime);
         }
 
         if (transform.eulerAngles.z > 240) forceToAdd = new Vector3(0, 1 * moveSpeed * Time.deltaTime, 0);
