@@ -153,10 +153,13 @@ MonoBehaviour:
   skystraperUpperPart: {fileID: 1161062619281861293, guid: ae6ce79881c9aa9449388614e0b6f4af, type: 3}
   smokeParticles: {fileID: 964766084372196553, guid: 3ca2ad5e7a6843840a66f9a12518a74b, type: 3}
   shardsParticles: {fileID: 8017182100323422166, guid: 90de008cf96bb004b873425d23e8ae10, type: 3}
+  skyStraperPieces: {fileID: 0}
   buildingSprite2: {fileID: 2037589452, guid: 7f6882d76796d06448e56444d94a630c, type: 3}
   buildingSprite3: {fileID: -1446773485, guid: 6d0d2cf6d8f33004392701554df285c0, type: 3}
   backBuildingSprite2: {fileID: 1915276808, guid: 7f6882d76796d06448e56444d94a630c, type: 3}
   backBuildingSprite3: {fileID: -1548818590, guid: 6d0d2cf6d8f33004392701554df285c0, type: 3}
+  lastSprite: {fileID: 0}
+  colorValuesIncreaseWhenDie: 90
   dead: 0
 --- !u!61 &1161062619281861289
 BoxCollider2D:

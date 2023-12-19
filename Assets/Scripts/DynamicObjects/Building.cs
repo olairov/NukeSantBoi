@@ -13,6 +13,7 @@ public class Building : MonoBehaviour
 
     private Transform particlesContainer, myBackSprite;
 
+    [SerializeField] private float colorValuesIncreaseWhenDie;
     private float rotationSpeed, fallingSpeed, timeSinceDestruction, cameraWidthInUnits;
 
     public bool dead;
@@ -23,8 +24,6 @@ public class Building : MonoBehaviour
         mapGeneratorScript = GameObject.Find("__________________Map___________________").GetComponent<MapGenerator>();
         particlesContainer = GameObject.Find("ParticlesContainer").transform;
         myBackSprite = transform.GetChild(1);
-
-        
 
         cameraWidthInUnits = (Camera.main.ScreenToWorldPoint(Vector3.one * Screen.width).x - Camera.main.ScreenToWorldPoint(Vector3.zero).x);
 
@@ -183,12 +182,16 @@ public class Building : MonoBehaviour
 
         yield return new WaitForSeconds(0.1f);
 
-        mySpriteRenderer.color = originalCol;
+        Color lastColor = new Color(originalCol.r + colorValuesIncreaseWhenDie, originalCol.g + colorValuesIncreaseWhenDie, originalCol.b + colorValuesIncreaseWhenDie);
+
+        mySpriteRenderer.color = lastColor;
         if (upperPartTransform != null)
         {
-            upperPartSpriteRenderer.color = originalUpperPartColor;
-            upperPartTransform.Find("BrokenSprite").GetComponent<SpriteRenderer>().color = originalUpperPartColor;
-            transform.Find("BrokenSprite").GetComponent<SpriteRenderer>().color = originalCol;
+            Color lastUpperPartColor = new Color(originalUpperPartColor.r + colorValuesIncreaseWhenDie, originalUpperPartColor.g + colorValuesIncreaseWhenDie, originalUpperPartColor.b + colorValuesIncreaseWhenDie);
+
+            upperPartSpriteRenderer.color = lastUpperPartColor;
+            upperPartTransform.Find("BrokenSprite").GetComponent<SpriteRenderer>().color = lastUpperPartColor;
+            transform.Find("BrokenSprite").GetComponent<SpriteRenderer>().color = lastColor;
         }
     }
 }

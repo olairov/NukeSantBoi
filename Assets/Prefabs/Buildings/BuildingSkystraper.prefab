@@ -75,6 +75,8 @@ MonoBehaviour:
   buildingSprite3: {fileID: 0}
   backBuildingSprite2: {fileID: 0}
   backBuildingSprite3: {fileID: 0}
+  lastSprite: {fileID: 0}
+  colorValuesIncreaseWhenDie: 90
   dead: 0
 --- !u!61 &1161062619281861289
 BoxCollider2D:

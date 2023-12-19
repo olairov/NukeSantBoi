@@ -159,6 +159,7 @@ MonoBehaviour:
   backBuildingSprite2: {fileID: -1754880918, guid: 33293665203b12f4885ddbdaa702205f, type: 3}
   backBuildingSprite3: {fileID: -1089298751, guid: 51b299089f3b6164197a119648542a81, type: 3}
   lastSprite: {fileID: 0}
+  colorValuesIncreaseWhenDie: 90
   dead: 0
 --- !u!61 &1161062619281861289
 BoxCollider2D:
