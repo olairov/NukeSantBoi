@@ -93,7 +93,12 @@ public class Building : MonoBehaviour
             idx++;
             if (idx > 9)
             {
-                Debug.Log("WhyDidIGetThere?");
+                if (!isWide && (mySpriteRenderer.sprite == buildingSprite2 || mySpriteRenderer.sprite == buildingSprite3)) ;
+                {
+                    mySpriteRenderer.size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 10);
+                    myBackSpriteRenderer.size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 10);
+                }
+
                 break;
             }
         }

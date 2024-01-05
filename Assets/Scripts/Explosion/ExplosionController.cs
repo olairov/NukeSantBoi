@@ -14,9 +14,9 @@ public class ExplosionController : MonoBehaviour
 
     private float timeAlive, timeAliveForTimeScale, Acolor = 1;
 
-    private int pointsToAdd;
+    private int pointsToAdd, comboNum;
 
-    private bool alreadyEnabledHitbox, alreadyAddedPoints, alreadyCollided, collidedWithPlayer, alreadySentVignetteEffectAnim;
+    private bool alreadyEnabledHitbox, alreadyAddedPoints, collidedWithPlayer, alreadySentVignetteEffectAnim;
 
     void Start()
     {
@@ -27,7 +27,7 @@ public class ExplosionController : MonoBehaviour
 
         mySprite = transform.GetComponent<SpriteRenderer>();
 
-        transform.position = new Vector3(transform.position.x, transform.position.y, -15);
+        transform.position = new Vector3(transform.position.x, transform.position.y, -25);
         transform.parent = GameObject.Find("ExplosionContainer").transform;
 
         Camera.main.GetComponent<ShakeController>().Shake();
@@ -43,12 +43,19 @@ public class ExplosionController : MonoBehaviour
             Acolor -= Time.deltaTime * 1.5f;
             mySprite.color = new Color(mySprite.color.r, mySprite.color.g, mySprite.color.b, Acolor);
         }
-        if (timeAlive > 0.1f && alreadyCollided && !alreadyAddedPoints)
+        if (timeAlive > 0.1f && !alreadyAddedPoints && comboNum > 0)
         {
             if (!PlayerController.dead && pointsToAdd != 0)
             {
-                Instantiate(pointsPrefab, transform.position + new Vector3(2, 1, -1), Quaternion.identity, pointsContainer).GetComponentInChildren<TMP_Text>().text = "+" + pointsToAdd;
-                hudScript.ChangePointsValue(pointsToAdd);
+                if (comboNum > 1)
+                {
+                    TMP_Text comboText = Instantiate(pointsPrefab, transform.position + new Vector3(2, 2.5f, -1), Quaternion.identity, pointsContainer).GetComponentInChildren<TMP_Text>();
+                    comboText.fontSize /= 2;
+                    comboText.text = "COMBO x" + comboNum;
+                }
+                Instantiate(pointsPrefab, transform.position + new Vector3(2, 1, -1), Quaternion.identity, pointsContainer).GetComponentInChildren<TMP_Text>().text = "+" + (pointsToAdd + (comboNum - 1));
+
+                hudScript.ChangePointsValue(pointsToAdd + (comboNum - 1));
             }
 
             transform.GetComponent<Collider2D>().enabled = false;
@@ -56,7 +63,7 @@ public class ExplosionController : MonoBehaviour
             alreadyAddedPoints = true;
         }
 
-        if (alreadyCollided && !alreadySentVignetteEffectAnim)
+        if (comboNum > 0 && !alreadySentVignetteEffectAnim)
         {
             GameObject.Find("Camera/CameraRiser/Main Camera/VignetteEffect").GetComponent<VignetteEffectController>().Explosion(collidedWithPlayer);
             alreadySentVignetteEffectAnim = true;
@@ -99,6 +106,8 @@ public class ExplosionController : MonoBehaviour
         {
             pointsToAdd += 1;
             other.GetComponent<ObstacleScript>().Die();
+
+            comboNum++;
         }
         if (other.CompareTag("Building") || other.CompareTag("Skystraper"))
         {
@@ -106,15 +115,17 @@ public class ExplosionController : MonoBehaviour
             other.GetComponent<Building>().Destruct(transform.position);
 
             PlayDestructAudio();
+
+            comboNum++;
         }
         if (other.CompareTag("Enemy"))
         {
             pointsToAdd += 5;
             other.GetComponent<EnemyPlaneController>().Die();
+
+            comboNum++;
         }
 
         if (other.CompareTag("Player")) collidedWithPlayer = true;
-
-        alreadyCollided = true;
     }
 }

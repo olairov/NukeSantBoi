@@ -61,7 +61,10 @@ public class HudController : MonoBehaviour
         pretendsToBePaused = false;
         isInOptions = false;
         deadPanelOutProgress = -1;
+
+        //PlayerPrefs.SetInt("Highscore", 0);
     }
+
     private void Update()
     {
         if (Input.GetButtonUp("Pause")) PauseManager();
@@ -190,7 +193,6 @@ public class HudController : MonoBehaviour
     public void DeadPanelOut()
     {
         deadPanelOutProgress = 0;
-        Cursor.visible = true;
 
         DeadPanelStats();
     }
@@ -200,10 +202,27 @@ public class HudController : MonoBehaviour
         deadMenu.Find("Score").GetComponent<TMP_Text>().text = points.ToString();
 
         if (!PlayerPrefs.HasKey("Highscore")) PlayerPrefs.SetInt("Highscore", 0);
-        if (points > PlayerPrefs.GetInt("Highscore")) PlayerPrefs.SetInt("Highscore", points);
-        else deadMenu.Find("NewHighscore").gameObject.SetActive(false);
+        if (points > PlayerPrefs.GetInt("Highscore"))
+        {
+            PlayerPrefs.SetInt("Highscore", points);
+            deadMenu.Find("Highscore").SetParent(deadMenu.Find("NewHighscore"));
+            deadMenu.Find("NewHighscore/Highscore").GetComponent<TMP_Text>().text = PlayerPrefs.GetInt("Highscore").ToString();
+            StartCoroutine(MakeMenuShake());
+        }
+        else
+        {
+            deadMenu.Find("Highscore").GetComponent<TMP_Text>().text = PlayerPrefs.GetInt("Highscore").ToString();
+            deadMenu.Find("NewHighscore").gameObject.SetActive(false);
+        }
+    }
 
-        deadMenu.Find("Highscore").GetComponent<TMP_Text>().text = PlayerPrefs.GetInt("Highscore").ToString();
+    IEnumerator MakeMenuShake()
+    {
+        yield return new WaitForSeconds(0.6f);
+        deadMenu.Find("NewHighscore").GetComponent<AudioSource>().Play();
+
+        yield return new WaitForSeconds(0.1f);
+        deadMenu.GetComponent<ShakeController>().Shake();
     }
 
     private void SendVariableInfo()

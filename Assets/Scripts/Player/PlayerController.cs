@@ -127,6 +127,10 @@ public class PlayerController : MonoBehaviour
         Vector2 direction = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
         Vector2 bombStartVelocity = direction.normalized * bombThrowForce + new Vector2(0, Yvelocity);
 
+        float speedAdder = (Mathf.Cos(transform.eulerAngles.z / 57.3f) + 0.6f) * 0.625f;
+        //bombStartVelocity = new Vector2(bombStartVelocity.x * ObjectPassingBy.speedMultiplier, bombStartVelocity.y);
+        bombStartVelocity -= new Vector2(speedAdder * 7f * ObjectPassingBy.realSpeedMultiplier, 0);
+
         Instantiate(bombPrefab, transform.position, Quaternion.identity, bombContainer).GetComponent<Rigidbody2D>().velocity = bombStartVelocity * (ObjectPassingBy.realSpeedMultiplier / 1.5f);
 
         timeUntilNextBomb = bombReloadTime / ObjectPassingBy.realSpeedMultiplier;
@@ -180,6 +184,8 @@ public class PlayerController : MonoBehaviour
     {
         if (dead) return;
         dead = true;
+
+        Cursor.visible = true;
 
         for (int childNum = 0; childNum < transform.Find("Parts").childCount; childNum++) transform.Find("Parts").GetChild(childNum).GetComponent<SpriteRenderer>().color = burnColor;
 

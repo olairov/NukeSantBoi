@@ -10,13 +10,16 @@ public class BombController : MonoBehaviour
 
     private Vector3 lastFramePos;
 
+    private bool notFirstFrame, inPlayerYet = true;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
 
+        transform.position += new Vector3(0, 0, 2);
         lastFramePos = transform.position;
 
-        transform.position += (Vector3)rb.velocity / 10;
+        transform.position += (Vector3)rb.velocity * 0.06f;
     }
 
     void Update()
@@ -28,8 +31,6 @@ public class BombController : MonoBehaviour
 
     void UpdateRotation()
     {
-        Vector2 velocity = (transform.position - lastFramePos) / Time.deltaTime;
-
         transform.up = rb.velocity + new Vector2(5 * ObjectPassingBy.realSpeedMultiplier, 0);
         transform.eulerAngles = new Vector3(0, 0, transform.eulerAngles.z + 110);
 
@@ -48,9 +49,6 @@ public class BombController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.layer == 3)
-        {
-            Explode();
-        }
+        if (other.gameObject.layer == 3) Explode();
     }
 }
