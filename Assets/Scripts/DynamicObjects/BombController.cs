@@ -8,16 +8,11 @@ public class BombController : MonoBehaviour
 
     private Rigidbody2D rb;
 
-    private Vector3 lastFramePos;
-
-    private bool notFirstFrame, inPlayerYet = true;
-
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
 
         transform.position += new Vector3(0, 0, 2);
-        lastFramePos = transform.position;
 
         transform.position += (Vector3)rb.velocity * 0.06f;
     }
@@ -33,8 +28,6 @@ public class BombController : MonoBehaviour
     {
         transform.up = rb.velocity + new Vector2(5 * ObjectPassingBy.realSpeedMultiplier, 0);
         transform.eulerAngles = new Vector3(0, 0, transform.eulerAngles.z + 110);
-
-        lastFramePos = transform.position;
     }
 
     void Explode()

@@ -36,7 +36,6 @@ public class WindParticlesController : MonoBehaviour
                 particles[particle].remainingLifetime = 0.0f;
                 Debug.Log(particles[particle].position);
             }
-            Debug.Log(particles.Length);
         }
     }
 }

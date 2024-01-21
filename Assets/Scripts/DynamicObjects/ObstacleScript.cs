@@ -11,7 +11,7 @@ public class ObstacleScript : MonoBehaviour
     private Vector3 actualDirection;
 
     [SerializeField] private float speed, rotSpeed;
-    private float timeForChange;
+    private float timeForChange, randRotDelay;
 
     private bool dead;
 
@@ -21,17 +21,15 @@ public class ObstacleScript : MonoBehaviour
 
         ChoseColor();
 
+        randRotDelay = Random.Range(0f, 3f);
         transform.position = new Vector3(transform.position.x, Random.Range(Camera.main.ScreenToWorldPoint(Vector3.zero).y + 4, Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y - 1), transform.position.z);
     }
 
     void Update()
     {
         rb.AddForce(actualDirection * Time.deltaTime * speed);
-<<<<<<< HEAD
+
         if (!dead) transform.eulerAngles = new Vector3(0, 0, Mathf.Cos(Time.time * rotSpeed + randRotDelay) * 12);
-=======
-        transform.eulerAngles = new Vector3(0, 0, Mathf.Cos(Time.time * rotSpeed) * 12);
->>>>>>> parent of 4b34034 (few)
 
         DirChange();
     }

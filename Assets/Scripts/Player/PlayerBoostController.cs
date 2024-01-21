@@ -25,11 +25,11 @@ public class PlayerBoostController : MonoBehaviour
         if (imEnemy) myPlaneController = transform.parent.GetComponent<EnemyPlaneController>();
     }
 
-    void FixedUpdate()
+    void Update()
     {
         if (imEnemy ? !myPlaneController.dead : !PlayerController.dead)
         {
-            ChangeBoostSprite();
+            //ChangeBoostSprite();
             GoBackwards();
         }
         else if (!alreadyDisabledBoosts)
@@ -43,9 +43,8 @@ public class PlayerBoostController : MonoBehaviour
 
     void GoBackwards()
     {
-        float playerRotIdx = -Mathf.Cos(transform.parent.eulerAngles.z / 57.3f);
-        if (!imEnemy) playerRotIdx *= 2;
-        else playerRotIdx /= -2;
+        float playerRotIdx = Mathf.Cos(transform.parent.eulerAngles.z / 57.3f);
+        if (!imEnemy) playerRotIdx *= -2;
 
         for (int positionNum = 0; positionNum < myTrails[myActualBoost].positionCount; positionNum++)
         {
