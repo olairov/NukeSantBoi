@@ -4,62 +4,26 @@ using UnityEngine;
 
 public class PlayerBoostController : MonoBehaviour
 {
-    [SerializeField] bool imEnemy;
+    [SerializeField] float trailSpeed;
 
-    private EnemyPlaneController myPlaneController;
-
-    private List<TrailRenderer> myTrails = new List<TrailRenderer>();
-
-    private Transform myBoosts, playerTransform;
-
-    private int myActualBoost;
-
-    private bool alreadyDisabledBoosts;
+    private TrailRenderer myTrail;
 
     void Start()
     {
-        playerTransform = GameObject.Find("Player").transform;
-        myBoosts = transform.Find("Boosts");
-        for (int child = 0; child < myBoosts.childCount; child++) myTrails.Add(myBoosts.GetChild(child).GetComponent<TrailRenderer>());
-
-        if (imEnemy) myPlaneController = transform.parent.GetComponent<EnemyPlaneController>();
+        myTrail = transform.Find("Boosts/BoostTrail1").GetComponent<TrailRenderer>();
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        if (imEnemy ? !myPlaneController.dead : !PlayerController.dead)
-        {
-            //ChangeBoostSprite();
-            GoBackwards();
-        }
-        else if (!alreadyDisabledBoosts)
-        {
-            transform.GetChild(0).gameObject.SetActive(false);
-            transform.GetChild(1).gameObject.SetActive(false);
-
-            alreadyDisabledBoosts = true;
-        }
+        PushTrailBackwards();
     }
 
-    void GoBackwards()
+    private void PushTrailBackwards()
     {
-        float playerRotIdx = Mathf.Cos(transform.parent.eulerAngles.z / 57.3f);
-        if (!imEnemy) playerRotIdx *= -2;
-
-        for (int positionNum = 0; positionNum < myTrails[myActualBoost].positionCount; positionNum++)
+        for (int posNum = 0; posNum < myTrail.positionCount; posNum++)
         {
-            myTrails[myActualBoost].SetPosition(positionNum, new Vector3(myTrails[myActualBoost].GetPosition(positionNum).x - 5f * playerRotIdx * ObjectPassingBy.realSpeedMultiplier * Time.deltaTime, myTrails[myActualBoost].GetPosition(positionNum).y, myTrails[myActualBoost].GetPosition(positionNum).z));
-            //imEnemy? myTrails[myActualBoost].GetPosition(positionNum).x - 5f * playerRotIdx * ObjectPassingBy.realSpeedMultiplier * Time.deltaTime : myTrails[myActualBoost].GetPosition(positionNum).x - 10 * playerRotIdx * ObjectPassingBy.realSpeedMultiplier * Time.deltaTime
+            Debug.Log(posNum);
+            myTrail.SetPosition(posNum, myTrail.GetPosition(posNum) - new Vector3(trailSpeed * Time.deltaTime * ObjectPassingBy.speedMultiplier, 0, 0));
         }
-
-        transform.Find("Light/LightRays").eulerAngles = new Vector3(0, 0, 180);
-    }
-
-    void ChangeBoostSprite()
-    {
-        myTrails[myActualBoost].widthMultiplier = 0;
-        myActualBoost++;
-        if (myActualBoost > 2) myActualBoost = 0;
-        myTrails[myActualBoost].widthMultiplier = 0.8f;
     }
 }

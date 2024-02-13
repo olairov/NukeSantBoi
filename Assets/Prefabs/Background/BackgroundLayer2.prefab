@@ -98,6 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ea7c4c4b5bd60442ab2c964f7de475a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  zPos: 2
   background1: {fileID: 21300000, guid: 33c19c5ea267d7f4fb0cbf95c6d90c16, type: 3}
   background2: {fileID: 21300000, guid: 18bcb894c4d1b7d4eb4e6b87b92abeac, type: 3}
   background3: {fileID: 21300000, guid: 49b9cff85ecf14a4f8ae8acd8c35b020, type: 3}
@@ -114,5 +115,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   passingSpeed: 3
-  appearingObject: 0
+  realPassingSpeed: 0
   background: 1
+  fakePassingSpeed: 0
+  appearingObject: 0

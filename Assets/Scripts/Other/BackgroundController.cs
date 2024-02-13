@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class BackgroundController : MonoBehaviour
 {
+    [SerializeField] private int zPos;
+
     [SerializeField] private Sprite background1, background2, background3;
     private Sprite lastBackground;
 
@@ -19,6 +21,8 @@ public class BackgroundController : MonoBehaviour
 
     void CreateStats()
     {
+        transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, zPos);
+
         Sprite mySprite = background1;
         while (true)
         {

@@ -79,9 +79,20 @@ public class PlayerController : MonoBehaviour
     {
         if (!isPaused)
         {
-            int movement = (int)Input.GetAxisRaw("Horizontal");
+            float movement = (int)Input.GetAxisRaw("Horizontal");
 
-            rb.AddTorque(-movement * rotSpeed * Time.deltaTime);
+            float multiplierInCaseOfFrontFlip = 1;
+            if (movement > 0 && transform.eulerAngles.z < 150)
+            {
+                multiplierInCaseOfFrontFlip = Mathf.Cos((transform.eulerAngles.z + 75) / 47.75f) * 0.4f + 1;
+                // Basically, the more straight-down you are facing, the more slower you'll be able to rotate forward.
+                // I divide the angles by 47.75 instead of 57.3 (180 / pi, explained why in a comment below) so that the amplitude of the wave is 300 units,
+                // what divided into two is 150, instead of 360 units. I do that because I want that the curve starts in 0 and finishes in 150.
+                transform.position += new Vector3((multiplierInCaseOfFrontFlip - 1) * 20 * Time.deltaTime, 0, 0);
+                //pushing the ship down so that it's difficult to do a frontflip.
+            }
+
+            rb.AddTorque(-movement * multiplierInCaseOfFrontFlip * rotSpeed * Time.deltaTime);
 
             Deviation(Input.GetButton("Horizontal"));
         }
@@ -102,6 +113,8 @@ public class PlayerController : MonoBehaviour
     void LoopDownForce()
     {
         float additionDownForceWhenBackwards = Mathf.Cos((transform.eulerAngles.z - 180) / 57.3f) * 0.8f - 0.2f;
+        // I divide the rotation between 57.3 (180 / pi) so that the amplitude of the wave is 360 units, instead of 2pi units, to representate it in degrees.
+
         if (additionDownForceWhenBackwards > 0) additionDownForceWhenBackwards *= 3;
         downForceWhenBackwards += additionDownForceWhenBackwards * downForceWhenBackwardsMagnitude * Time.deltaTime;
         if (downForceWhenBackwards > 0) downForceWhenBackwards = 0;
@@ -128,7 +141,7 @@ public class PlayerController : MonoBehaviour
         Vector2 bombStartVelocity = direction.normalized * bombThrowForce + new Vector2(0, Yvelocity);
 
         float speedAdder = (Mathf.Cos(transform.eulerAngles.z / 57.3f) + 0.6f) * 0.625f;
-        //bombStartVelocity = new Vector2(bombStartVelocity.x * ObjectPassingBy.speedMultiplier, bombStartVelocity.y);
+
         bombStartVelocity -= new Vector2(speedAdder * 7f * ObjectPassingBy.realSpeedMultiplier, 0);
 
         Instantiate(bombPrefab, transform.position, Quaternion.identity, bombContainer).GetComponent<Rigidbody2D>().velocity = bombStartVelocity * (ObjectPassingBy.realSpeedMultiplier / 1.5f);

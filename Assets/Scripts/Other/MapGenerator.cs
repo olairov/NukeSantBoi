@@ -173,17 +173,19 @@ public class MapGenerator : MonoBehaviour
         float startX = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, 0)).x;
         float finishX = Camera.main.ScreenToWorldPoint(Vector3.zero).x;
 
+        Vector3 buildingDefaultPos = buildingPrefab.transform.position;
+
         for (float actualX = startX; actualX > finishX; actualX -= 7.5f)
         {
-            if (Random.value < 0.7f) Instantiate(buildingPrefab, new Vector3(actualX, 0, 0), Quaternion.identity, buildingsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
-            else Instantiate(wideBuildingPrefab, new Vector2(actualX, 0), Quaternion.identity, buildingsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
+            if (Random.value < 0.7f) Instantiate(buildingPrefab, new Vector3(actualX, buildingDefaultPos.y, buildingDefaultPos.z), Quaternion.identity, buildingsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
+            else Instantiate(wideBuildingPrefab, new Vector2(actualX, buildingDefaultPos.y), Quaternion.identity, buildingsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
         }
 
         for (float actualX = startX + 5; actualX > finishX - 30; actualX -= 24.5f)
         {
-            Instantiate(layer1Background, new Vector3(actualX, 0, 1), Quaternion.identity, backgroundContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
-            Instantiate(layer2Background, new Vector3(actualX, 0, 2), Quaternion.identity, backgroundContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
-            Instantiate(layer3Background, new Vector3(actualX, 0, 3), Quaternion.identity, backgroundContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
+            Instantiate(layer1Background, new Vector2(actualX, 0), Quaternion.identity, backgroundContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
+            Instantiate(layer2Background, new Vector2(actualX, 0), Quaternion.identity, backgroundContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
+            Instantiate(layer3Background, new Vector2(actualX, 0), Quaternion.identity, backgroundContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
         }
     }
 }
