@@ -8,22 +8,42 @@ public class PlayerBoostController : MonoBehaviour
 
     private TrailRenderer myTrail;
 
+    private Transform lightTransform;
+
+    private bool imEnemyPlane;
+
     void Start()
     {
         myTrail = transform.Find("Boosts/BoostTrail1").GetComponent<TrailRenderer>();
+        lightTransform = transform.Find("Light");
+
+        imEnemyPlane = transform.parent.name.StartsWith("Enemy");
+    }
+
+    private void Update()
+    {
+        if (Time.deltaTime < 0.02f) PushTrailBackwards();
+        ChangeBoostSprite();
+        lightTransform.eulerAngles = Vector3.zero;
+
+        if (PlayerController.dead && !imEnemyPlane) transform.gameObject.SetActive(false);
     }
 
     void FixedUpdate()
     {
-        PushTrailBackwards();
+        if (Time.deltaTime >= 0.02f) PushTrailBackwards();
     }
 
     private void PushTrailBackwards()
     {
         for (int posNum = 0; posNum < myTrail.positionCount; posNum++)
         {
-            Debug.Log(posNum);
             myTrail.SetPosition(posNum, myTrail.GetPosition(posNum) - new Vector3(trailSpeed * Time.deltaTime * ObjectPassingBy.speedMultiplier, 0, 0));
         }
+    }
+
+    private void ChangeBoostSprite()
+    {
+        myTrail.widthMultiplier = Random.Range(0.7f, 1.3f);
     }
 }

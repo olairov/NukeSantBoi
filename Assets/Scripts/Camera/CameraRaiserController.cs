@@ -30,7 +30,7 @@ public class CameraRaiserController : MonoBehaviour
         float posLerp = Mathf.Pow(playerTransform.position.y, 5) * 0.0000305f;
         posLerp = Mathf.Clamp01(posLerp) / 4;
 
-        transform.position = new Vector3(0, playerTransform.position.y / 80 + posLerp, transform.position.z);
+        transform.position = new Vector3(0, playerTransform.position.y / 60 + posLerp, transform.position.z);
 
         ChangeDeathLineStats();
     }

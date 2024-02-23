@@ -40,7 +40,7 @@ public class Building : MonoBehaviour
 
     void CreateStats()
     {
-        float randomY = Random.Range(-1.5f, 3f);
+        float randomY = Random.Range(0f, 3f);
         if (isWide) randomY = Random.Range(0f, 2f);
         if (iStrapSky) randomY = 0;
 
