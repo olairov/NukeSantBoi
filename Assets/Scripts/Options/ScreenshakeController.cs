@@ -40,7 +40,6 @@ public class ScreenshakeController : MonoBehaviour
 
     public void ValueChanged()
     {
-        screenShakeScript.SetDefinitiveMaxRadius(mySlider.value);
         PlayerPrefs.SetFloat("ScreenshakeValue", mySlider.value);
     }
 }

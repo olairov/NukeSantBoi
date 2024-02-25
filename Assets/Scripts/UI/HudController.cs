@@ -14,27 +14,19 @@ public class HudController : MonoBehaviour
 
     [SerializeField] private GameObject pointsSumPrefab;
 
-    private Transform canvasTransform, cameraTransform, pauseMenu, deadMenu, optionsMenu;
+    private Transform canvasTransform, cameraTransform, pauseMenu, deadMenu;
 
     private Camera cameraComponent;
 
     private int points;
 
-    private float deadPanelOutProgress, optionsPanelProgress;
+    private float deadPanelOutProgress = -1;
     public float actualTimescale = 1;
 
-    private bool isPaused, isInOptions, pretendsToBePaused, canDisableOptionsMenu, newHighscore, changingScene;
-    public bool SetInOptions
-    {
-        set { isInOptions = value; }
-    }
+    private bool isPaused, pretendsToBePaused, changingScene;
     public bool SetIsPaused
     {
         set { isPaused = value; }
-    }
-    public bool SetCanDisableOptionsMenu
-    {
-        set { canDisableOptionsMenu = value; }
     }
     public bool SetChangingScene
     {
@@ -47,7 +39,6 @@ public class HudController : MonoBehaviour
         cameraTransform = GameObject.Find("Camera").transform;
         pauseMenu = canvasTransform.Find("pauseMenu").transform;
         deadMenu = canvasTransform.Find("deadMenu").transform;
-        optionsMenu = canvasTransform.Find("optionsMenu").transform;
 
         menuInSound = GameObject.Find("UIsounds/MenuInSound").GetComponent<AudioSource>();
         menuOutSound = GameObject.Find("UIsounds/MenuOutSound").GetComponent<AudioSource>();
@@ -63,11 +54,8 @@ public class HudController : MonoBehaviour
         deadMenu.gameObject.SetActive(false);
 
         deadMenu.localPosition = new Vector3(0, -550, 0);
-        optionsMenu.localPosition = new Vector3(0, -550, 0);
 
         pretendsToBePaused = false;
-        isInOptions = false;
-        deadPanelOutProgress = -1;
 
         //PlayerPrefs.SetInt("Highscore", 0);
     }
@@ -77,10 +65,10 @@ public class HudController : MonoBehaviour
         if (Input.GetButtonUp("Pause") && !changingScene) PauseManager();
 
         AdjustTimeScale();
-        AdjustOptionPanelProgress();
+        //AdjustOptionPanelProgress();
 
         CameraPauseAdjust();
-        OptionPanelAdjust();
+        //OptionPanelAdjust();
         DeadPanelAdjust();
 
         SendVariableInfo();
@@ -97,12 +85,6 @@ public class HudController : MonoBehaviour
 
     private void PauseManager()
     {
-        if (isInOptions)
-        {
-            isInOptions = false;
-            return;
-        }
-
         if (pretendsToBePaused) Continue();
         else Pause();
     }
@@ -148,21 +130,21 @@ public class HudController : MonoBehaviour
         Time.timeScale = actualTimescale;
     }
 
-    void AdjustOptionPanelProgress()
+    /*void AdjustOptionPanelProgress()
     {
         if (isInOptions && optionsPanelProgress < 1) optionsPanelProgress += Time.unscaledDeltaTime * (1 - optionsPanelProgress + 0.003f) * 10;
         if (!isInOptions && optionsPanelProgress > 0) optionsPanelProgress -= Time.unscaledDeltaTime * (optionsPanelProgress + 0.003f) * 10;
 
         if (optionsPanelProgress < 0) optionsPanelProgress = 0;
         if (optionsPanelProgress > 1) optionsPanelProgress = 1;
-    }
+    }*/
 
     void CameraPauseAdjust()
     {
         cameraComponent.orthographicSize = Mathf.Lerp(5.8f, 7, actualTimescale);
         cameraTransform.GetChild(0).localEulerAngles = new Vector3(0, 0, Mathf.Lerp(-8, 0, actualTimescale));
 
-        if (actualTimescale >= 1 || optionsPanelProgress >= 1) pauseMenu.gameObject.SetActive(false);
+        if (actualTimescale >= 1) pauseMenu.gameObject.SetActive(false);
         else
         {
             pauseMenu.gameObject.SetActive(true);
@@ -170,7 +152,7 @@ public class HudController : MonoBehaviour
         }
     }
 
-    void OptionPanelAdjust()
+    /*void OptionPanelAdjust()
     {
         if (optionsPanelProgress <= 0)
         {
@@ -183,11 +165,11 @@ public class HudController : MonoBehaviour
 
         if (isPaused && pretendsToBePaused) pauseMenu.localPosition = new Vector2(0, Mathf.Lerp(0, 550, optionsPanelProgress));
         if (deadPanelOutProgress >= 0) deadMenu.localPosition = new Vector2(0, Mathf.Lerp(0, 550, optionsPanelProgress));
-    }
+    }*/
 
     void DeadPanelAdjust()
     {
-        if ((deadPanelOutProgress < 0 || optionsPanelProgress >= 1) && !newHighscore)
+        if (deadPanelOutProgress < 0)
         {
             deadMenu.gameObject.SetActive(false);
             return;
@@ -198,7 +180,7 @@ public class HudController : MonoBehaviour
         if (deadPanelOutProgress < 1) deadPanelOutProgress += Time.deltaTime * (1 - deadPanelOutProgress) * 8;
         else if (deadPanelOutProgress > 1) deadPanelOutProgress = 1;
 
-        if (optionsPanelProgress <= 0) deadMenu.localPosition = new Vector3(0, Mathf.Lerp(-550, 0, deadPanelOutProgress), 0);
+        deadMenu.localPosition = new Vector3(0, Mathf.Lerp(-550, 0, deadPanelOutProgress), 0);
     }
 
     public void DeadPanelOut()
@@ -216,8 +198,6 @@ public class HudController : MonoBehaviour
         if (!PlayerPrefs.HasKey("Highscore")) PlayerPrefs.SetInt("Highscore", 0);
         if (points > PlayerPrefs.GetInt("Highscore"))
         {
-            newHighscore = true;
-
             PlayerPrefs.SetInt("Highscore", points);
             deadMenu.Find("Highscore").SetParent(deadMenu.Find("NewHighscore"));
             deadMenu.Find("NewHighscore/Highscore").GetComponent<TMP_Text>().text = PlayerPrefs.GetInt("Highscore").ToString();

@@ -83,15 +83,15 @@ public class PauseButton : MonoBehaviour
 
     public void OptionsPressed()
     {
-        hudScript.SetInOptions = true;
+        screenLoadScript.LoadScene("Options", "Game");
         PlayPitchSound(clickSound);
     }
 
-    public void BackPressed()
+    /*public void BackPressed()
     {
         hudScript.SetInOptions = false;
         PlayPitchSound(clickSound);
-    }
+    }*/
 
     private void PlayPitchSound(AudioSource sound)
     {
