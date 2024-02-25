@@ -15,10 +15,14 @@ public class PlayerController : MonoBehaviour
     private float deviationTime, deviationRandomForce, deviationExtraForce = 1, rotationDifference, timeUntilNextBomb, Yvelocity, lastCameraYpos, downForceWhenBackwards, lastDownForceWhenFrontflip, leftCameraCornerXpos, targetCameraXpos;
 
     static public bool dead;
-    private bool isPaused, willShotWhenPossible;
+    private bool isPaused, willShotWhenPossible, canDropBomb = true;
     public bool SetIsPaused
     {
         set { isPaused = value; }
+    }
+    public bool SetCanDropBomb
+    {
+        set { canDropBomb = value; }
     }
 
     private Rigidbody2D rb;
@@ -46,7 +50,7 @@ public class PlayerController : MonoBehaviour
         if (!dead)RotateAndMove();
 
         if (Input.GetButtonDown("Jump") && !dead && !isPaused) DropBomb();
-        if (Input.GetButtonDown("Fire1") && !dead && !isPaused) DropBomb();
+        if (Input.GetButtonDown("Fire1") && !dead && !isPaused && canDropBomb) DropBomb();
 
         if (timeUntilNextBomb > 0) timeUntilNextBomb -= Time.deltaTime;
         else
@@ -88,7 +92,8 @@ public class PlayerController : MonoBehaviour
                 // Basically, the more straight-down you are facing, the more slower you'll be able to rotate forward.
                 // I divide the angles by 47.75 instead of 57.3 (180 / pi, explained why in a comment below) so that the amplitude of the wave is 300 units,
                 // what divided into two is 150, instead of 360 units. I do that because I want that the curve starts in 0 and finishes in 150.
-                transform.position += new Vector3((multiplierInCaseOfFrontFlip - 1) * 20 * Time.deltaTime, 0, 0);
+                
+                transform.position += new Vector3(0, (multiplierInCaseOfFrontFlip - 1) * 4 * Time.deltaTime, 0);
                 //pushing the ship down so that it's difficult to do a frontflip.
             }
 

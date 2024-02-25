@@ -1,25 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class MenuButton : MonoBehaviour
 {
-    private Transform imageChildTransform, textChildTransform;
-    
-    private Image childImage;
+    private ScreenLoadAnim screenLoadScript;
 
+    private Transform shadowTransform;
+
+    private AudioSource clickSound, selectSound;
+    
     private float pointingLerp;
     
     private bool pointed;
 
     void Start()
     {
-        imageChildTransform = transform.GetChild(0).transform;
-        textChildTransform = transform.GetChild(1).transform;
+        shadowTransform = transform.GetChild(0).transform;
 
-        childImage = transform.GetChild(0).GetComponent<Image>();
+        clickSound = GameObject.Find("UIsounds/ClickSound").GetComponent<AudioSource>();
+        selectSound = GameObject.Find("UIsounds/SelectSound").GetComponent<AudioSource>();
+        screenLoadScript = GameObject.Find("Canvas/ScreenLoadUnloadMenu").GetComponent<ScreenLoadAnim>();
     }
 
     void Update()
@@ -30,8 +31,8 @@ public class MenuButton : MonoBehaviour
 
     void ChangePointedLerp()
     {
-        if (pointed && pointingLerp < 1) pointingLerp += Time.unscaledDeltaTime * 5;
-        if (!pointed && pointingLerp > 0) pointingLerp -= Time.unscaledDeltaTime * 5;
+        if (pointed && pointingLerp < 1) pointingLerp += Time.unscaledDeltaTime * 18;
+        if (!pointed && pointingLerp > 0) pointingLerp -= Time.unscaledDeltaTime * 18;
 
         if (pointingLerp < 0) pointingLerp = 0;
         else if (pointingLerp > 1) pointingLerp = 1;
@@ -39,14 +40,14 @@ public class MenuButton : MonoBehaviour
 
     void ChangeChildStats()
     {
-        imageChildTransform.localScale = new Vector2(1, Mathf.Lerp(1f, 1.3f, pointingLerp));
-        textChildTransform.localScale = new Vector2(Mathf.Lerp(1f, 1.8f, pointingLerp), Mathf.Lerp(1f, 1.8f, pointingLerp));
-        childImage.color = new Color(childImage.color.r, childImage.color.g, childImage.color.b, Mathf.Lerp(0.6f, 0.9f, pointingLerp));
+        transform.localScale = Vector2.one * Mathf.Lerp(1f, 1.15f, pointingLerp);
+        shadowTransform.localPosition = new Vector2(Mathf.Lerp(-6, -12, pointingLerp), Mathf.Lerp(-6, -12, pointingLerp));
     }
 
     public void Pointed()
     {
         pointed = true;
+        PlayPitchSound(selectSound);
     }
 
     public void Unpointed()
@@ -56,11 +57,19 @@ public class MenuButton : MonoBehaviour
 
     public void PlayPressed()
     {
-        SceneManager.LoadScene("Game");
+        PlayPitchSound(clickSound);
+        screenLoadScript.LoadScene("Game", "Menu");
     }
 
     public void ExitPressed()
     {
-        Application.Quit();
+        PlayPitchSound(clickSound);
+        screenLoadScript.LoadScene("Exit", "Menu");
+    }
+
+    private void PlayPitchSound(AudioSource sound)
+    {
+        sound.pitch = Random.Range(0.9f, 1.1f);
+        sound.Play();
     }
 }

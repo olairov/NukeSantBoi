@@ -7,13 +7,22 @@ public class MainVolumeOptionsScript : MonoBehaviour
 {
     private Slider mySlider;
 
+    private RawImage handleImage;
+    [SerializeField] private Color colorLeft, colorRight;
+
     void Start()
     {
         mySlider = transform.GetComponent<Slider>();
-
+        handleImage = transform.Find("Handle Slide Area/Handle/HandleBase").GetComponent<RawImage>();
+        
         InitializeValue();
     }
-    
+
+    private void Update()
+    {
+        handleImage.color = Color.Lerp(colorLeft, colorRight, mySlider.value);
+    }
+
     private void InitializeValue()
     {
         if (PlayerPrefs.HasKey("MainVolumeValue"))
@@ -31,7 +40,8 @@ public class MainVolumeOptionsScript : MonoBehaviour
 
     public void ValueChanged()
     {
-        AudioListener.volume = mySlider.value;
-        PlayerPrefs.SetFloat("MainVolumeValue", mySlider.value);
+        float valueToSave = Mathf.Round(mySlider.value * 100f) / 100f;
+        AudioListener.volume = valueToSave;
+        PlayerPrefs.SetFloat("MainVolumeValue", valueToSave);
     }
 }

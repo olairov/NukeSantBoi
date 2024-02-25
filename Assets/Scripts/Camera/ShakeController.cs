@@ -9,8 +9,16 @@ public class ShakeController : MonoBehaviour
     [SerializeField] private float maxRadius, interval, timeShakeLasts, minWaveDistance, rotationScale;
     private float strengthMultiplier, shakeMoveProgress, shakeTimeLeft, definitiveMaxRadius;
 
+    [SerializeField] private bool unaffectedByStrengthMultiplier;
+
     private void Start()
     {
+        if (unaffectedByStrengthMultiplier)
+        {
+            SetDefinitiveMaxRadius(1f);
+            return;
+        }
+
         if (PlayerPrefs.HasKey("ScreenshakeValue")) SetDefinitiveMaxRadius(PlayerPrefs.GetFloat("ScreenshakeValue"));
         else SetDefinitiveMaxRadius(0.5f);
     }
@@ -66,7 +74,7 @@ public class ShakeController : MonoBehaviour
 
     private void UpdateShakeMoveProgress()
     {
-        shakeMoveProgress += Time.deltaTime * interval;
+        shakeMoveProgress += Time.unscaledDeltaTime * interval;
 
         if (shakeMoveProgress > Mathf.PI)
         {
@@ -74,7 +82,7 @@ public class ShakeController : MonoBehaviour
             CreateWave();
         }
 
-        shakeTimeLeft -= Time.deltaTime;
+        shakeTimeLeft -= Time.unscaledDeltaTime;
         if (shakeTimeLeft < 0) shakeTimeLeft = 0;
     }
 

@@ -10,8 +10,8 @@ public class HudController : MonoBehaviour
     private PlayerSoundsController playerSoundsScript;
     private TargetController targetScript;
 
-    private TMP_Text pauseHighscore;
-    
+    private AudioSource menuInSound, menuOutSound;
+
     [SerializeField] private GameObject pointsSumPrefab;
 
     private Transform canvasTransform, cameraTransform, pauseMenu, deadMenu, optionsMenu;
@@ -23,7 +23,7 @@ public class HudController : MonoBehaviour
     private float deadPanelOutProgress, optionsPanelProgress;
     public float actualTimescale = 1;
 
-    private bool isPaused, isInOptions, pretendsToBePaused, canDisableOptionsMenu;
+    private bool isPaused, isInOptions, pretendsToBePaused, canDisableOptionsMenu, newHighscore, changingScene;
     public bool SetInOptions
     {
         set { isInOptions = value; }
@@ -36,6 +36,10 @@ public class HudController : MonoBehaviour
     {
         set { canDisableOptionsMenu = value; }
     }
+    public bool SetChangingScene
+    {
+        set { changingScene = value; }
+    }
 
     private void Start()
     {
@@ -44,7 +48,10 @@ public class HudController : MonoBehaviour
         pauseMenu = canvasTransform.Find("pauseMenu").transform;
         deadMenu = canvasTransform.Find("deadMenu").transform;
         optionsMenu = canvasTransform.Find("optionsMenu").transform;
-        
+
+        menuInSound = GameObject.Find("UIsounds/MenuInSound").GetComponent<AudioSource>();
+        menuOutSound = GameObject.Find("UIsounds/MenuOutSound").GetComponent<AudioSource>();
+
         pauseMenu.Find("Highscore").GetComponent<TMP_Text>().text = PlayerPrefs.GetInt("Highscore").ToString();
         playerScript = GameObject.Find("Player").GetComponent<PlayerController>();
         playerSoundsScript = GameObject.Find("Player/Sounds").GetComponent<PlayerSoundsController>();
@@ -67,7 +74,7 @@ public class HudController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetButtonUp("Pause")) PauseManager();
+        if (Input.GetButtonUp("Pause") && !changingScene) PauseManager();
 
         AdjustTimeScale();
         AdjustOptionPanelProgress();
@@ -108,6 +115,8 @@ public class HudController : MonoBehaviour
 
         targetScript.SetIsPaused = true;
         Cursor.visible = true;
+
+        menuInSound.Play();
     }
 
     public void Continue()
@@ -116,6 +125,8 @@ public class HudController : MonoBehaviour
 
         targetScript.SetIsPaused = false;
         Cursor.visible = false;
+
+        menuOutSound.Play();
     }
 
     void AdjustTimeScale()
@@ -176,7 +187,7 @@ public class HudController : MonoBehaviour
 
     void DeadPanelAdjust()
     {
-        if (deadPanelOutProgress < 0 || optionsPanelProgress >= 1)
+        if ((deadPanelOutProgress < 0 || optionsPanelProgress >= 1) && !newHighscore)
         {
             deadMenu.gameObject.SetActive(false);
             return;
@@ -193,6 +204,7 @@ public class HudController : MonoBehaviour
     public void DeadPanelOut()
     {
         deadPanelOutProgress = 0;
+        menuInSound.Play();
 
         DeadPanelStats();
     }
@@ -204,6 +216,8 @@ public class HudController : MonoBehaviour
         if (!PlayerPrefs.HasKey("Highscore")) PlayerPrefs.SetInt("Highscore", 0);
         if (points > PlayerPrefs.GetInt("Highscore"))
         {
+            newHighscore = true;
+
             PlayerPrefs.SetInt("Highscore", points);
             deadMenu.Find("Highscore").SetParent(deadMenu.Find("NewHighscore"));
             deadMenu.Find("NewHighscore/Highscore").GetComponent<TMP_Text>().text = PlayerPrefs.GetInt("Highscore").ToString();
@@ -218,10 +232,10 @@ public class HudController : MonoBehaviour
 
     IEnumerator MakeMenuShake()
     {
-        yield return new WaitForSeconds(0.6f);
+        yield return new WaitForSeconds(0.64f);
         deadMenu.Find("NewHighscore").GetComponent<AudioSource>().Play();
 
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.06f);
         deadMenu.GetComponent<ShakeController>().Shake();
     }
 

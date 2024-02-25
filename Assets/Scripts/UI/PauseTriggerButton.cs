@@ -41,11 +41,13 @@ public class PauseTriggerButton : MonoBehaviour
     public void Pointed()
     {
         pointed = true;
+        playerScript.SetCanDropBomb = false;
     }
 
     public void Unpointed()
     {
         pointed = false;
+        playerScript.SetCanDropBomb = true;
     }
 
     public void Pressed()

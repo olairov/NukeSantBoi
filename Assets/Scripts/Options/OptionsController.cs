@@ -27,4 +27,6 @@ public class OptionsController : MonoBehaviour
             Destroy(this);
         }
     }
+
+    // Program used to let know the canvas when it's secure to disable the options menu at the beggining of the scene.
 }

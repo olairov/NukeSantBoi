@@ -44,6 +44,7 @@ public class PlayerBoostController : MonoBehaviour
 
     private void ChangeBoostSprite()
     {
+        if (Time.timeScale <= 0) return;
         myTrail.widthMultiplier = Random.Range(0.7f, 1.3f);
     }
 }
