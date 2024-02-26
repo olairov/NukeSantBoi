@@ -10,18 +10,20 @@ public class OptionsButton : MonoBehaviour
 
     private Transform shadowTransform;
 
-    private AudioSource clickSound, selectSound;
+    private AudioSource clickSound, selectSound, explosionSound;
 
     private float pointingLerp;
 
+    [SerializeField] private bool doesntHaveShadow;
     private bool pointed;
 
     void Start()
     {
-        shadowTransform = transform.GetChild(0).transform;
+        if(!doesntHaveShadow) shadowTransform = transform.GetChild(0).transform;
 
         clickSound = GameObject.Find("UIsounds/ClickSound").GetComponent<AudioSource>();
         selectSound = GameObject.Find("UIsounds/SelectSound").GetComponent<AudioSource>();
+        explosionSound = GameObject.Find("UIsounds/ExplosionSound").GetComponent<AudioSource>();
         screenLoadScript = GameObject.Find("CanvasOptions/ScreenLoadUnloadOptions").GetComponent<ScreenLoadAnim>();
         optionsShakeScript = GameObject.Find("CanvasOptions/Options").GetComponent<ShakeController>();
         optionsSlideScript = GameObject.Find("CanvasOptions/Options").GetComponent<OptionsSlideController>();
@@ -45,7 +47,7 @@ public class OptionsButton : MonoBehaviour
     void ChangeChildStats()
     {
         transform.localScale = Vector2.one * Mathf.Lerp(1f, 1.15f, pointingLerp);
-        shadowTransform.localPosition = new Vector2(Mathf.Lerp(-6, -12, pointingLerp), Mathf.Lerp(-6, -12, pointingLerp));
+        if (!doesntHaveShadow) shadowTransform.localPosition = new Vector2(Mathf.Lerp(-6, -12, pointingLerp), Mathf.Lerp(-6, -12, pointingLerp));
     }
 
     public void Pointed()
@@ -70,19 +72,22 @@ public class OptionsButton : MonoBehaviour
     {
         optionsShakeScript.SetDefinitiveMaxRadius(PlayerPrefs.GetFloat("ScreenshakeValue"));
         optionsShakeScript.Shake();
+        PlayPitchSound(explosionSound);
     }
 
     public void MoreOptionsButton()
     {
         optionsSlideScript.GoToMoreOptions();
+        PlayPitchSound(clickSound);
     }
 
     public void LessOptionsButton()
     {
         optionsSlideScript.ComeFromMoreOptions();
+        PlayPitchSound(clickSound);
     }
 
-    private void PlayPitchSound(AudioSource sound)
+    public void PlayPitchSound(AudioSource sound)
     {
         sound.pitch = Random.Range(0.9f, 1.1f);
         sound.Play();
