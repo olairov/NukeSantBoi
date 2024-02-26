@@ -5,6 +5,8 @@ using UnityEngine;
 public class OptionsButton : MonoBehaviour
 {
     private ScreenLoadAnim screenLoadScript;
+    private ShakeController optionsShakeScript;
+    private OptionsSlideController optionsSlideScript;
 
     private Transform shadowTransform;
 
@@ -20,7 +22,9 @@ public class OptionsButton : MonoBehaviour
 
         clickSound = GameObject.Find("UIsounds/ClickSound").GetComponent<AudioSource>();
         selectSound = GameObject.Find("UIsounds/SelectSound").GetComponent<AudioSource>();
-        screenLoadScript = GameObject.Find("Canvas/ScreenLoadUnloadOptions").GetComponent<ScreenLoadAnim>();
+        screenLoadScript = GameObject.Find("CanvasOptions/ScreenLoadUnloadOptions").GetComponent<ScreenLoadAnim>();
+        optionsShakeScript = GameObject.Find("CanvasOptions/Options").GetComponent<ShakeController>();
+        optionsSlideScript = GameObject.Find("CanvasOptions/Options").GetComponent<OptionsSlideController>();
     }
 
     void Update()
@@ -59,6 +63,23 @@ public class OptionsButton : MonoBehaviour
     {
         PlayPitchSound(clickSound);
         screenLoadScript.LoadScene("Options", "Options");
+        GameObject.Find("OptionsInitializer").GetComponent<OptionsInitializer>().StartEverything();
+    }
+
+    public void ShakePressed()
+    {
+        optionsShakeScript.SetDefinitiveMaxRadius(PlayerPrefs.GetFloat("ScreenshakeValue"));
+        optionsShakeScript.Shake();
+    }
+
+    public void MoreOptionsButton()
+    {
+        optionsSlideScript.GoToMoreOptions();
+    }
+
+    public void LessOptionsButton()
+    {
+        optionsSlideScript.ComeFromMoreOptions();
     }
 
     private void PlayPitchSound(AudioSource sound)

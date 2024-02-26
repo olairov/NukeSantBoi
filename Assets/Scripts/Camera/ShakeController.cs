@@ -53,7 +53,7 @@ public class ShakeController : MonoBehaviour
         transform.localPosition = new Vector3(Mathf.Lerp(waveStartPos.x, targetPos.x, smoothedMoveProgress), Mathf.Lerp(waveStartPos.y, targetPos.y, smoothedMoveProgress), transform.localPosition.z);
 
         float adjustedRotationLerping = transform.localPosition.x / (definitiveMaxRadius * 2 * strengthMultiplier) + 0.5f;
-        transform.localEulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.Lerp(-rotationScale, rotationScale, adjustedRotationLerping));
+        transform.localEulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.Lerp(-rotationScale, rotationScale, adjustedRotationLerping) * (definitiveMaxRadius / maxRadius));
     }
 
     private void CreateWave()

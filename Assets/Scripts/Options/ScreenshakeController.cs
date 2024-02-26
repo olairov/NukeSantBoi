@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class ScreenshakeController : MonoBehaviour
 {
-    private ShakeController screenShakeScript;
     private Slider mySlider;
 
     private RawImage handleImage;
@@ -14,13 +13,12 @@ public class ScreenshakeController : MonoBehaviour
     void Start()
     {
         mySlider = transform.GetComponent<Slider>();
-        screenShakeScript = Camera.main.GetComponent<ShakeController>();
         handleImage = transform.Find("Handle Slide Area/Handle/HandleBase").GetComponent<RawImage>();
 
         InitializeValue();
     }
 
-    private void Update()
+    void Update()
     {
         handleImage.color = Color.Lerp(colorLeft, colorRight, mySlider.value);
     }

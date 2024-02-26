@@ -14,7 +14,7 @@ public class HudController : MonoBehaviour
 
     [SerializeField] private GameObject pointsSumPrefab;
 
-    private Transform canvasTransform, cameraTransform, pauseMenu, deadMenu;
+    private Transform cameraTransform, pauseMenu, deadMenu, morePointsContainer;
 
     private Camera cameraComponent;
 
@@ -35,10 +35,10 @@ public class HudController : MonoBehaviour
 
     private void Start()
     {
-        canvasTransform = GameObject.Find("Canvas").transform;
         cameraTransform = GameObject.Find("Camera").transform;
-        pauseMenu = canvasTransform.Find("pauseMenu").transform;
-        deadMenu = canvasTransform.Find("deadMenu").transform;
+        pauseMenu = GameObject.Find("Canvas/pauseMenu").transform;
+        deadMenu = GameObject.Find("Canvas/deadMenu").transform;
+        morePointsContainer = GameObject.Find("Canvas/MorePointsContainer").transform;
 
         menuInSound = GameObject.Find("UIsounds/MenuInSound").GetComponent<AudioSource>();
         menuOutSound = GameObject.Find("UIsounds/MenuOutSound").GetComponent<AudioSource>();
@@ -78,7 +78,7 @@ public class HudController : MonoBehaviour
     {
         points += sumPoints;
 
-        PointsSumAnimController newPointsSum = Instantiate(pointsSumPrefab, canvasTransform).GetComponent<PointsSumAnimController>();
+        PointsSumAnimController newPointsSum = Instantiate(pointsSumPrefab, morePointsContainer).GetComponent<PointsSumAnimController>();
         newPointsSum.SetPoints = points;
         newPointsSum.SetPointsIsum = sumPoints;
     }
