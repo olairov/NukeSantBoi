@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class OptionsButton : MonoBehaviour
 {
-    private ScreenLoadAnim screenLoadScript;
     private ShakeController optionsShakeScript;
     private OptionsSlideController optionsSlideScript;
 
@@ -24,7 +23,6 @@ public class OptionsButton : MonoBehaviour
         clickSound = GameObject.Find("UIsounds/ClickSound").GetComponent<AudioSource>();
         selectSound = GameObject.Find("UIsounds/SelectSound").GetComponent<AudioSource>();
         explosionSound = GameObject.Find("UIsounds/ExplosionSound").GetComponent<AudioSource>();
-        screenLoadScript = GameObject.Find("CanvasOptions/ScreenLoadUnloadOptions").GetComponent<ScreenLoadAnim>();
         optionsShakeScript = GameObject.Find("CanvasOptions/Options").GetComponent<ShakeController>();
         optionsSlideScript = GameObject.Find("CanvasOptions/Options").GetComponent<OptionsSlideController>();
     }
@@ -64,7 +62,7 @@ public class OptionsButton : MonoBehaviour
     public void BackPressed()
     {
         PlayPitchSound(clickSound);
-        screenLoadScript.LoadScene("Options", "Options");
+        optionsSlideScript.OptionsExit();
         GameObject.Find("OptionsInitializer").GetComponent<OptionsInitializer>().StartEverything();
     }
 

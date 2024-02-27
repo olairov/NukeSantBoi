@@ -2612,6 +2612,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf381030e6265b945b7521001fb46e27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EnterExitSpeed: 10
 --- !u!1 &498979137
 GameObject:
   m_ObjectHideFlags: 0
@@ -4607,7 +4608,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &983668282
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4826,10 +4827,10 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 2000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 7
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
