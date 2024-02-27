@@ -12,7 +12,7 @@ public class OptionsSlideController : MonoBehaviour
 
     void Start()
     {
-        safeDistanceFromCamera = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x * 3f;
+        safeDistanceFromCamera = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x * 4.5f;
         moreOptionsDistance = transform.Find("VolumeOptions").position.x;
     }
 
@@ -21,7 +21,7 @@ public class OptionsSlideController : MonoBehaviour
         LerpProgressAdjuster();
         PositionLerp();
 
-        if (entering && lerpProgress > 0.9f)
+        if (entering && lerpProgress > 0.99f && moreOptionsEntering)
         {
             OptionsLerpProgressAdjuster();
             MoreOptionsLerp();
@@ -32,21 +32,19 @@ public class OptionsSlideController : MonoBehaviour
     {
         if (lerpProgress < 1 && entering)
         {
-            lerpProgress += Time.unscaledDeltaTime * (1 - (lerpProgress + 0.05f)) * EnterExitSpeed;
+            lerpProgress += Time.unscaledDeltaTime * (1 - (lerpProgress + 0.005f)) * EnterExitSpeed;
             if (lerpProgress > 1) lerpProgress = 1;
         }
 
         if (lerpProgress > 0 && !entering)
         {
-            lerpProgress -= Time.unscaledDeltaTime * (lerpProgress + 0.05f) * EnterExitSpeed;
+            lerpProgress -= Time.unscaledDeltaTime * (lerpProgress + 0.005f) * EnterExitSpeed;
             if (lerpProgress <= 0)
             {
                 lerpProgress = 0;
                 SceneManager.UnloadSceneAsync("Options");
             }
         }
-
-        Debug.Log(lerpProgress);
     }
 
     private void OptionsLerpProgressAdjuster()

@@ -1,17 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PauseButton : MonoBehaviour
 {
     private HudController hudScript;
     private ScreenLoadAnim screenLoadScript;
 
+    private Transform cameraTransform;
+
     private AudioSource clickSound, selectSound;
 
     private Transform childTransform;
 
-    private float pointingLerp, myYpos;
+    private float pointingLerp, myYpos, cameraZpos;
 
     private bool pointed;
 
@@ -23,6 +26,8 @@ public class PauseButton : MonoBehaviour
         clickSound = GameObject.Find("UIsounds/ClickSound").GetComponent<AudioSource>();
         selectSound = GameObject.Find("UIsounds/SelectSound").GetComponent<AudioSource>();
         screenLoadScript = GameObject.Find("Canvas/ScreenLoadUnload").GetComponent<ScreenLoadAnim>();
+        cameraTransform = Camera.main.transform;
+        cameraZpos = cameraTransform.position.z;
 
         myYpos = transform.position.y;
     }
@@ -83,7 +88,8 @@ public class PauseButton : MonoBehaviour
 
     public void OptionsPressed()
     {
-        screenLoadScript.LoadScene("Options", "Game");
+        //cameraTransform.position = new Vector3
+        SceneManager.LoadScene("Options", LoadSceneMode.Additive);
         PlayPitchSound(clickSound);
     }
 
