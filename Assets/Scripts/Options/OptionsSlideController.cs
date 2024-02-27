@@ -5,8 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class OptionsSlideController : MonoBehaviour
 {
+    private Transform GameCameraTransform;
+
     [SerializeField] private float EnterExitSpeed;
-    private float safeDistanceFromCamera, lerpProgress, moreOptionsDistance, moreOptionsLerpProgress;
+    private float safeDistanceFromCamera, lerpProgress, moreOptionsDistance, moreOptionsLerpProgress, yRealDifferenceFromCamera, realCameraRotation;
 
     private bool entering = true, moreOptionsEntering;
 
@@ -14,6 +16,11 @@ public class OptionsSlideController : MonoBehaviour
     {
         safeDistanceFromCamera = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x * 4.5f;
         moreOptionsDistance = transform.Find("VolumeOptions").position.x;
+        GameCameraTransform = GameObject.Find("Camera/CameraRiser/Main Camera").transform;
+
+        GameObject.Find("CanvasOptions").GetComponent<Canvas>().worldCamera = GameCameraTransform.GetComponent<Camera>();
+        yRealDifferenceFromCamera = Mathf.Tan(GameCameraTransform.eulerAngles.z * Mathf.Deg2Rad) * safeDistanceFromCamera;
+        realCameraRotation = GameCameraTransform.eulerAngles.z;
     }
 
     void Update()
@@ -26,6 +33,9 @@ public class OptionsSlideController : MonoBehaviour
             OptionsLerpProgressAdjuster();
             MoreOptionsLerp();
         }
+
+        //transform.eulerAngles = new Vector3(0, 0, GameCameraTransform.eulerAngles.z);
+        //Busca otra manera, esto no va
     }
 
     private void LerpProgressAdjuster()
@@ -54,12 +64,17 @@ public class OptionsSlideController : MonoBehaviour
 
     private void PositionLerp()
     {
-        transform.position = new Vector3(Mathf.Lerp(safeDistanceFromCamera, 0, lerpProgress), transform.position.y, transform.position.z);
+        float yDifferenceFromCamera = Mathf.Tan(GameCameraTransform.eulerAngles.z * Mathf.Deg2Rad);
+
+        transform.position = new Vector3(Mathf.Lerp(safeDistanceFromCamera, 0, lerpProgress), Mathf.Lerp(0, -safeDistanceFromCamera * yDifferenceFromCamera, lerpProgress) + yRealDifferenceFromCamera, transform.position.z);
+        // Mathf.Lerp(0, -safeDistanceFromCamera * yDifferenceFromCamera, lerpProgress)
     }
 
     private void MoreOptionsLerp()
     {
-        transform.position = new Vector3(Mathf.Lerp(0, -moreOptionsDistance, moreOptionsLerpProgress), transform.position.y, transform.position.z);
+        float yDifferenceFromCamera = Mathf.Tan(GameCameraTransform.eulerAngles.z * Mathf.Deg2Rad);
+
+        transform.position = new Vector3(Mathf.Lerp(0, -moreOptionsDistance, moreOptionsLerpProgress), Mathf.Lerp(0, -safeDistanceFromCamera * yDifferenceFromCamera, moreOptionsLerpProgress), transform.position.z);
     }
 
     public void GoToMoreOptions()

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class OptionsButton : MonoBehaviour
 {
-    private ShakeController optionsShakeScript;
+    private ShakeController cameraShakeScript;
     private OptionsSlideController optionsSlideScript;
 
     private Transform shadowTransform;
@@ -23,8 +23,8 @@ public class OptionsButton : MonoBehaviour
         clickSound = GameObject.Find("UIsounds/ClickSound").GetComponent<AudioSource>();
         selectSound = GameObject.Find("UIsounds/SelectSound").GetComponent<AudioSource>();
         explosionSound = GameObject.Find("UIsounds/ExplosionSound").GetComponent<AudioSource>();
-        optionsShakeScript = GameObject.Find("CanvasOptions/Options").GetComponent<ShakeController>();
         optionsSlideScript = GameObject.Find("CanvasOptions/Options").GetComponent<OptionsSlideController>();
+        cameraShakeScript = GameObject.Find("Camera/CameraRiser/Main Camera").GetComponent<ShakeController>();
     }
 
     void Update()
@@ -68,8 +68,8 @@ public class OptionsButton : MonoBehaviour
 
     public void ShakePressed()
     {
-        optionsShakeScript.SetDefinitiveMaxRadius(PlayerPrefs.GetFloat("ScreenshakeValue"));
-        optionsShakeScript.Shake();
+        cameraShakeScript.SetDefinitiveMaxRadius(PlayerPrefs.GetFloat("ScreenshakeValue"));
+        cameraShakeScript.Shake();
         PlayPitchSound(explosionSound);
     }
 

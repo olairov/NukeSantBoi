@@ -2098,7 +2098,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: -150, y: 0}
+  m_AnchoredPosition: {x: -149.99994, y: 0}
   m_SizeDelta: {x: 10000, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &444057905
@@ -2493,7 +2493,6 @@ GameObject:
   - component: {fileID: 486357927}
   - component: {fileID: 486357926}
   - component: {fileID: 486357928}
-  - component: {fileID: 486357929}
   - component: {fileID: 486357930}
   m_Layer: 5
   m_Name: Options
@@ -2582,24 +2581,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &486357929
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 486357924}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1af6aa290eee4a1479195162db0ccfd8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxRadius: 40
-  interval: 60
-  timeShakeLasts: 0.5
-  minWaveDistance: 20
-  rotationScale: 2
-  unaffectedByStrengthMultiplier: 1
 --- !u!114 &486357930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4789,12 +4770,12 @@ GameObject:
   - component: {fileID: 984451166}
   - component: {fileID: 984451165}
   m_Layer: 0
-  m_Name: Main Camera
+  m_Name: Main Camera Options
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!81 &984451165
 AudioListener:
   m_ObjectHideFlags: 0
@@ -5510,7 +5491,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1116099831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6868,7 +6849,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: -150, y: 0}
+  m_AnchoredPosition: {x: -149.99994, y: 0}
   m_SizeDelta: {x: 10000, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1407484638

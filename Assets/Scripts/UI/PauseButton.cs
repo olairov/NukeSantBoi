@@ -89,6 +89,7 @@ public class PauseButton : MonoBehaviour
     public void OptionsPressed()
     {
         //cameraTransform.position = new Vector3
+        if (SceneManager.sceneCount > 1) SceneManager.UnloadSceneAsync("Options");
         SceneManager.LoadScene("Options", LoadSceneMode.Additive);
         PlayPitchSound(clickSound);
     }
