@@ -6239,7 +6239,7 @@ MonoBehaviour:
   maxRadius: 1.2
   interval: 60
   timeShakeLasts: 0.5
-  minWaveDistance: 0.6
+  minWaveDistance: 1
   rotationScale: 1
   unaffectedByStrengthMultiplier: 0
 --- !u!1 &1225162690

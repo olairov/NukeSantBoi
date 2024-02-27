@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class OptionsSlideController : MonoBehaviour
 {
-    private Transform GameCameraTransform;
+    private Transform gameCameraTransform;
 
     [SerializeField] private float EnterExitSpeed;
     private float safeDistanceFromCamera, lerpProgress, moreOptionsDistance, moreOptionsLerpProgress, yRealDifferenceFromCamera, realCameraRotation;
@@ -16,11 +14,11 @@ public class OptionsSlideController : MonoBehaviour
     {
         safeDistanceFromCamera = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x * 4.5f;
         moreOptionsDistance = transform.Find("VolumeOptions").position.x;
-        GameCameraTransform = GameObject.Find("Camera/CameraRiser/Main Camera").transform;
+        gameCameraTransform = GameObject.Find("Camera/CameraRiser/Main Camera").transform;
 
-        GameObject.Find("CanvasOptions").GetComponent<Canvas>().worldCamera = GameCameraTransform.GetComponent<Camera>();
-        yRealDifferenceFromCamera = Mathf.Tan(GameCameraTransform.eulerAngles.z * Mathf.Deg2Rad) * safeDistanceFromCamera;
-        realCameraRotation = GameCameraTransform.eulerAngles.z;
+        GameObject.Find("CanvasOptions").GetComponent<Canvas>().worldCamera = gameCameraTransform.GetComponent<Camera>();
+        yRealDifferenceFromCamera = Mathf.Tan(gameCameraTransform.eulerAngles.z * Mathf.Deg2Rad) * safeDistanceFromCamera;
+        realCameraRotation = gameCameraTransform.eulerAngles.z;
     }
 
     void Update()
@@ -34,7 +32,7 @@ public class OptionsSlideController : MonoBehaviour
             MoreOptionsLerp();
         }
 
-        //transform.eulerAngles = new Vector3(0, 0, GameCameraTransform.eulerAngles.z);
+        transform.localEulerAngles = new Vector3(0, 0, - realCameraRotation + gameCameraTransform.eulerAngles.z);
         //Busca otra manera, esto no va
     }
 
@@ -42,13 +40,13 @@ public class OptionsSlideController : MonoBehaviour
     {
         if (lerpProgress < 1 && entering)
         {
-            lerpProgress += Time.unscaledDeltaTime * (1 - (lerpProgress + 0.005f)) * EnterExitSpeed;
+            lerpProgress += Time.unscaledDeltaTime * (1 - (lerpProgress + 0.01f)) * EnterExitSpeed;
             if (lerpProgress > 1) lerpProgress = 1;
         }
 
         if (lerpProgress > 0 && !entering)
         {
-            lerpProgress -= Time.unscaledDeltaTime * (lerpProgress + 0.005f) * EnterExitSpeed;
+            lerpProgress -= Time.unscaledDeltaTime * (lerpProgress + 0.01f) * EnterExitSpeed;
             if (lerpProgress <= 0)
             {
                 lerpProgress = 0;
@@ -64,15 +62,14 @@ public class OptionsSlideController : MonoBehaviour
 
     private void PositionLerp()
     {
-        float yDifferenceFromCamera = Mathf.Tan(GameCameraTransform.eulerAngles.z * Mathf.Deg2Rad);
+        float yDifferenceFromCamera = Mathf.Tan(gameCameraTransform.eulerAngles.z * Mathf.Deg2Rad);
 
         transform.position = new Vector3(Mathf.Lerp(safeDistanceFromCamera, 0, lerpProgress), Mathf.Lerp(0, -safeDistanceFromCamera * yDifferenceFromCamera, lerpProgress) + yRealDifferenceFromCamera, transform.position.z);
-        // Mathf.Lerp(0, -safeDistanceFromCamera * yDifferenceFromCamera, lerpProgress)
     }
 
     private void MoreOptionsLerp()
     {
-        float yDifferenceFromCamera = Mathf.Tan(GameCameraTransform.eulerAngles.z * Mathf.Deg2Rad);
+        float yDifferenceFromCamera = Mathf.Tan(gameCameraTransform.eulerAngles.z * Mathf.Deg2Rad);
 
         transform.position = new Vector3(Mathf.Lerp(0, -moreOptionsDistance, moreOptionsLerpProgress), Mathf.Lerp(0, -safeDistanceFromCamera * yDifferenceFromCamera, moreOptionsLerpProgress), transform.position.z);
     }
