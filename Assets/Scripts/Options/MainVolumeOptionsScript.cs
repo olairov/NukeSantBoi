@@ -9,6 +9,9 @@ public class MainVolumeOptionsScript : MonoBehaviour
 
     private RawImage handleImage;
     [SerializeField] private Color colorLeft, colorRight;
+    [SerializeField] private Slider otherMainVolumeSlider;
+
+    static private bool changedByCode;
 
     void Start()
     {
@@ -25,6 +28,7 @@ public class MainVolumeOptionsScript : MonoBehaviour
 
     private void InitializeValue()
     {
+        changedByCode = true;
         if (PlayerPrefs.HasKey("MainVolumeValue"))
         {
             mySlider.value = PlayerPrefs.GetFloat("MainVolumeValue");
@@ -41,7 +45,17 @@ public class MainVolumeOptionsScript : MonoBehaviour
     public void ValueChanged()
     {
         float valueToSave = Mathf.Round(mySlider.value * 100f) / 100f;
+
+        if (!changedByCode)
+        {
+            changedByCode = true;
+            otherMainVolumeSlider.value = valueToSave;
+        }
+        else changedByCode = false;
+        //otherMainVolumeSlider.value = valueToSave;
+
         AudioListener.volume = valueToSave;
         PlayerPrefs.SetFloat("MainVolumeValue", valueToSave);
+        Debug.Log("Another one");
     }
 }

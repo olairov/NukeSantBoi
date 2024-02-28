@@ -5,7 +5,7 @@ public class OptionsSlideController : MonoBehaviour
 {
     private Transform gameCameraTransform;
 
-    [SerializeField] private float EnterExitSpeed;
+    [SerializeField] private float enterExitSpeed;
     private float safeDistanceFromCamera, lerpProgress, moreOptionsDistance, moreOptionsLerpProgress, yRealDifferenceFromCamera, realCameraRotation;
 
     private bool entering = true, moreOptionsEntering;
@@ -13,12 +13,17 @@ public class OptionsSlideController : MonoBehaviour
     void Start()
     {
         safeDistanceFromCamera = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x * 4.5f;
-        moreOptionsDistance = transform.Find("VolumeOptions").position.x;
+
+        Transform moreOptionsTransform = transform.Find("VolumeOptions");
+        moreOptionsTransform.position = new Vector3(safeDistanceFromCamera, moreOptionsTransform.position.y, moreOptionsTransform.position.z);
         gameCameraTransform = GameObject.Find("Camera/CameraRiser/Main Camera").transform;
 
         GameObject.Find("CanvasOptions").GetComponent<Canvas>().worldCamera = gameCameraTransform.GetComponent<Camera>();
-        yRealDifferenceFromCamera = Mathf.Tan(gameCameraTransform.eulerAngles.z * Mathf.Deg2Rad) * safeDistanceFromCamera;
         realCameraRotation = gameCameraTransform.eulerAngles.z;
+        yRealDifferenceFromCamera = Mathf.Tan(realCameraRotation * Mathf.Deg2Rad) * safeDistanceFromCamera;
+
+        moreOptionsDistance = moreOptionsTransform.position.x + safeDistanceFromCamera * Mathf.Tan(-realCameraRotation * Mathf.Deg2Rad) * 2;
+        // no se por que no sé calcular la distancia en X de las opciones normales a las opciones de volumen.
     }
 
     void Update()
@@ -26,27 +31,26 @@ public class OptionsSlideController : MonoBehaviour
         LerpProgressAdjuster();
         PositionLerp();
 
-        if (entering && lerpProgress > 0.99f && moreOptionsEntering)
+        OptionsLerpProgressAdjuster();
+        if (entering && lerpProgress > 0.95f && moreOptionsLerpProgress > 0)
         {
-            OptionsLerpProgressAdjuster();
             MoreOptionsLerp();
         }
 
         transform.localEulerAngles = new Vector3(0, 0, - realCameraRotation + gameCameraTransform.eulerAngles.z);
-        //Busca otra manera, esto no va
     }
 
     private void LerpProgressAdjuster()
     {
         if (lerpProgress < 1 && entering)
         {
-            lerpProgress += Time.unscaledDeltaTime * (1 - (lerpProgress + 0.01f)) * EnterExitSpeed;
+            lerpProgress += Time.unscaledDeltaTime * (1 - (lerpProgress + 0.01f)) * enterExitSpeed;
             if (lerpProgress > 1) lerpProgress = 1;
         }
 
         if (lerpProgress > 0 && !entering)
         {
-            lerpProgress -= Time.unscaledDeltaTime * (lerpProgress + 0.01f) * EnterExitSpeed;
+            lerpProgress -= Time.unscaledDeltaTime * (lerpProgress + 0.01f) * enterExitSpeed;
             if (lerpProgress <= 0)
             {
                 lerpProgress = 0;
@@ -57,7 +61,20 @@ public class OptionsSlideController : MonoBehaviour
 
     private void OptionsLerpProgressAdjuster()
     {
+        if (moreOptionsLerpProgress < 1 && moreOptionsEntering)
+        {
+            moreOptionsLerpProgress += Time.unscaledDeltaTime * (1 - moreOptionsLerpProgress) * enterExitSpeed;
+            if (moreOptionsLerpProgress > 1) moreOptionsLerpProgress = 1;
+        }
 
+        if (moreOptionsLerpProgress > 0 && !moreOptionsEntering)
+        {
+            moreOptionsLerpProgress -= Time.unscaledDeltaTime * moreOptionsLerpProgress * enterExitSpeed;
+            if (moreOptionsLerpProgress <= 0)
+            {
+                moreOptionsLerpProgress = 0;
+            }
+        }
     }
 
     private void PositionLerp()
