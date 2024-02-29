@@ -6,13 +6,18 @@ public class OptionsSlideController : MonoBehaviour
     private Transform gameCameraTransform;
 
     [SerializeField] private float enterExitSpeed;
-    private float safeDistanceFromCamera, lerpProgress, moreOptionsDistance, moreOptionsLerpProgress, yRealDifferenceFromCamera, realCameraRotation;
+    private float safeDistanceFromCamera, lerpProgress, moreOptionsLerpProgress, yRealDifferenceFromCamera, realCameraRotation;
 
     private bool entering = true, moreOptionsEntering;
 
     void Start()
     {
+        Debug.Log("MyPos: " + transform.position.x + " MoreOptionsPos: " + transform.Find("VolumeOptions").position.x);
         safeDistanceFromCamera = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x * 4.5f;
+        Debug.Log("SafeDistanceFromCamera: " + safeDistanceFromCamera);
+
+        Transform emptyColorFillTransform = transform.Find("EmptyColorFill");
+        emptyColorFillTransform.position = new Vector3(safeDistanceFromCamera / 2, emptyColorFillTransform.position.y, emptyColorFillTransform.position.z);
 
         Transform moreOptionsTransform = transform.Find("VolumeOptions");
         moreOptionsTransform.position = new Vector3(safeDistanceFromCamera, moreOptionsTransform.position.y, moreOptionsTransform.position.z);
@@ -22,8 +27,7 @@ public class OptionsSlideController : MonoBehaviour
         realCameraRotation = gameCameraTransform.eulerAngles.z;
         yRealDifferenceFromCamera = Mathf.Tan(realCameraRotation * Mathf.Deg2Rad) * safeDistanceFromCamera;
 
-        moreOptionsDistance = moreOptionsTransform.position.x + safeDistanceFromCamera * Mathf.Tan(-realCameraRotation * Mathf.Deg2Rad) * 2;
-        // no se por que no sé calcular la distancia en X de las opciones normales a las opciones de volumen.
+        // no se por que no sé calcular la distancia en X de las opciones default a las opciones de volumen.
     }
 
     void Update()
@@ -44,16 +48,21 @@ public class OptionsSlideController : MonoBehaviour
     {
         if (lerpProgress < 1 && entering)
         {
-            lerpProgress += Time.unscaledDeltaTime * (1 - (lerpProgress + 0.01f)) * enterExitSpeed;
-            if (lerpProgress > 1) lerpProgress = 1;
+            lerpProgress += Time.unscaledDeltaTime * (1 - (lerpProgress - 0.001f)) * enterExitSpeed;
+            if (lerpProgress > 1)
+            {
+                lerpProgress = 1;
+                Debug.Log("MyPos: " + transform.position.x + " MoreOptionsPos: " + transform.Find("VolumeOptions").position.x);
+            }
         }
 
         if (lerpProgress > 0 && !entering)
         {
-            lerpProgress -= Time.unscaledDeltaTime * (lerpProgress + 0.01f) * enterExitSpeed;
+            lerpProgress -= Time.unscaledDeltaTime * (lerpProgress + 0.001f) * enterExitSpeed;
             if (lerpProgress <= 0)
             {
                 lerpProgress = 0;
+                Debug.Log("MyPos: " + transform.position.x + " MoreOptionsPos: " + transform.Find("VolumeOptions").position.x);
                 SceneManager.UnloadSceneAsync("Options");
             }
         }
@@ -63,16 +72,21 @@ public class OptionsSlideController : MonoBehaviour
     {
         if (moreOptionsLerpProgress < 1 && moreOptionsEntering)
         {
-            moreOptionsLerpProgress += Time.unscaledDeltaTime * (1 - moreOptionsLerpProgress) * enterExitSpeed;
-            if (moreOptionsLerpProgress > 1) moreOptionsLerpProgress = 1;
+            moreOptionsLerpProgress += Time.unscaledDeltaTime * (1 - (moreOptionsLerpProgress - 0.001f)) * enterExitSpeed;
+            if (moreOptionsLerpProgress > 1)
+            {
+                moreOptionsLerpProgress = 1;
+                Debug.Log("MyPos: " + transform.position.x + " MoreOptionsPos: " + transform.Find("VolumeOptions").position.x);
+            }
         }
 
         if (moreOptionsLerpProgress > 0 && !moreOptionsEntering)
         {
-            moreOptionsLerpProgress -= Time.unscaledDeltaTime * moreOptionsLerpProgress * enterExitSpeed;
+            moreOptionsLerpProgress -= Time.unscaledDeltaTime * (moreOptionsLerpProgress + 0.001f) * enterExitSpeed;
             if (moreOptionsLerpProgress <= 0)
             {
                 moreOptionsLerpProgress = 0;
+                Debug.Log("MyPos: " + transform.position.x + " MoreOptionsPos: " + transform.Find("VolumeOptions").position.x);
             }
         }
     }
@@ -88,7 +102,7 @@ public class OptionsSlideController : MonoBehaviour
     {
         float yDifferenceFromCamera = Mathf.Tan(gameCameraTransform.eulerAngles.z * Mathf.Deg2Rad);
 
-        transform.position = new Vector3(Mathf.Lerp(0, -moreOptionsDistance, moreOptionsLerpProgress), Mathf.Lerp(0, -safeDistanceFromCamera * yDifferenceFromCamera, moreOptionsLerpProgress), transform.position.z);
+        transform.position = new Vector3(Mathf.Lerp(0, -safeDistanceFromCamera, moreOptionsLerpProgress), Mathf.Lerp(0, -safeDistanceFromCamera * yDifferenceFromCamera, moreOptionsLerpProgress), transform.position.z);
     }
 
     public void GoToMoreOptions()

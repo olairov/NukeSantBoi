@@ -56,6 +56,5 @@ public class MainVolumeOptionsScript : MonoBehaviour
 
         AudioListener.volume = valueToSave;
         PlayerPrefs.SetFloat("MainVolumeValue", valueToSave);
-        Debug.Log("Another one");
     }
 }
