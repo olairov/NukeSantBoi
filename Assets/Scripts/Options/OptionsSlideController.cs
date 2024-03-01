@@ -13,7 +13,7 @@ public class OptionsSlideController : MonoBehaviour
     void Start()
     {
         Debug.Log("MyPos: " + transform.position.x + " MoreOptionsPos: " + transform.Find("VolumeOptions").position.x);
-        safeDistanceFromCamera = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x * 4.5f;
+        safeDistanceFromCamera = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x * 4f;
         Debug.Log("SafeDistanceFromCamera: " + safeDistanceFromCamera);
 
         Transform emptyColorFillTransform = transform.Find("EmptyColorFill");
@@ -38,13 +38,13 @@ public class OptionsSlideController : MonoBehaviour
         OptionsLerpProgressAdjuster();
         if (entering && lerpProgress > 0.95f && moreOptionsLerpProgress > 0)
         {
-            MoreOptionsLerp();
+            //MoreOptionsLerp();
         }
 
         transform.localEulerAngles = new Vector3(0, 0, - realCameraRotation + gameCameraTransform.eulerAngles.z);
     }
 
-    private void LerpProgressAdjuster()
+    /*private void LerpProgressAdjuster()
     {
         if (lerpProgress < 1 && entering)
         {
@@ -66,6 +66,32 @@ public class OptionsSlideController : MonoBehaviour
                 SceneManager.UnloadSceneAsync("Options");
             }
         }
+    }*/
+
+    private void LerpProgressAdjuster()
+    {
+        if (lerpProgress > 0 && !entering)
+        {
+            float smoothingFactor = lerpProgress + 0.001f;
+            lerpProgress -= Time.unscaledDeltaTime * smoothingFactor * enterExitSpeed;
+            // The substraction of time multiplied by the slide speed is also multiplied by smoothingFactor for it to be slower when closer to the target,
+            // but 0.001 is added to it to it to arrive to the target rapidly and not getting closer and closer but never there.
+            if (lerpProgress <= 0)
+            {
+                lerpProgress = 0;
+                SceneManager.UnloadSceneAsync("Options");
+            }
+            return;
+        }
+
+        if (lerpProgress < 0.5f)
+        {
+            lerpProgress += Time.unscaledDeltaTime * (1 - (lerpProgress - 0.001f)) * enterExitSpeed;
+            if (lerpProgress > 1)
+            {
+                lerpProgress = 1;
+            }
+        }
     }
 
     private void OptionsLerpProgressAdjuster()
@@ -76,7 +102,6 @@ public class OptionsSlideController : MonoBehaviour
             if (moreOptionsLerpProgress > 1)
             {
                 moreOptionsLerpProgress = 1;
-                Debug.Log("MyPos: " + transform.position.x + " MoreOptionsPos: " + transform.Find("VolumeOptions").position.x);
             }
         }
 
@@ -86,7 +111,6 @@ public class OptionsSlideController : MonoBehaviour
             if (moreOptionsLerpProgress <= 0)
             {
                 moreOptionsLerpProgress = 0;
-                Debug.Log("MyPos: " + transform.position.x + " MoreOptionsPos: " + transform.Find("VolumeOptions").position.x);
             }
         }
     }
@@ -98,12 +122,12 @@ public class OptionsSlideController : MonoBehaviour
         transform.position = new Vector3(Mathf.Lerp(safeDistanceFromCamera, 0, lerpProgress), Mathf.Lerp(0, -safeDistanceFromCamera * yDifferenceFromCamera, lerpProgress) + yRealDifferenceFromCamera, transform.position.z);
     }
 
-    private void MoreOptionsLerp()
+    /*private void MoreOptionsLerp()
     {
         float yDifferenceFromCamera = Mathf.Tan(gameCameraTransform.eulerAngles.z * Mathf.Deg2Rad);
 
         transform.position = new Vector3(Mathf.Lerp(0, -safeDistanceFromCamera, moreOptionsLerpProgress), Mathf.Lerp(0, -safeDistanceFromCamera * yDifferenceFromCamera, moreOptionsLerpProgress), transform.position.z);
-    }
+    }*/
 
     public void GoToMoreOptions()
     {
