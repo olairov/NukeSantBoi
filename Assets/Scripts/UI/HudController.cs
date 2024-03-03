@@ -7,7 +7,6 @@ public class HudController : MonoBehaviour
 {
     private PlayerController playerScript;
     private MapGenerator mapGeneratorScript;
-    private PlayerSoundsController playerSoundsScript;
     private TargetController targetScript;
 
     private AudioSource menuInSound, menuOutSound;
@@ -23,7 +22,7 @@ public class HudController : MonoBehaviour
     private float deadPanelOutProgress = -1;
     public float actualTimescale = 1;
 
-    private bool isPaused, pretendsToBePaused, changingScene;
+    private bool isPaused, pretendsToBePaused, changingScene, isInOptions;
     public bool SetIsPaused
     {
         set { isPaused = value; }
@@ -31,6 +30,10 @@ public class HudController : MonoBehaviour
     public bool SetChangingScene
     {
         set { changingScene = value; }
+    }
+    public bool SetIsInOptions
+    {
+        set { isInOptions = value; }
     }
 
     private void Start()
@@ -45,7 +48,6 @@ public class HudController : MonoBehaviour
 
         pauseMenu.Find("Highscore").GetComponent<TMP_Text>().text = PlayerPrefs.GetInt("Highscore").ToString();
         playerScript = GameObject.Find("Player").GetComponent<PlayerController>();
-        playerSoundsScript = GameObject.Find("Player/Sounds").GetComponent<PlayerSoundsController>();
         mapGeneratorScript = GameObject.Find("__________________Map___________________").GetComponent<MapGenerator>();
         targetScript = GameObject.Find("Target").GetComponent<TargetController>();
 
@@ -62,7 +64,7 @@ public class HudController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetButtonUp("Pause") && !changingScene) PauseManager();
+        if (Input.GetButtonUp("Pause") && !changingScene && !isInOptions) PauseManager();
 
         AdjustTimeScale();
         //AdjustOptionPanelProgress();
@@ -223,6 +225,7 @@ public class HudController : MonoBehaviour
     {
         playerScript.SetIsPaused = pretendsToBePaused;
         mapGeneratorScript.SetIsPaused = isPaused;
-        playerSoundsScript.SetTimeSpeed = actualTimescale;
+        InGameSound.timeSpeed = actualTimescale;
+        MusicSound.timeSpeed = actualTimescale;
     }
 }

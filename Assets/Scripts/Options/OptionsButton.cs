@@ -75,17 +75,17 @@ public class OptionsButton : MonoBehaviour
 
     public void MoreOptionsButton()
     {
-        optionsSlideScript.GoToMoreOptions();
+        optionsSlideScript.GoToAdvancedOptions();
         PlayPitchSound(clickSound);
     }
 
     public void LessOptionsButton()
     {
-        optionsSlideScript.ComeFromMoreOptions();
+        optionsSlideScript.ComeFromAdvancedOptions();
         PlayPitchSound(clickSound);
     }
 
-    public void PlayPitchSound(AudioSource sound)
+    private void PlayPitchSound(AudioSource sound)
     {
         sound.pitch = Random.Range(0.9f, 1.1f);
         sound.Play();

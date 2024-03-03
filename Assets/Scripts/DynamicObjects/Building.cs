@@ -44,7 +44,7 @@ public class Building : MonoBehaviour
         if (isWide) randomY = Random.Range(0f, 2f);
         if (iStrapSky) randomY = 0;
 
-        transform.position = new Vector3(transform.position.x, Camera.main.ScreenToWorldPoint(Vector3.zero).y + randomY, iStrapSky ? -8f : -0.5f);
+        transform.position = new Vector3(transform.position.x, Camera.main.ScreenToWorldPoint(Vector3.zero).y + randomY, iStrapSky ? -3f : -0.5f);
 
         if (iStrapSky) return;
 
@@ -154,7 +154,7 @@ public class Building : MonoBehaviour
         upperPartTransform.GetComponent<Rigidbody2D>().AddTorque(Random.Range(80, 180));
         if (Random.value > 0.5f) upperPartTransform.GetComponent<Rigidbody2D>().angularVelocity *= -1;
 
-        Instantiate(skyStraperPieces, new Vector3(transform.position.x, otherY, -12), Quaternion.identity, particlesContainer);
+        Instantiate(skyStraperPieces, new Vector3(transform.position.x, otherY, -7), Quaternion.identity, particlesContainer);
 
         return upperPartTransform;
     }

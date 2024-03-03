@@ -9803,10 +9803,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3702276306893802963}
+  - component: {fileID: 7206541189495271794}
   - component: {fileID: 2988868139547922410}
   - component: {fileID: 667776875058763131}
   m_Layer: 0
-  m_Name: SoundPlayer
+  m_Name: ExplosionSound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9827,6 +9828,20 @@ Transform:
   m_Father: {fileID: 4844835770918641313}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7206541189495271794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4411890166239774506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bfaefafd4640f94681268d984a00088, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  disableIfNotThreeDSound: 0
+  disableWhenPlayerDie: 0
 --- !u!82 &2988868139547922410
 AudioSource:
   m_ObjectHideFlags: 0
@@ -9846,11 +9861,11 @@ AudioSource:
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
-  DopplerLevel: 1
+  DopplerLevel: 5
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 300
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -9883,7 +9898,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -9898,7 +9913,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -9952,7 +9967,8 @@ GameObject:
   - component: {fileID: 9039869582878373142}
   - component: {fileID: -5119238218887809454}
   - component: {fileID: 4883915366579793915}
-  - component: {fileID: -427641046626838093}
+  - component: {fileID: 8963336857665395418}
+  - component: {fileID: 8427413902969625818}
   m_Layer: 0
   m_Name: Explosion
   m_TagString: Explosion
@@ -10105,7 +10121,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   passingSpeed: 5
+  realPassingSpeed: 0
   background: 0
+  fakePassingSpeed: 0
   appearingObject: 1
 --- !u!114 &4883915366579793915
 MonoBehaviour:
@@ -10120,7 +10138,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pointsPrefab: {fileID: 3919572110361848426, guid: 540c197054bb22043b79d055dbb818f8, type: 3}
---- !u!82 &-427641046626838093
+--- !u!82 &8963336857665395418
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10132,18 +10150,18 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 7c15ebd0ce9a3a545b31d69bde5e0c1c, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.5
+  m_Volume: 0.7
   m_Pitch: 1
   Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
-  DopplerLevel: 1
+  DopplerLevel: 5
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 300
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -10176,7 +10194,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -10191,7 +10209,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -10216,6 +10234,20 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &8427413902969625818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4611169312251104479}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bfaefafd4640f94681268d984a00088, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  disableIfNotThreeDSound: 0
+  disableWhenPlayerDie: 0
 --- !u!1 &5573093618598483146
 GameObject:
   m_ObjectHideFlags: 0

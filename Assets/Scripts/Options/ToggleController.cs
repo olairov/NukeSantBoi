@@ -10,14 +10,17 @@ public class ToggleController : MonoBehaviour
     [SerializeField] private bool toggleEnabled;
     private bool toggledInitially;
 
+    [SerializeField] private int myAction = 0;
+
     void Start()
     {
         insideTickImage = transform.Find("Background/Checkmark/Interior").GetComponent<Image>();
 
-        InitializeValues();
+        if (myAction < 1) InitializeValuesFullWindow();
+        else InitializeValuesThreeDAudio();
     }
 
-    private void InitializeValues()
+    private void InitializeValuesFullWindow()
     {
         if (!PlayerPrefs.HasKey("FullWindow")) PlayerPrefs.SetInt("FullWindow", 1);
         insideTickImage.enabled = false;
@@ -31,8 +34,24 @@ public class ToggleController : MonoBehaviour
         }
     }
 
+    private void InitializeValuesThreeDAudio()
+    {
+        if (!PlayerPrefs.HasKey("ThreeDAudio")) PlayerPrefs.SetInt("ThreeDAudio", 1);
+        insideTickImage.enabled = false;
+
+        if (PlayerPrefs.GetInt("ThreeDAudio") >= 1)
+        {
+            toggleEnabled = true;
+            toggledInitially = true;
+            transform.GetComponent<Toggle>().isOn = true;
+            insideTickImage.enabled = true;
+        }
+    }
+
     public void EnableDisable()
     {
+        // ActionToTake == 0: Full Window --- ActionToTake == 1: 3D Audio
+
         if (toggledInitially)
         {
             toggledInitially = false;
@@ -40,9 +59,18 @@ public class ToggleController : MonoBehaviour
         }
 
         toggleEnabled = !toggleEnabled;
-        Screen.fullScreen = toggleEnabled;
-
-        PlayerPrefs.SetInt("FullWindow", toggleEnabled ? 1 : 0);
         insideTickImage.enabled = toggleEnabled;
+
+        if (myAction < 1)
+        {
+            PlayerPrefs.SetInt("FullWindow", toggleEnabled ? 1 : 0);
+            Screen.fullScreen = toggleEnabled;
+        }
+        else
+        {
+            PlayerPrefs.SetInt("ThreeDAudio", toggleEnabled ? 1 : 0);
+            InGameSound.threeDsound = toggleEnabled;
+        }
+
     }
 }

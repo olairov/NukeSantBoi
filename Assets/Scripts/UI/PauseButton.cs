@@ -88,17 +88,11 @@ public class PauseButton : MonoBehaviour
 
     public void OptionsPressed()
     {
-        //cameraTransform.position = new Vector3
         if (SceneManager.sceneCount > 1) SceneManager.UnloadSceneAsync("Options");
         SceneManager.LoadScene("Options", LoadSceneMode.Additive);
-        PlayPitchSound(clickSound);
+        // PlayPitchSound(clickSound);   ---> For some reason, the options menu already makes this sound when it starts and I don't know how to erase it.
+        // It played twice at the same time, so erasing this line leaves only the other sound from unknown source and change isn't noticeable.
     }
-
-    /*public void BackPressed()
-    {
-        hudScript.SetInOptions = false;
-        PlayPitchSound(clickSound);
-    }*/
 
     private void PlayPitchSound(AudioSource sound)
     {

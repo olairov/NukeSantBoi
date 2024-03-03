@@ -6,10 +6,9 @@ public class OptionsInitializer : MonoBehaviour
 {
     private ShakeController cameraShakeScript;
 
-    void Start()
+    private void Start()
     {
         cameraShakeScript = Camera.main.GetComponent<ShakeController>();
-
         StartEverything();
     }
 

@@ -27,7 +27,7 @@ public class ExplosionController : MonoBehaviour
 
         mySprite = transform.GetComponent<SpriteRenderer>();
 
-        transform.position = new Vector3(transform.position.x, transform.position.y, -25);
+        transform.position = new Vector3(transform.position.x, transform.position.y, -10);
         transform.parent = GameObject.Find("ExplosionContainer").transform;
 
         Camera.main.GetComponent<ShakeController>().Shake();

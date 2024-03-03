@@ -668,6 +668,7 @@ GameObject:
   m_Component:
   - component: {fileID: 596531377}
   - component: {fileID: 596531378}
+  - component: {fileID: 596531379}
   m_Layer: 0
   m_Name: SelectSound
   m_TagString: Untagged
@@ -786,6 +787,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &596531379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 596531376}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20f70319d8d65954fa041ccb28ff5556, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &660278716
 GameObject:
   m_ObjectHideFlags: 0
@@ -1470,6 +1483,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1147958497}
   - component: {fileID: 1147958498}
+  - component: {fileID: 1147958499}
   m_Layer: 0
   m_Name: ClickSound
   m_TagString: Untagged
@@ -1588,6 +1602,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1147958499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1147958496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20f70319d8d65954fa041ccb28ff5556, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1160200018
 GameObject:
   m_ObjectHideFlags: 0

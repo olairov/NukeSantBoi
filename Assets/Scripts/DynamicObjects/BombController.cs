@@ -8,6 +8,8 @@ public class BombController : MonoBehaviour
 
     private Rigidbody2D rb;
 
+    private bool alreadyExploded; // I'm not sure this variable is needed, but sometimes, two explosions are generated. It's just in case Destroy() is not instant.
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -32,6 +34,10 @@ public class BombController : MonoBehaviour
 
     void Explode()
     {
+        if (alreadyExploded) return;
+
+        alreadyExploded = true;
+
         transform.GetComponent<SpriteRenderer>().enabled = false;
         transform.GetComponent<Collider2D>().enabled = false;
 

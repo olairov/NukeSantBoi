@@ -14,7 +14,7 @@ public class PlayerBoostController : MonoBehaviour
 
     void Start()
     {
-        myTrail = transform.Find("Boosts/BoostTrail1").GetComponent<TrailRenderer>();
+        myTrail = transform.Find("BoostTrail").GetComponent<TrailRenderer>();
         lightTransform = transform.Find("Light");
 
         imEnemyPlane = transform.parent.name.StartsWith("Enemy");

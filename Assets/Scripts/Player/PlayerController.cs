@@ -15,14 +15,14 @@ public class PlayerController : MonoBehaviour
     private float deviationTime, deviationRandomForce, deviationExtraForce = 1, rotationDifference, timeUntilNextBomb, Yvelocity, lastCameraYpos, downForceWhenBackwards, lastDownForceWhenFrontflip, leftCameraCornerXpos, targetCameraXpos;
 
     static public bool dead;
-    private bool isPaused, willShotWhenPossible, canDropBomb = true;
+    private bool isPaused, willShotWhenPossible, canDropBombWithClick = true;
     public bool SetIsPaused
     {
         set { isPaused = value; }
     }
     public bool SetCanDropBomb
     {
-        set { canDropBomb = value; }
+        set { canDropBombWithClick = value; }
     }
 
     private Rigidbody2D rb;
@@ -49,9 +49,6 @@ public class PlayerController : MonoBehaviour
     {
         if (!dead)RotateAndMove();
 
-        if (Input.GetButtonDown("Jump") && !dead && !isPaused) DropBomb();
-        if (Input.GetButtonDown("Fire1") && !dead && !isPaused && canDropBomb) DropBomb();
-
         if (timeUntilNextBomb > 0) timeUntilNextBomb -= Time.deltaTime;
         else
         {
@@ -59,6 +56,9 @@ public class PlayerController : MonoBehaviour
             if (willShotWhenPossible && !dead && !isPaused) DropBomb();
             willShotWhenPossible = false;
         }
+
+        if (Input.GetButtonDown("Jump") && !dead && !isPaused) DropBomb();
+        if (Input.GetButtonDown("Fire1") && !dead && !isPaused && canDropBombWithClick) DropBomb();
 
         if ((transform.position.y < Camera.main.ScreenToWorldPoint(Vector3.zero).y || transform.position.y > Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y) && !isPaused)
         {
@@ -138,7 +138,7 @@ public class PlayerController : MonoBehaviour
     {
         if (timeUntilNextBomb != 0)
         {
-            if (timeUntilNextBomb < 0.2f) willShotWhenPossible = true;
+            if (timeUntilNextBomb < 0.25f) willShotWhenPossible = true;
             return;
         }
 
@@ -150,7 +150,7 @@ public class PlayerController : MonoBehaviour
         bombStartVelocity -= new Vector2(speedAdder * 7f * ObjectPassingBy.realSpeedMultiplier, 0);
 
         Instantiate(bombPrefab, transform.position, Quaternion.identity, bombContainer).GetComponent<Rigidbody2D>().velocity = bombStartVelocity * (ObjectPassingBy.realSpeedMultiplier / 1.5f);
-
+        
         timeUntilNextBomb = bombReloadTime / ObjectPassingBy.realSpeedMultiplier;
 
         chargeScript.DropBomb(timeUntilNextBomb);
@@ -204,6 +204,7 @@ public class PlayerController : MonoBehaviour
         dead = true;
 
         Cursor.visible = true;
+        transform.GetComponent<AudioListener>().enabled = false;
 
         for (int childNum = 0; childNum < transform.Find("Parts").childCount; childNum++) transform.Find("Parts").GetChild(childNum).GetComponent<SpriteRenderer>().color = burnColor;
 

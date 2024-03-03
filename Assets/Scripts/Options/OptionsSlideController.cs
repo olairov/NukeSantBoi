@@ -3,31 +3,31 @@ using UnityEngine.SceneManagement;
 
 public class OptionsSlideController : MonoBehaviour
 {
-    private Transform gameCameraTransform;
+    private Transform gameCameraTransform, advancedOptionsTransform;
+    private HudController hudScript;
 
     [SerializeField] private float enterExitSpeed;
-    private float safeDistanceFromCamera, lerpProgress, moreOptionsLerpProgress, yRealDifferenceFromCamera, realCameraRotation;
+    private float safeDistanceFromCamera, lerpProgress, realCameraRotation;
 
-    private bool entering = true, moreOptionsEntering;
+    private bool entering = true, advancedOptionsEntering;
 
     void Start()
     {
-        Debug.Log("MyPos: " + transform.position.x + " MoreOptionsPos: " + transform.Find("VolumeOptions").position.x);
         safeDistanceFromCamera = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x * 4f;
-        Debug.Log("SafeDistanceFromCamera: " + safeDistanceFromCamera);
 
+        // Avoiding transparent area between the two options menus when lerping:
         Transform emptyColorFillTransform = transform.Find("EmptyColorFill");
         emptyColorFillTransform.position = new Vector3(safeDistanceFromCamera / 2, emptyColorFillTransform.position.y, emptyColorFillTransform.position.z);
 
-        Transform moreOptionsTransform = transform.Find("VolumeOptions");
-        moreOptionsTransform.position = new Vector3(safeDistanceFromCamera, moreOptionsTransform.position.y, moreOptionsTransform.position.z);
-        gameCameraTransform = GameObject.Find("Camera/CameraRiser/Main Camera").transform;
+        advancedOptionsTransform = transform.Find("AdvancedOptions");
+        advancedOptionsTransform.position = new Vector3(safeDistanceFromCamera, advancedOptionsTransform.position.y, advancedOptionsTransform.position.z);
 
+        gameCameraTransform = GameObject.Find("Camera/CameraRiser/Main Camera").transform;
         GameObject.Find("CanvasOptions").GetComponent<Canvas>().worldCamera = gameCameraTransform.GetComponent<Camera>();
         realCameraRotation = gameCameraTransform.eulerAngles.z;
-        yRealDifferenceFromCamera = Mathf.Tan(realCameraRotation * Mathf.Deg2Rad) * safeDistanceFromCamera;
 
-        // no se por que no sé calcular la distancia en X de las opciones default a las opciones de volumen.
+        hudScript = GameObject.Find("________________Canvas________________").GetComponent<HudController>();
+        hudScript.SetIsInOptions = true;
     }
 
     void Update()
@@ -35,112 +35,110 @@ public class OptionsSlideController : MonoBehaviour
         LerpProgressAdjuster();
         PositionLerp();
 
-        OptionsLerpProgressAdjuster();
-        if (entering && lerpProgress > 0.95f && moreOptionsLerpProgress > 0)
-        {
-            //MoreOptionsLerp();
-        }
-
         transform.localEulerAngles = new Vector3(0, 0, - realCameraRotation + gameCameraTransform.eulerAngles.z);
+
+        if (Input.GetButtonUp("Pause"))
+        {
+            if (advancedOptionsEntering) ComeFromAdvancedOptions();
+            else OptionsExit();
+        }
     }
-
-    /*private void LerpProgressAdjuster()
-    {
-        if (lerpProgress < 1 && entering)
-        {
-            lerpProgress += Time.unscaledDeltaTime * (1 - (lerpProgress - 0.001f)) * enterExitSpeed;
-            if (lerpProgress > 1)
-            {
-                lerpProgress = 1;
-                Debug.Log("MyPos: " + transform.position.x + " MoreOptionsPos: " + transform.Find("VolumeOptions").position.x);
-            }
-        }
-
-        if (lerpProgress > 0 && !entering)
-        {
-            lerpProgress -= Time.unscaledDeltaTime * (lerpProgress + 0.001f) * enterExitSpeed;
-            if (lerpProgress <= 0)
-            {
-                lerpProgress = 0;
-                Debug.Log("MyPos: " + transform.position.x + " MoreOptionsPos: " + transform.Find("VolumeOptions").position.x);
-                SceneManager.UnloadSceneAsync("Options");
-            }
-        }
-    }*/
 
     private void LerpProgressAdjuster()
     {
-        if (lerpProgress > 0 && !entering)
+        // To Understand the mathematical functions, copypaste them on www.geogebra.org/classic without the +0.001. I don't want to explain.
+        // +0.001 in all of them is for the menu to get a little bit faster to the destination position and, therefore, stop when it seems to be stopped for
+        // prevent it from keep adding very little useless decimals forever, and also to make it easier to debug at the end of the positioning, you're welcome.
+
+        // Default Options
+
+        if (lerpProgress > 0 && !entering) { LerpingOptionsOut(); return; }
+
+        if (lerpProgress < 0.5f && !advancedOptionsEntering) LerpingOptionsIn();
+
+        // Advanced Options
+
+        if (advancedOptionsEntering && lerpProgress < 1) LerpingAdvancedOptionsIn();
+
+        if (!advancedOptionsEntering && lerpProgress > 0.5f) LerpingAdvancedOptionsOut();
+    }
+
+    // Lerping Processes -->
+
+    private void LerpingOptionsIn()
+    {
+        float smoothingFactor = -lerpProgress * 2 + 1 + 0.001f; // lerpProgress duplied for it to cover a half of 0 - 1, the possible range of values for lerpProgress.
+        lerpProgress += Time.unscaledDeltaTime * smoothingFactor * enterExitSpeed;
+        // My brain is a fucking meme. In smoothingFactor, negative lerpProgress is because we want to invert the function; more lerpProgress, less speed.
+        // If you really want to know how all these simple functions work just copypaste them on www.geogebra.org/classic, you'll understand instantly.
+
+        if (lerpProgress > 1)
         {
-            float smoothingFactor = lerpProgress + 0.001f;
-            lerpProgress -= Time.unscaledDeltaTime * smoothingFactor * enterExitSpeed;
-            // The substraction of time multiplied by the slide speed is also multiplied by smoothingFactor for it to be slower when closer to the target,
-            // but 0.001 is added to it to it to arrive to the target rapidly and not getting closer and closer but never there.
-            if (lerpProgress <= 0)
-            {
-                lerpProgress = 0;
-                SceneManager.UnloadSceneAsync("Options");
-            }
-            return;
+            lerpProgress = 1;
         }
+    }
+
+    private void LerpingAdvancedOptionsIn()
+    {
+        float smoothingFactor = -lerpProgress * 2 + 2 + 0.001f;
+        lerpProgress += Time.unscaledDeltaTime * smoothingFactor * enterExitSpeed;
+
+        if (lerpProgress > 1)
+        {
+            lerpProgress = 1;
+        }
+    }
+
+    private void LerpingAdvancedOptionsOut()
+    {
+        float smoothingFactor = lerpProgress * 2 - 1 + 0.001f;
+        lerpProgress -= Time.unscaledDeltaTime * smoothingFactor * enterExitSpeed;
 
         if (lerpProgress < 0.5f)
         {
-            lerpProgress += Time.unscaledDeltaTime * (1 - (lerpProgress - 0.001f)) * enterExitSpeed;
-            if (lerpProgress > 1)
-            {
-                lerpProgress = 1;
-            }
+            lerpProgress = 0.5f;
         }
     }
 
-    private void OptionsLerpProgressAdjuster()
+    private void LerpingOptionsOut()
     {
-        if (moreOptionsLerpProgress < 1 && moreOptionsEntering)
-        {
-            moreOptionsLerpProgress += Time.unscaledDeltaTime * (1 - (moreOptionsLerpProgress - 0.001f)) * enterExitSpeed;
-            if (moreOptionsLerpProgress > 1)
-            {
-                moreOptionsLerpProgress = 1;
-            }
-        }
+        float smoothingFactor = lerpProgress * 2 + 0.001f;
+        lerpProgress -= Time.unscaledDeltaTime * smoothingFactor * enterExitSpeed;
 
-        if (moreOptionsLerpProgress > 0 && !moreOptionsEntering)
+        if (lerpProgress <= 0)
         {
-            moreOptionsLerpProgress -= Time.unscaledDeltaTime * (moreOptionsLerpProgress + 0.001f) * enterExitSpeed;
-            if (moreOptionsLerpProgress <= 0)
-            {
-                moreOptionsLerpProgress = 0;
-            }
+            lerpProgress = 0;
+            SceneManager.UnloadSceneAsync("Options");
         }
     }
+
+    // <-- Lerping Processes
 
     private void PositionLerp()
     {
         float yDifferenceFromCamera = Mathf.Tan(gameCameraTransform.eulerAngles.z * Mathf.Deg2Rad);
 
-        transform.position = new Vector3(Mathf.Lerp(safeDistanceFromCamera, 0, lerpProgress), Mathf.Lerp(0, -safeDistanceFromCamera * yDifferenceFromCamera, lerpProgress) + yRealDifferenceFromCamera, transform.position.z);
+        transform.position = new Vector3(Mathf.Lerp(safeDistanceFromCamera, -safeDistanceFromCamera, lerpProgress), Mathf.Lerp(safeDistanceFromCamera * yDifferenceFromCamera, -safeDistanceFromCamera * yDifferenceFromCamera, lerpProgress), transform.position.z);
+
+        // For some rason, advanced options changes its position, so it's repositioned:
+        advancedOptionsTransform.position = new Vector3(transform.position.x + safeDistanceFromCamera, Mathf.Lerp(safeDistanceFromCamera * yDifferenceFromCamera, -safeDistanceFromCamera * yDifferenceFromCamera, lerpProgress) + safeDistanceFromCamera * yDifferenceFromCamera, advancedOptionsTransform.position.z);
     }
 
-    /*private void MoreOptionsLerp()
-    {
-        float yDifferenceFromCamera = Mathf.Tan(gameCameraTransform.eulerAngles.z * Mathf.Deg2Rad);
+    // Functs called from buttons -->
 
-        transform.position = new Vector3(Mathf.Lerp(0, -safeDistanceFromCamera, moreOptionsLerpProgress), Mathf.Lerp(0, -safeDistanceFromCamera * yDifferenceFromCamera, moreOptionsLerpProgress), transform.position.z);
-    }*/
-
-    public void GoToMoreOptions()
+    public void GoToAdvancedOptions()
     {
-        moreOptionsEntering = true;
+        advancedOptionsEntering = true;
     }
 
-    public void ComeFromMoreOptions()
+    public void ComeFromAdvancedOptions()
     {
-        moreOptionsEntering = false;
+        advancedOptionsEntering = false;
     }
 
     public void OptionsExit()
     {
         entering = false;
+        hudScript.SetIsInOptions = false;
     }
 }
