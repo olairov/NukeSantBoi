@@ -23,9 +23,10 @@ public class HudController : MonoBehaviour
     public float actualTimescale = 1;
 
     private bool isPaused, pretendsToBePaused, changingScene, isInOptions;
-    public bool SetIsPaused
+    public bool IsPaused
     {
         set { isPaused = value; }
+        get { return isPaused; }
     }
     public bool SetChangingScene
     {
@@ -34,6 +35,10 @@ public class HudController : MonoBehaviour
     public bool SetIsInOptions
     {
         set { isInOptions = value; }
+    }
+    public bool GivePretendsToBePaused
+    {
+        get { return pretendsToBePaused; }
     }
 
     private void Start()
