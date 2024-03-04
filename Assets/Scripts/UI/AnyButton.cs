@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class AnyButton : MonoBehaviour
 {
-    private Transform shadowTransform, resizerTransform;
+    [SerializeField] private Transform resizerTransform;
+    private Transform shadowTransform;
 
-    private AudioSource selectSound;
+    private AudioSource selectSound, clickSound, pressSound;
 
     [SerializeField] private float resizingSpeed;
     private float pointingLerp = 0.5f;
 
-    [SerializeField] private bool doesntHaveShadow, isToggle;
+    [SerializeField] private bool doesntHaveShadow, imSlider;
     private bool pointed, clicked, reallyClicked;
 
     void Start()
@@ -19,14 +20,21 @@ public class AnyButton : MonoBehaviour
         if (!doesntHaveShadow) shadowTransform = transform.GetChild(0).transform;
 
         selectSound = GameObject.Find("UIsounds/SelectSound").GetComponent<AudioSource>();
+        clickSound = GameObject.Find("UIsounds/ClickSound").GetComponent<AudioSource>();
+        pressSound = GameObject.Find("UIsounds/PressSound").GetComponent<AudioSource>();
 
-        if (isToggle) resizerTransform = transform.Find("Background");
-        else resizerTransform = transform.Find("Image");
+        if (resizerTransform == null) resizerTransform = transform.Find("Image");
     }
 
     void Update()
     {
         if (Input.GetButtonUp("Fire1") && !clicked && reallyClicked) reallyClicked = false;
+        if (Input.GetButtonUp("Fire1") && imSlider && clicked)
+        {
+            pointed = false;
+            ClickedUp();
+        }
+        Debug.Log(transform.name + ": Pointed = " + pointed + ". Clicked = " + clicked);
 
         ChangePointedLerp();
         ChangeChildStats();
@@ -81,12 +89,15 @@ public class AnyButton : MonoBehaviour
     public void Pointed()
     {
         pointed = true;
+
+        if (!clicked) PlayPitchSound(selectSound);
         if (reallyClicked) clicked = true;
-        PlayPitchSound(selectSound);
     }
 
     public void Unpointed()
     {
+        if (imSlider && reallyClicked) return;
+
         pointed = false;
         clicked = false;
     }
@@ -95,12 +106,15 @@ public class AnyButton : MonoBehaviour
     {
         clicked = true;
         reallyClicked = true;
+        PlayPitchSound(pressSound);
     }
 
     public void ClickedUp()
     {
         clicked = false;
         reallyClicked = false;
+
+        if (imSlider) PlayPitchSound(clickSound);
     }
 
     public void PlayPitchSound(AudioSource sound)
