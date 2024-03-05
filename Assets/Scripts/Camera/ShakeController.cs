@@ -6,7 +6,7 @@ public class ShakeController : MonoBehaviour
 {
     private Vector2 waveStartPos, targetPos;
 
-    [SerializeField] private float maxRadius, interval, timeShakeLasts, minWaveDistance, rotationScale;
+    [SerializeField] private float maxRadius, interval, timeShakeLasts, minWaveDistance, rotationScale, xDisplacement;
     private float strengthMultiplier, shakeMoveProgress, shakeTimeLeft, definitiveMaxRadius;
 
     [SerializeField] private bool unaffectedByStrengthMultiplier;
@@ -50,8 +50,8 @@ public class ShakeController : MonoBehaviour
 
         float smoothedMoveProgress = Mathf.Abs(Mathf.Cos(shakeMoveProgress) / 2 - 0.5f);
 
-        transform.localPosition = new Vector3(Mathf.Lerp(waveStartPos.x, targetPos.x, smoothedMoveProgress), Mathf.Lerp(waveStartPos.y, targetPos.y, smoothedMoveProgress), transform.localPosition.z);
-
+        transform.localPosition = new Vector3(Mathf.Lerp(waveStartPos.x, targetPos.x, smoothedMoveProgress) + xDisplacement, Mathf.Lerp(waveStartPos.y, targetPos.y, smoothedMoveProgress), transform.localPosition.z);
+        
         float adjustedRotationLerping = transform.localPosition.x / (definitiveMaxRadius * 2 * strengthMultiplier) + 0.5f;
         transform.localEulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.Lerp(-rotationScale, rotationScale, adjustedRotationLerping) * (definitiveMaxRadius / maxRadius));
     }

@@ -14,7 +14,7 @@ public class ToggleController : MonoBehaviour
 
     void Start()
     {
-        insideTickImage = transform.Find("Background/Checkmark/Interior").GetComponent<Image>();
+        insideTickImage = transform.Find("Background/Image/Checkmark/Interior").GetComponent<Image>();
 
         if (myAction < 1) InitializeValuesFullWindow();
         else InitializeValuesThreeDAudio();
@@ -50,8 +50,6 @@ public class ToggleController : MonoBehaviour
 
     public void EnableDisable()
     {
-        // ActionToTake == 0: Full Window --- ActionToTake == 1: 3D Audio
-
         if (toggledInitially)
         {
             toggledInitially = false;

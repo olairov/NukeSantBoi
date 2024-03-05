@@ -9842,6 +9842,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   disableIfNotThreeDSound: 0
   disableWhenPlayerDie: 0
+  ignorePause: 0
 --- !u!82 &2988868139547922410
 AudioSource:
   m_ObjectHideFlags: 0
@@ -10248,6 +10249,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   disableIfNotThreeDSound: 0
   disableWhenPlayerDie: 0
+  ignorePause: 0
 --- !u!1 &5573093618598483146
 GameObject:
   m_ObjectHideFlags: 0
@@ -10470,8 +10472,8 @@ ParticleSystem:
     startColor:
       serializedVersion: 2
       minMaxState: 2
-      minColor: {r: 0.2735849, g: 0.2735849, b: 0.2735849, a: 0.23529412}
-      maxColor: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 0.15686275}
+      minColor: {r: 0.2735849, g: 0.2735849, b: 0.2735849, a: 0.1764706}
+      maxColor: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 0.09803922}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}

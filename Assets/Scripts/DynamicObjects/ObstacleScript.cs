@@ -6,6 +6,9 @@ public class ObstacleScript : MonoBehaviour
 {
     [SerializeField] private Color burnColor, possibleColor1, possibleColor2, possibleColor3, possibleColor4, possibleColor5;
 
+    [SerializeField] private GameObject obstaclePrefab;
+    private Transform obstaclesContainer;
+
     private Rigidbody2D rb;
 
     private Vector3 actualDirection;
@@ -18,8 +21,9 @@ public class ObstacleScript : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        obstaclesContainer = GameObject.Find("ObstaclesContainer").transform;
 
-        ChoseColor();
+        ChoseStats();
 
         randRotDelay = Random.Range(0f, 3f);
         transform.position = new Vector3(transform.position.x, Random.Range(Camera.main.ScreenToWorldPoint(Vector3.zero).y + 4, Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y - 1), transform.position.z);
@@ -44,7 +48,7 @@ public class ObstacleScript : MonoBehaviour
         timeForChange = Random.Range(0.5f, 2f);
     }
 
-    void ChoseColor()
+    void ChoseStats()
     {
         float randValue = Random.value;
 
@@ -53,6 +57,12 @@ public class ObstacleScript : MonoBehaviour
         else if (randValue > 0.4f) transform.GetComponent<SpriteRenderer>().color = possibleColor3;
         else if (randValue > 0.2f) transform.GetComponent<SpriteRenderer>().color = possibleColor4;
         else transform.GetComponent<SpriteRenderer>().color = possibleColor5;
+
+        if (Random.value > 0.6f)
+        {
+            Instantiate(obstaclePrefab, new Vector3(transform.position.x + 8f, transform.position.y < 0 ? transform.position.y + 5 : transform.position.y - 5, transform.position.z), Quaternion.identity, obstaclesContainer);
+            Debug.Log("Second Obstacle Generated, motherfucker");
+        }
     }
 
     public void Die()

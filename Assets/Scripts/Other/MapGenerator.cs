@@ -120,7 +120,7 @@ public class MapGenerator : MonoBehaviour
 
         Instantiate(obstaclePrefab, obstaclesContainer);
 
-        timeForNextObstacle = Random.Range(1.2f, 4.8f);
+        timeForNextObstacle = Random.Range(2.6f, 4.6f);
     }
 
     void GenerateWindParticles()

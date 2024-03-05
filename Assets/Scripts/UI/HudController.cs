@@ -36,10 +36,6 @@ public class HudController : MonoBehaviour
     {
         set { isInOptions = value; }
     }
-    public bool GivePretendsToBePaused
-    {
-        get { return pretendsToBePaused; }
-    }
 
     private void Start()
     {
@@ -69,7 +65,7 @@ public class HudController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetButtonUp("Pause") && !changingScene && !isInOptions) PauseManager();
+        if (Input.GetButtonUp("Pause")) PauseManager();
 
         AdjustTimeScale();
         //AdjustOptionPanelProgress();
@@ -90,8 +86,10 @@ public class HudController : MonoBehaviour
         newPointsSum.SetPointsIsum = sumPoints;
     }
 
-    private void PauseManager()
+    public void PauseManager()
     {
+        if (changingScene || isInOptions) return;
+
         if (pretendsToBePaused) Continue();
         else Pause();
     }

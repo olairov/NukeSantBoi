@@ -60,7 +60,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonDown("Jump") && !dead && !isPaused) DropBomb();
         if (Input.GetButtonDown("Fire1") && !dead && !isPaused && canDropBombWithClick) DropBomb();
 
-        if ((transform.position.y < Camera.main.ScreenToWorldPoint(Vector3.zero).y || transform.position.y > Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y) && !isPaused)
+        if ((transform.position.y < Camera.main.ScreenToWorldPoint(Vector3.zero).y || transform.position.y > Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y + 0.5f) && !isPaused)
         {
             GenerateExplosion();
 

@@ -229,6 +229,7 @@ MonoBehaviour:
   possibleColor3: {r: 1, g: 0.21226418, b: 0.89162827, a: 1}
   possibleColor4: {r: 0.3956098, g: 0.2216981, b: 1, a: 1}
   possibleColor5: {r: 1, g: 0.7121963, b: 0.1745283, a: 1}
+  obstaclePrefab: {fileID: 8916123517466623639}
   speed: 150
   rotSpeed: 2
 --- !u!61 &7672100228234699096

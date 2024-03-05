@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class AnyButton : MonoBehaviour
 {
-    [SerializeField] private Transform resizerTransform;
+    private ShakeController myShake;
+
+    [SerializeField] private Transform resizerTransform; // Leave blank if it's a default button.
     private Transform shadowTransform;
 
     private AudioSource selectSound, clickSound, pressSound;
@@ -17,13 +19,14 @@ public class AnyButton : MonoBehaviour
 
     void Start()
     {
-        if (!doesntHaveShadow) shadowTransform = transform.GetChild(0).transform;
+        if (!doesntHaveShadow) shadowTransform = transform.Find("Image/Shadow").transform;
 
         selectSound = GameObject.Find("UIsounds/SelectSound").GetComponent<AudioSource>();
         clickSound = GameObject.Find("UIsounds/ClickSound").GetComponent<AudioSource>();
         pressSound = GameObject.Find("UIsounds/PressSound").GetComponent<AudioSource>();
 
         if (resizerTransform == null) resizerTransform = transform.Find("Image");
+        if (!imSlider) myShake = resizerTransform.GetComponent<ShakeController>();
     }
 
     void Update()
@@ -34,7 +37,6 @@ public class AnyButton : MonoBehaviour
             pointed = false;
             ClickedUp();
         }
-        Debug.Log(transform.name + ": Pointed = " + pointed + ". Clicked = " + clicked);
 
         ChangePointedLerp();
         ChangeChildStats();
@@ -77,11 +79,8 @@ public class AnyButton : MonoBehaviour
     void ChangeChildStats()
     {
         resizerTransform.localScale = Vector2.one * Mathf.Lerp(0.85f, 1.15f, pointingLerp);
-        if (!doesntHaveShadow)
-        {
-            shadowTransform.localPosition = new Vector2(Mathf.Lerp(0, -12, pointingLerp), Mathf.Lerp(0, -12, pointingLerp));
-            shadowTransform.localScale = Vector2.one * Mathf.Lerp(0.85f, 1.15f, pointingLerp);
-        }
+
+        if (!doesntHaveShadow) shadowTransform.localPosition = new Vector2(Mathf.Lerp(0, -12, pointingLerp), Mathf.Lerp(0, -12, pointingLerp));
     }
 
     // Simple Mouse Actions --->
@@ -106,6 +105,8 @@ public class AnyButton : MonoBehaviour
     {
         clicked = true;
         reallyClicked = true;
+
+        if (!imSlider) myShake.Shake();
         PlayPitchSound(pressSound);
     }
 

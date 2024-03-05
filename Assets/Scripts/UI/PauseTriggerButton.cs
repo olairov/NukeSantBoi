@@ -26,16 +26,6 @@ public class PauseTriggerButton : MonoBehaviour
 
     public void Pressed()
     {
-        if (PlayerController.dead) return;
-
-        if (hudScript.GivePretendsToBePaused)
-        {
-            hudScript.Continue();
-        }
-        else
-        {
-            //hudScript.IsPaused = false;
-            hudScript.Pause();
-        }
+        hudScript.PauseManager();
     }
 }
