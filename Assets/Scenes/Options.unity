@@ -646,18 +646,6 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 22044533}
-        m_TargetAssemblyTypeName: AnyButton, Assembly-CSharp
-        m_MethodName: PlayPitchSound
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 1584205160}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 22044530}
         m_TargetAssemblyTypeName: ToggleController, Assembly-CSharp
         m_MethodName: EnableDisable
@@ -1573,18 +1561,6 @@ MonoBehaviour:
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 149955137}
-          m_TargetAssemblyTypeName: AnyButton, Assembly-CSharp
-          m_MethodName: PlayPitchSound
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 1584205160}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
@@ -3462,18 +3438,6 @@ MonoBehaviour:
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 471500143}
-          m_TargetAssemblyTypeName: AnyButton, Assembly-CSharp
-          m_MethodName: PlayPitchSound
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 1584205160}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
@@ -8791,18 +8755,6 @@ MonoBehaviour:
           m_CallState: 2
         - m_Target: {fileID: 1442114937}
           m_TargetAssemblyTypeName: AnyButton, Assembly-CSharp
-          m_MethodName: PlayPitchSound
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 1584205160}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 1442114937}
-          m_TargetAssemblyTypeName: AnyButton, Assembly-CSharp
           m_MethodName: ClickedUp
           m_Mode: 1
           m_Arguments:
@@ -12680,18 +12632,6 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2138690840}
-        m_TargetAssemblyTypeName: AnyButton, Assembly-CSharp
-        m_MethodName: PlayPitchSound
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 1584205160}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 

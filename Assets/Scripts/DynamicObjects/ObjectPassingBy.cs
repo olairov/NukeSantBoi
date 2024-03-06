@@ -35,8 +35,8 @@ public class ObjectPassingBy : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Make that objects also move with their own script are unaffected by the change of speedMultiplier when in loops;
-        MovementFix();
+        // Futile attempt of making objects that also move using their own methods are unaffected by the change of speedMultiplier when in loops.
+        MovementFix(); // If you're sure of what you're doing, go ahead; nothing is stopping you from trying to fix this mess but it.
     }
 
     void UpdateXpos()
@@ -51,8 +51,9 @@ public class ObjectPassingBy : MonoBehaviour
     {
         if (!fakePassingSpeed || playerTransform == null) return;
 
-        if (!PlayerController.dead) speedAdder = (Mathf.Cos(playerTransform.eulerAngles.z / 57.3f) + 0.6f) * 0.625f;
+        if (!PlayerController.dead) speedAdder = (Mathf.Cos(playerTransform.eulerAngles.z / 57.3f) + 0.6f) * 0.625f; // Enter the mathematical equation in geogebra.com/classic.
         if (speedAdder < 0) speedAdder = 0;
+        // SpeedAdder is public so that when you die while looping, camera movement remains.
 
         transform.position += new Vector3(speedAdder * 7f * Time.deltaTime * realSpeedMultiplier, 0, 0);
     }

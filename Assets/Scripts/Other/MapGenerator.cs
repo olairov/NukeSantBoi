@@ -71,10 +71,10 @@ public class MapGenerator : MonoBehaviour
 
     void GenerateBuildings()
     {
-        timeForNextBuilding -= Time.deltaTime * ObjectPassingBy.speedMultiplier;
+        timeForNextBuilding -= Time.unscaledDeltaTime * Time.timeScale * ObjectPassingBy.speedMultiplier;
         if (timeForNextBuilding > 0) return;
 
-        if (Random.value * ObjectPassingBy.speedMultiplier < 0.15f && buildingsFromSkystraper > 3 * ObjectPassingBy.speedMultiplier)
+        if (Random.value * ObjectPassingBy.realSpeedMultiplier < 0.15f && buildingsFromSkystraper > 3 * ObjectPassingBy.realSpeedMultiplier)
         {
             Instantiate(skystraperPrefab, buildingsContainer);
             buildingsFromSkystraper = 0;
@@ -120,7 +120,7 @@ public class MapGenerator : MonoBehaviour
 
         Instantiate(obstaclePrefab, obstaclesContainer);
 
-        timeForNextObstacle = Random.Range(2.6f, 4.6f);
+        timeForNextObstacle = Random.Range(3.2f, 5f);
     }
 
     void GenerateWindParticles()

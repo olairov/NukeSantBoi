@@ -10,7 +10,7 @@ public class InGameSound : MonoBehaviour
     private float realVolume, vanishingLerp = 1;
 
     static public bool threeDsound = true;
-    [SerializeField] private bool disableIfNotThreeDSound, disableWhenPlayerDie, ignorePause;
+    [SerializeField] private bool disableIfNotThreeDSound, disableWhenPlayerDie, ignorePause, ignoreThreeDsound;
 
     void Start()
     {

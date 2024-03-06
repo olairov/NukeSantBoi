@@ -42,12 +42,12 @@ public class AnyButton : MonoBehaviour
         ChangeChildStats();
     }
 
-    void ChangePointedLerp()
+    void ChangePointedLerp() // Decision-making based in pointingLerp value and the pointer state in relation to the button.
     {
         if ((!clicked && !pointed && pointingLerp < 0.5f) || (pointed && !clicked && pointingLerp < 1)) Growing();
 
         if (!clicked && !pointed && pointingLerp > 0.5f) Shrinking(1);
-        if (clicked && pointed && pointingLerp > 0) Shrinking(5);
+        if (clicked && pointed && pointingLerp > 0) Shrinking(5); // Increase the speed of the shrinking to create a better effect of strength.
     }
 
     // Lerping Size --->
@@ -107,16 +107,16 @@ public class AnyButton : MonoBehaviour
         reallyClicked = true;
 
         if (!imSlider) myShake.Shake();
-        PlayPitchSound(pressSound);
+        PlayPitchSound(clickSound);
     }
 
     public void ClickedUp()
     {
         clicked = false;
         reallyClicked = false;
-
-        if (imSlider) PlayPitchSound(clickSound);
     }
+
+    // Sound when clicked --->
 
     public void PlayPitchSound(AudioSource sound)
     {

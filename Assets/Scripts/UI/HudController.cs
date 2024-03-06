@@ -68,10 +68,8 @@ public class HudController : MonoBehaviour
         if (Input.GetButtonUp("Pause")) PauseManager();
 
         AdjustTimeScale();
-        //AdjustOptionPanelProgress();
 
         CameraPauseAdjust();
-        //OptionPanelAdjust();
         DeadPanelAdjust();
 
         SendVariableInfo();
@@ -135,15 +133,6 @@ public class HudController : MonoBehaviour
         Time.timeScale = actualTimescale;
     }
 
-    /*void AdjustOptionPanelProgress()
-    {
-        if (isInOptions && optionsPanelProgress < 1) optionsPanelProgress += Time.unscaledDeltaTime * (1 - optionsPanelProgress + 0.003f) * 10;
-        if (!isInOptions && optionsPanelProgress > 0) optionsPanelProgress -= Time.unscaledDeltaTime * (optionsPanelProgress + 0.003f) * 10;
-
-        if (optionsPanelProgress < 0) optionsPanelProgress = 0;
-        if (optionsPanelProgress > 1) optionsPanelProgress = 1;
-    }*/
-
     void CameraPauseAdjust()
     {
         cameraComponent.orthographicSize = Mathf.Lerp(5.8f, 7, actualTimescale);
@@ -156,21 +145,6 @@ public class HudController : MonoBehaviour
             pauseMenu.localPosition = new Vector3(0, Mathf.Lerp(0, -550, actualTimescale), 0);
         }
     }
-
-    /*void OptionPanelAdjust()
-    {
-        if (optionsPanelProgress <= 0)
-        {
-            if (canDisableOptionsMenu) optionsMenu.gameObject.SetActive(false);
-            return;
-        }
-        else optionsMenu.gameObject.SetActive(true);
-
-        optionsMenu.localPosition = new Vector2(0, Mathf.Lerp(-550, 0, optionsPanelProgress));
-
-        if (isPaused && pretendsToBePaused) pauseMenu.localPosition = new Vector2(0, Mathf.Lerp(0, 550, optionsPanelProgress));
-        if (deadPanelOutProgress >= 0) deadMenu.localPosition = new Vector2(0, Mathf.Lerp(0, 550, optionsPanelProgress));
-    }*/
 
     void DeadPanelAdjust()
     {

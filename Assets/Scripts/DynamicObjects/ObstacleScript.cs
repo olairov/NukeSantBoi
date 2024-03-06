@@ -40,10 +40,8 @@ public class ObstacleScript : MonoBehaviour
 
     void DirChange()
     {
-        timeForChange -= Time.deltaTime;
-        if (timeForChange > 0) return;
-
-        actualDirection = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0).normalized;
+        actualDirection += new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0).normalized * Time.deltaTime * 50;
+        actualDirection = Vector3.ClampMagnitude(actualDirection, 1);
 
         timeForChange = Random.Range(0.5f, 2f);
     }
@@ -58,10 +56,9 @@ public class ObstacleScript : MonoBehaviour
         else if (randValue > 0.2f) transform.GetComponent<SpriteRenderer>().color = possibleColor4;
         else transform.GetComponent<SpriteRenderer>().color = possibleColor5;
 
-        if (Random.value > 0.6f)
+        if (Random.value > 0.9f)
         {
             Instantiate(obstaclePrefab, new Vector3(transform.position.x + 8f, transform.position.y < 0 ? transform.position.y + 5 : transform.position.y - 5, transform.position.z), Quaternion.identity, obstaclesContainer);
-            Debug.Log("Second Obstacle Generated, motherfucker");
         }
     }
 

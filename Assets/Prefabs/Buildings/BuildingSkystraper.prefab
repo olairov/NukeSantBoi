@@ -71,6 +71,7 @@ MonoBehaviour:
   smokeParticles: {fileID: 964766084372196553, guid: 3ca2ad5e7a6843840a66f9a12518a74b, type: 3}
   shardsParticles: {fileID: 8017182100323422166, guid: 90de008cf96bb004b873425d23e8ae10, type: 3}
   skyStraperPieces: {fileID: 2309843396066869276, guid: da76396cf5662744f82cbfaf8a2d3121, type: 3}
+  buildingPrefab: {fileID: 1161062619281861293, guid: ec0a60ee1deebdd4ab0ff5e61e11ade0, type: 3}
   buildingSprite2: {fileID: 0}
   buildingSprite3: {fileID: 0}
   backBuildingSprite2: {fileID: 0}

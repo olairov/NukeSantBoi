@@ -5,7 +5,7 @@ using UnityEngine;
 public class Building : MonoBehaviour
 {
     [SerializeField] private Color flashColor;
-    [SerializeField] private GameObject skystraperUpperPart, smokeParticles, shardsParticles, skyStraperPieces;
+    [SerializeField] private GameObject skystraperUpperPart, smokeParticles, shardsParticles, skyStraperPieces, buildingPrefab;
     [SerializeField] private Sprite buildingSprite2, buildingSprite3, backBuildingSprite2, backBuildingSprite3;
     public Sprite lastSprite;
 
@@ -17,7 +17,12 @@ public class Building : MonoBehaviour
     private float rotationSpeed, fallingSpeed, timeSinceDestruction, cameraWidthInUnits;
 
     public bool dead;
-    private bool iStrapSky, isWide;
+    private bool iStrapSky, isWide, imUpsideDown;
+
+    public bool SetImUpsideDown
+    {
+        set { imUpsideDown = value; }
+    }
 
     void Start()
     {
@@ -44,7 +49,15 @@ public class Building : MonoBehaviour
         if (isWide) randomY = Random.Range(0f, 2f);
         if (iStrapSky) randomY = 0;
 
-        transform.position = new Vector3(transform.position.x, Camera.main.ScreenToWorldPoint(Vector3.zero).y + randomY, iStrapSky ? -3f : -0.5f);
+        if (imUpsideDown)
+        {
+            randomY = 14;
+            transform.localScale = new Vector3(transform.localScale.x, -transform.localScale.y, transform.localScale.z);
+        }
+
+        if (isWide && Random.value > 0.99f) Instantiate(buildingPrefab, transform.parent).GetComponent<Building>().SetImUpsideDown = true;
+
+        transform.position = new Vector3(imUpsideDown ? transform.position.x + 4 : transform.position.x, Camera.main.ScreenToWorldPoint(Vector3.zero).y + randomY, iStrapSky ? -3f : -0.5f);
 
         if (iStrapSky) return;
 
