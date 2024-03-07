@@ -45,7 +45,7 @@ public class MapGenerator : MonoBehaviour
 
     void Update()
     {
-        if (isPaused) return;
+        if (Time.deltaTime <= 0) return;
         
         if (!PlayerController.dead)
         {

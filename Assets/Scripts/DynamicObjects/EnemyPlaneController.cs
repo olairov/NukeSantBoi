@@ -46,6 +46,28 @@ public class EnemyPlaneController : MonoBehaviour
 
     void RotateAndMove()
     {
+        if (!dutyFinished)
+        {
+            TowardsPlayer();
+            if (dirToPlayer.x > 1 || PlayerController.dead) dutyFinished = true;
+        }
+        else AfterPlayer();
+    }
+
+    void TowardsPlayer()
+    {
+        //Cmon Start working
+    }
+
+    void AfterPlayer()
+    {
+
+    }
+
+    // Old Way of rotating and moving. Need to create a better one.
+
+    /*void RotateAndMove()
+    {
         float lastRotation = transform.eulerAngles.z;
         if (!PlayerController.dead) dirToPlayer = playerTransform.position - transform.position;
 
@@ -57,7 +79,6 @@ public class EnemyPlaneController : MonoBehaviour
             {
                 dutyFinished = true;
                 rb.angularVelocity = rotationSpeed;
-                //for (int childNum = 0; childNum < transform.Find("Parts").childCount - 1; childNum++) transform.Find("Parts").GetChild(childNum + 1).GetComponent<PlayerPartParallaxer>().enabled = false;
             }
             else
             {
@@ -77,7 +98,7 @@ public class EnemyPlaneController : MonoBehaviour
         transform.eulerAngles = new Vector3(0, 0, transform.eulerAngles.z);
         rotationSpeed = (transform.eulerAngles.z - lastRotation) / Time.unscaledDeltaTime;
         if (dutyFinished) rotationSpeed = rb.angularVelocity;
-    }
+    }*/
 
     public void Die()
     {
