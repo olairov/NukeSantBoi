@@ -385,6 +385,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   disableIfNotThreeDSound: 1
   disableWhenPlayerDie: 0
+  ignorePause: 0
+  ignoreThreeDsound: 0
 --- !u!1 &617720561892654441
 GameObject:
   m_ObjectHideFlags: 0
@@ -847,9 +849,9 @@ MonoBehaviour:
   possibleColor1: {r: 0.8301887, g: 0.8301887, b: 0.8301887, a: 1}
   possibleColor2: {r: 1, g: 0.95518863, b: 0.7311321, a: 1}
   possibleColor3: {r: 1, g: 0.7971698, b: 0.7971698, a: 1}
-  moveSpeed: 10
-  rotSpeed: 1.5
-  rotationSpeed: 0
+  moveSpeed: 0.0002
+  rotFactor: 15
+  actualRotationSpeed: 0
   dead: 0
   dutyFinished: 0
 --- !u!1 &2619716988857138339

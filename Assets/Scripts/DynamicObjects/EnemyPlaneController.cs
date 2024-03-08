@@ -6,8 +6,9 @@ public class EnemyPlaneController : MonoBehaviour
 {
     [SerializeField] private Color burnColor, possibleColor1, possibleColor2, possibleColor3;
 
-    [SerializeField] private float moveSpeed, rotSpeed;
-    public float rotationSpeed;
+    [SerializeField] private float moveSpeed, rotFactor;
+    public float actualRotationSpeed;
+    private float maxXdistance;
 
     public bool dead, dutyFinished;
 
@@ -24,6 +25,7 @@ public class EnemyPlaneController : MonoBehaviour
 
         ChoseColor();
 
+        maxXdistance = transform.position.x - Camera.main.ScreenToWorldPoint(new Vector2(Screen.width / 5, 0)).x;
         transform.position = new Vector3(transform.position.x, Random.Range(Camera.main.ScreenToWorldPoint(Vector3.zero).y, Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y), transform.position.z);
     }
 
@@ -46,17 +48,25 @@ public class EnemyPlaneController : MonoBehaviour
 
     void RotateAndMove()
     {
+        actualRotationSpeed = transform.eulerAngles.z;
+
         if (!dutyFinished)
         {
             TowardsPlayer();
             if (dirToPlayer.x > 1 || PlayerController.dead) dutyFinished = true;
         }
         else AfterPlayer();
+
+        actualRotationSpeed -= transform.eulerAngles.z;
+
+        transform.position += new Vector3(0, -(transform.eulerAngles.z - 90) * moveSpeed, 0);
     }
 
     void TowardsPlayer()
     {
-        //Cmon Start working
+        Vector2 distToPlayer = new Vector2(transform.position.x - playerTransform.position.x, transform.position.y - playerTransform.position.y);
+
+        transform.eulerAngles = new Vector3(0, 0, 90 + (rotFactor * distToPlayer.y * (-distToPlayer.x / maxXdistance + 1)));
     }
 
     void AfterPlayer()
