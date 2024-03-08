@@ -8,11 +8,9 @@ public class EnemyPlaneController : MonoBehaviour
 
     [SerializeField] private float moveSpeed, rotFactor;
     public float actualRotationSpeed;
-    private float maxXdistance;
+    private float maxXdistance, rotationWhenDutyFinished, stabilizerLerp;
 
     public bool dead, dutyFinished;
-
-    private Vector3 dirToPlayer;
 
     private Transform playerTransform;
 
@@ -20,7 +18,9 @@ public class EnemyPlaneController : MonoBehaviour
 
     void Start()
     {
-        playerTransform = GameObject.Find("Player").transform;
+        if (PlayerController.dead) dutyFinished = true;
+        else playerTransform = GameObject.Find("Player").transform;
+
         rb = transform.GetComponent<Rigidbody2D>();
 
         ChoseColor();
@@ -50,28 +50,38 @@ public class EnemyPlaneController : MonoBehaviour
     {
         actualRotationSpeed = transform.eulerAngles.z;
 
+        Vector2 distToPlayer = Vector2.zero;
+        if (!dutyFinished && (transform.position.x - playerTransform.position.x < 1 || PlayerController.dead))
+        {
+            dutyFinished = true;
+            rotationWhenDutyFinished = transform.eulerAngles.z;
+        }
+
         if (!dutyFinished)
         {
-            TowardsPlayer();
-            if (dirToPlayer.x > 1 || PlayerController.dead) dutyFinished = true;
+            distToPlayer = new Vector2(transform.position.x - playerTransform.position.x, transform.position.y - playerTransform.position.y);
+            TowardsPlayer(distToPlayer);
         }
         else AfterPlayer();
 
         actualRotationSpeed -= transform.eulerAngles.z;
 
-        transform.position += new Vector3(0, -(transform.eulerAngles.z - 90) * moveSpeed, 0);
+        transform.position += new Vector3(0, -(transform.eulerAngles.z - 90) * Time.deltaTime * moveSpeed, 0);
     }
 
-    void TowardsPlayer()
+    void TowardsPlayer(Vector2 distToPlayer)
     {
-        Vector2 distToPlayer = new Vector2(transform.position.x - playerTransform.position.x, transform.position.y - playerTransform.position.y);
+        float rotationAdder = rotFactor * distToPlayer.y * (-distToPlayer.x / maxXdistance + 1) * Time.deltaTime;
 
-        transform.eulerAngles = new Vector3(0, 0, 90 + (rotFactor * distToPlayer.y * (-distToPlayer.x / maxXdistance + 1)));
+        if ((transform.eulerAngles.z > 40 && rotationAdder < 0) || (transform.eulerAngles.z < 140 && rotationAdder > 0)) transform.eulerAngles += new Vector3(0, 0, rotationAdder);
+
+        // if ((transform.eulerAngles.z > 40 && rotationAdder < 0) || (transform.eulerAngles.z < 140 && rotationAdder > 0)) 
     }
 
-    void AfterPlayer()
+    void AfterPlayer() // After the player dies or goes too far, tha plane smoothly stabilizes to an horizontal direction.
     {
-
+        stabilizerLerp += Time.deltaTime * (1 - stabilizerLerp); // The more time has passed since duty finished, the more normalized its direction will be.
+        transform.eulerAngles = new Vector3(0, 0, Mathf.Lerp(rotationWhenDutyFinished, 90, stabilizerLerp));
     }
 
     // Old Way of rotating and moving. Need to create a better one.
