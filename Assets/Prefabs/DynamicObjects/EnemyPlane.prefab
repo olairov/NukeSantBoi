@@ -850,10 +850,12 @@ MonoBehaviour:
   possibleColor2: {r: 1, g: 0.95518863, b: 0.7311321, a: 1}
   possibleColor3: {r: 1, g: 0.7971698, b: 0.7971698, a: 1}
   moveSpeed: 0.1
-  rotFactor: 50
+  rotFactor: 15
+  playerRotationSensitivity: 0.15
   actualRotationSpeed: 0
   dead: 0
   dutyFinished: 0
+  enteredCloseRange: 0
 --- !u!1 &2619716988857138339
 GameObject:
   m_ObjectHideFlags: 0

@@ -25,7 +25,9 @@ public class PlayerPartParallaxer : MonoBehaviour
 
     void ChangeRotation()
     {
-        float lerpValue = controlledByRotationForce? myEnemyPlaneController.actualRotationSpeed / 10 + 0.5f : Input.GetAxis("Horizontal") / 2 + 0.5f;
+        if (Time.timeScale < 1) return;
+
+        float lerpValue = controlledByRotationForce? myEnemyPlaneController.actualRotationSpeed / 100 + 0.5f : Input.GetAxis("Horizontal") / 2 + 0.5f;
         lerpValue = Mathf.Clamp01(lerpValue);
 
         transform.localEulerAngles = new Vector3(Mathf.Lerp(startXrot, endXrot, lerpValue), 0, 180);

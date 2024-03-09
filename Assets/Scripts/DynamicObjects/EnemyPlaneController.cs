@@ -6,11 +6,11 @@ public class EnemyPlaneController : MonoBehaviour
 {
     [SerializeField] private Color burnColor, possibleColor1, possibleColor2, possibleColor3;
 
-    [SerializeField] private float moveSpeed, rotFactor;
+    [SerializeField] private float moveSpeed, rotFactor, playerRotationSensitivity;
     public float actualRotationSpeed;
-    private float maxXdistance, rotationWhenDutyFinished, stabilizerLerp;
+    private float maxXdistance, rotationWhenDutyFinished, stabilizerLerp, rotationToAddWhenClose, XdistanceWhenEnteredCloseRange, timeAfterDutyFinished = 1, rotSpeedWhenFinished, residualRotation;
 
-    public bool dead, dutyFinished;
+    public bool dead, dutyFinished, enteredCloseRange;
 
     private Transform playerTransform;
 
@@ -48,77 +48,61 @@ public class EnemyPlaneController : MonoBehaviour
 
     void RotateAndMove()
     {
-        actualRotationSpeed = transform.eulerAngles.z;
+        float lastFrameRot = transform.eulerAngles.z;
 
-        Vector2 distToPlayer = Vector2.zero;
         if (!dutyFinished && (transform.position.x - playerTransform.position.x < 1 || PlayerController.dead))
         {
             dutyFinished = true;
             rotationWhenDutyFinished = transform.eulerAngles.z;
+            rotSpeedWhenFinished = actualRotationSpeed * Time.deltaTime;
         }
 
-        if (!dutyFinished)
-        {
-            distToPlayer = new Vector2(transform.position.x - playerTransform.position.x, transform.position.y - playerTransform.position.y);
-            TowardsPlayer(distToPlayer);
-        }
+        if (!dutyFinished) TowardsPlayer();
         else AfterPlayer();
 
-        actualRotationSpeed -= transform.eulerAngles.z;
+        actualRotationSpeed = (transform.eulerAngles.z - lastFrameRot) / Time.deltaTime;
 
-        transform.position += new Vector3(0, -(transform.eulerAngles.z - 90) * Time.deltaTime * moveSpeed, 0);
+        transform.position += new Vector3(0, -(transform.eulerAngles.z - 90) * Time.deltaTime * moveSpeed * ObjectPassingBy.realSpeedMultiplier, 0); // Move in Y in function of plane's rotation.
     }
 
-    void TowardsPlayer(Vector2 distToPlayer)
+    void TowardsPlayer()
     {
-        float rotationAdder = rotFactor * distToPlayer.y * (-distToPlayer.x / maxXdistance + 1) * Time.deltaTime;
+        Vector2 distToPlayer = new Vector2(transform.position.x - playerTransform.position.x, transform.position.y - playerTransform.position.y);
 
-        if ((transform.eulerAngles.z > 40 && rotationAdder < 0) || (transform.eulerAngles.z < 140 && rotationAdder > 0)) transform.eulerAngles += new Vector3(0, 0, rotationAdder);
+        float playerRotationFactor = Mathf.Cos((playerTransform.eulerAngles.z - 180) / 57.3f) * 0.5f + 0.5f; // The more inclinated player is, the higher this variable will be.
 
-        // if ((transform.eulerAngles.z > 40 && rotationAdder < 0) || (transform.eulerAngles.z < 140 && rotationAdder > 0)) 
+        float rotationAdder = 
+            rotFactor * distToPlayer.y * (-distToPlayer.x / maxXdistance + 1) - //When closer in X to the player, stronger the rotation towards it will be.
+            playerRotationFactor * playerRotationSensitivity; // Have in mind player's rotation to go upper if the player does so.
+
+        //if ((transform.eulerAngles.z > 40 && rotationAdder < 0) || (transform.eulerAngles.z < 140 && rotationAdder > 0)) transform.eulerAngles += new Vector3(0, 0, rotationAdder);
+
+        if (distToPlayer.x < 7)
+        {
+            if (!enteredCloseRange)
+            {
+                enteredCloseRange = true;
+                XdistanceWhenEnteredCloseRange = distToPlayer.x;
+                // This variable is needed to make the effect 0 when the close range effect starts, and make it stronger the closer it gets.
+            }
+            rotationToAddWhenClose += rotFactor * distToPlayer.y * (-distToPlayer.x / XdistanceWhenEnteredCloseRange + 1) * Time.deltaTime * 4;
+        }
+        // RotationToAddWhenClose is used to make the plane approach more the player when getting to it, as many times it doesn't catch it with the normal rotation used.
+
+        transform.eulerAngles = new Vector3(0, 0, Mathf.Clamp(rotationAdder + 90 + rotationToAddWhenClose, 30, 150));
     }
 
     void AfterPlayer() // After the player dies or goes too far, tha plane smoothly stabilizes to an horizontal direction.
     {
-        stabilizerLerp += Time.deltaTime * (1 - stabilizerLerp); // The more time has passed since duty finished, the more normalized its direction will be.
-        transform.eulerAngles = new Vector3(0, 0, Mathf.Lerp(rotationWhenDutyFinished, 90, stabilizerLerp));
+        timeAfterDutyFinished += Time.deltaTime * 3;
+        residualRotation += rotSpeedWhenFinished / timeAfterDutyFinished; // Mantain the rotation the plane had when it finished duty.
+        float clampedTimeAfterDutyFinished = Mathf.Clamp01(timeAfterDutyFinished - 1); // At the beggining, start slower to avoid a forced change in direction.
+
+        stabilizerLerp += Time.deltaTime * (1 - stabilizerLerp) * clampedTimeAfterDutyFinished; // The more time has passed since duty finished, the more normalized its direction will be.
+        
+        transform.eulerAngles = new Vector3(0, 0, Mathf.Clamp(Mathf.Lerp(rotationWhenDutyFinished, 90, stabilizerLerp) + residualRotation * (1 - stabilizerLerp), 10, 170));
+        // Clamped so that it doesn't rotate too much. Residual rotation is added multiplied by stabilizerLerp inversed, so that residualRotation has less effect with time.
     }
-
-    // Old Way of rotating and moving. Need to create a better one.
-
-    /*void RotateAndMove()
-    {
-        float lastRotation = transform.eulerAngles.z;
-        if (!PlayerController.dead) dirToPlayer = playerTransform.position - transform.position;
-
-        Vector3 forceToAdd = new Vector3(0, -(transform.eulerAngles.z - 90) / 90 * moveSpeed, 0) * Time.deltaTime;
-
-        if (!dutyFinished)
-        {
-            if (dirToPlayer.x > 1 || PlayerController.dead)
-            {
-                dutyFinished = true;
-                rb.angularVelocity = rotationSpeed;
-            }
-            else
-            {
-                Vector3 rotationAdding = dirToPlayer * Time.deltaTime * rotSpeed;
-                transform.up += rotationAdding;
-            }
-        }
-        else
-        {
-            if (transform.eulerAngles.z > 90) rb.AddTorque(-moveSpeed * 15 * Mathf.Abs(forceToAdd.y / Time.unscaledDeltaTime) * Time.deltaTime);
-            else rb.AddTorque(moveSpeed * 15 * Mathf.Abs(forceToAdd.y));
-        }
-
-        if (transform.eulerAngles.z > 240) forceToAdd = new Vector3(0, 1 * moveSpeed * Time.deltaTime, 0);
-        transform.position += forceToAdd;
-
-        transform.eulerAngles = new Vector3(0, 0, transform.eulerAngles.z);
-        rotationSpeed = (transform.eulerAngles.z - lastRotation) / Time.unscaledDeltaTime;
-        if (dutyFinished) rotationSpeed = rb.angularVelocity;
-    }*/
 
     public void Die()
     {
