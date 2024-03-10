@@ -32,7 +32,7 @@ public class ShakeController : MonoBehaviour
     {
         if (Time.timeSinceLevelLoad < 0.3f) return;
 
-        CreateWave();
+        CreateWave(false);
         shakeTimeLeft = timeShakeLasts;
     }
 
@@ -41,7 +41,10 @@ public class ShakeController : MonoBehaviour
         if (definitiveMaxRadius <= 0) return;
 
         if (shakeTimeLeft > 0) UpdatePos();
-        else transform.localEulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, 0);
+        else
+        {
+            transform.localEulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, 0);
+        }
     }
 
     private void UpdatePos()
@@ -56,22 +59,6 @@ public class ShakeController : MonoBehaviour
         transform.localEulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.Lerp(-rotationScale, rotationScale, adjustedRotationLerping) * (definitiveMaxRadius / maxRadius));
     }
 
-    private void CreateWave()
-    {
-        if (shakeTimeLeft > 0) strengthMultiplier = shakeTimeLeft / timeShakeLasts;
-        else strengthMultiplier = 1;
-
-        waveStartPos = transform.localPosition;
-
-        for (int idx = 0; idx < 10; idx++)
-        {
-            targetPos = new Vector2(Random.Range(-definitiveMaxRadius, definitiveMaxRadius) * strengthMultiplier, Random.Range(-definitiveMaxRadius, definitiveMaxRadius) * strengthMultiplier);
-            if (Mathf.Abs((targetPos - waveStartPos).magnitude) > minWaveDistance * strengthMultiplier) break;
-        }
-
-        shakeMoveProgress = 0;
-    }
-
     private void UpdateShakeMoveProgress()
     {
         shakeMoveProgress += Time.unscaledDeltaTime * interval;
@@ -79,11 +66,35 @@ public class ShakeController : MonoBehaviour
         if (shakeMoveProgress > Mathf.PI)
         {
             shakeMoveProgress = Mathf.PI;
-            CreateWave();
+            CreateWave(false);
         }
 
         shakeTimeLeft -= Time.unscaledDeltaTime;
-        if (shakeTimeLeft < 0) shakeTimeLeft = 0;
+        if (shakeTimeLeft <= 0)
+        {
+            shakeTimeLeft = 0;
+            CreateWave(true);
+        }
+    }
+
+    private void CreateWave(bool isLast)
+    {
+        if (shakeTimeLeft > 0) strengthMultiplier = shakeTimeLeft / timeShakeLasts;
+        else strengthMultiplier = 1;
+
+        waveStartPos = transform.localPosition;
+
+        if (!isLast)
+        {
+            for (int idx = 0; idx < 10; idx++)
+            {
+                targetPos = new Vector2(Random.Range(-definitiveMaxRadius, definitiveMaxRadius) * strengthMultiplier, Random.Range(-definitiveMaxRadius, definitiveMaxRadius) * strengthMultiplier);
+                if (Mathf.Abs((targetPos - waveStartPos).magnitude) > minWaveDistance * strengthMultiplier) break;
+            }
+        }
+        else targetPos = Vector2.zero;
+
+        shakeMoveProgress = 0;
     }
 
     public void SetDefinitiveMaxRadius(float multiplier)

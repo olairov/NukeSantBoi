@@ -6,19 +6,22 @@ using UnityEngine.SceneManagement;
 public class ScreenLoadAnim : MonoBehaviour
 {
     private HudController hudScript;
+    private SceneLoadGatePart gatePartLeft, gatePartRight;
 
     private Transform cameraTransform;
 
     private float safeDistanceFromCamera, timeSinceLevelLoad = -0.7f, timeSinceStartOfSceneQuit = 1;
 
-    private string sceneToLoad, originScene;
+    static private string sceneToLoad, originScene;
 
     [SerializeField] private bool isFromMenu;
-    private bool alreadyCalledLoader, alreadyFinishedEntering;
+    private bool alreadyCalledLoader, alreadyFinishedEntering, justStarted = true;
 
     void Start()
     {
-        safeDistanceFromCamera = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x * 2.5f;
+        gatePartLeft = transform.Find("LeftGate").GetComponent<SceneLoadGatePart>();
+        gatePartRight = transform.Find("RightGate").GetComponent<SceneLoadGatePart>();
+
         if (!isFromMenu)
         {
             hudScript = GameObject.Find("________________Canvas________________").GetComponent<HudController>();
@@ -29,13 +32,19 @@ public class ScreenLoadAnim : MonoBehaviour
 
     private void Update()
     {
-        if (timeSinceLevelLoad < 1 && timeSinceStartOfSceneQuit >= 1) ExitFromScene();
+        if (timeSinceLevelLoad < 1 && timeSinceStartOfSceneQuit >= 1) ExitFromScene(); // When the scene just started, it exits from it.
 
-        if (timeSinceStartOfSceneQuit < 1 && !alreadyFinishedEntering) EnterOnScene();
+        if (timeSinceStartOfSceneQuit < 1 && !alreadyFinishedEntering) EnterOnScene(); // When the scene is preparing to change, it enters on it.
     }
 
     void ExitFromScene()
     {
+        if (sceneToLoad == "Game" && originScene == "Menu" && justStarted)
+        {
+            timeSinceLevelLoad -= 0.7f;
+            justStarted = false;
+        }
+
         timeSinceLevelLoad += Time.unscaledDeltaTime * 5;
 
         if (timeSinceLevelLoad < 0) return;
@@ -44,18 +53,20 @@ public class ScreenLoadAnim : MonoBehaviour
         float yDifferenceFromCamera = 0;
         if (!isFromMenu) yDifferenceFromCamera = Mathf.Tan(cameraTransform.eulerAngles.z * Mathf.Deg2Rad);
 
-        transform.position = new Vector3(Mathf.Lerp(0, -safeDistanceFromCamera, positionLerp), Mathf.Lerp(0, -safeDistanceFromCamera * yDifferenceFromCamera, positionLerp), transform.position.z);
+        gatePartLeft.Move(positionLerp, yDifferenceFromCamera);
+        gatePartRight.Move(positionLerp, yDifferenceFromCamera);
     }
 
     void EnterOnScene()
     {
         timeSinceStartOfSceneQuit -= Time.unscaledDeltaTime * 3;
 
-        float positionLerp = Mathf.Pow(timeSinceStartOfSceneQuit, 2) - 0.015f;
+        float positionLerp = Mathf.Pow(timeSinceStartOfSceneQuit, 2) - 0.01f;
         float yDifferenceFromCamera = 0;
         if (!isFromMenu) yDifferenceFromCamera = Mathf.Tan(cameraTransform.eulerAngles.z * Mathf.Deg2Rad);
 
-        transform.position = new Vector3(Mathf.Lerp(0, safeDistanceFromCamera, positionLerp), Mathf.Lerp(0, safeDistanceFromCamera * yDifferenceFromCamera, positionLerp), transform.position.z);
+        gatePartLeft.Move(positionLerp, yDifferenceFromCamera);
+        gatePartRight.Move(positionLerp, yDifferenceFromCamera);
 
         if (timeSinceStartOfSceneQuit < 0.5f && !alreadyCalledLoader)
         {
@@ -65,15 +76,19 @@ public class ScreenLoadAnim : MonoBehaviour
 
         if (timeSinceStartOfSceneQuit < 0)
         {
-            transform.position = new Vector3(0, transform.position.y, transform.position.z);
             alreadyFinishedEntering = true;
+            transform.position = new Vector3(0, 0, transform.position.z);
+
+            gatePartLeft.PosZero();
+            gatePartRight.PosZero();
         }
     }
 
     IEnumerator EffectsAndLoadScene()
     {
         transform.GetComponent<AudioSource>().Play();
-        transform.GetChild(0).GetComponent<ShakeController>().Shake();
+        transform.GetComponent<ShakeController>().Shake();
+        transform.Find("RightGate/Logo").GetComponent<Animator>().SetTrigger("Glow");
 
         yield return new WaitForSecondsRealtime(1.5f);
 
@@ -86,7 +101,7 @@ public class ScreenLoadAnim : MonoBehaviour
             GameObject.Find("Canvas/ScreenLoadUnload").GetComponent<ScreenLoadAnim>().RestartStats();
             SceneManager.UnloadSceneAsync("Options");
 
-            // Options from options means that from options, we want to exit this scene, and as anotherone might be enabled, I just disable options.
+            // Options from options means that from options, we want to exit that scene, and as anotherone might be enabled, I just disable options.
         }
         else SceneManager.LoadScene(sceneToLoad);
     }
