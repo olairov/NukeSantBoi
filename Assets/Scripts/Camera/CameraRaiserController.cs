@@ -8,6 +8,8 @@ public class CameraRaiserController : MonoBehaviour
 
     private SpriteRenderer deadLineSprite;
 
+    private bool hasCrashed;
+
     void Start()
     {
         playerTransform = GameObject.Find("Player").transform;
@@ -20,10 +22,11 @@ public class CameraRaiserController : MonoBehaviour
     {
         ChangePos();
 
-        if (PlayerController.dead)
+        if (PlayerController.dead && !hasCrashed)
         {
             transform.parent.GetComponent<Animator>().SetTrigger("Crash");
             transform.GetChild(0).GetComponent<AudioListener>().enabled = true;
+            hasCrashed = true;
         }
     }
 

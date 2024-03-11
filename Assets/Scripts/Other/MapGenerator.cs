@@ -7,24 +7,18 @@ public class MapGenerator : MonoBehaviour
     public Sprite lastBackgroundLayer1, lastBackgroundLayer2, lastBackgroundLayer3, lastBuildingSprite, lastWideBuildingSprite;
 
     //Interactable objects prefabs:
-    [SerializeField] private GameObject buildingPrefab, wideBuildingPrefab, enemyPrefab, skystraperPrefab, obstaclePrefab, warningPrefab;
+    [SerializeField] private GameObject buildingPrefab, wideBuildingPrefab, enemyPrefab, skystraperPrefab, obstaclePrefab, warningPrefab, birdGroupPrefab, singleBirdPrefab;
 
     //Other Prefabs:
     [SerializeField] private GameObject wind1pref, wind2pref, wind3pref, wind4pref;
 
-    private Transform playerTransform ,buildingsContainer, enemiesContainer, obstaclesContainer, backgroundContainer, warningsContainer, particlesContainer;
+    private Transform playerTransform ,buildingsContainer, enemiesContainer, obstaclesContainer, backgroundContainer, warningsContainer, particlesContainer, detailsContainer;
 
     static public float playerDistanceToStandardPos;
     [SerializeField] private float speedIncreaseFactor;
-    private float timeForNextBuilding, timeForNextEnemy, timeForNextObstacle, timeForNextParticle, timeForNextLayer1, timeForNextLayer2, timeForNextLayer3;
+    private float timeForNextBuilding, timeForNextEnemy, timeForNextObstacle, timeForNextParticle, timeForNextLayer1, timeForNextLayer2, timeForNextLayer3, timeForNextBirdGroup = 3, timeForSingleBird = 1;
 
     private int buildingsFromSkystraper;
-
-    private bool isPaused;
-    public bool SetIsPaused
-    {
-        set { isPaused = value; }
-    }
 
     void Start()
     {
@@ -35,6 +29,7 @@ public class MapGenerator : MonoBehaviour
         backgroundContainer = GameObject.Find("BackgroundContainer").transform;
         warningsContainer = GameObject.Find("NotPhysicElementsContainer").transform;
         particlesContainer = GameObject.Find("ParticlesContainer").transform;
+        detailsContainer = GameObject.Find("DetailsContainer").transform;
 
         FirstGeneration();
 
@@ -63,6 +58,8 @@ public class MapGenerator : MonoBehaviour
         GenerateBuildings();
         GenerateObstacles();
         GenerateWindParticles();
+        GenerateBirdGroups();
+        GenerateSingleBirds();
 
         if(!PlayerController.dead) GenerateEnemies();
 
@@ -140,6 +137,26 @@ public class MapGenerator : MonoBehaviour
         timeForNextParticle = Random.Range(0.4f, 0.6f);
     }
 
+    void GenerateBirdGroups()
+    {
+        timeForNextBirdGroup -= Time.deltaTime * ObjectPassingBy.speedMultiplier;
+        if (timeForNextBirdGroup > 0) return;
+
+        Instantiate(birdGroupPrefab, detailsContainer);
+
+        timeForNextBirdGroup = Random.Range(8f, 16f);
+    }
+
+    void GenerateSingleBirds()
+    {
+        timeForSingleBird -= Time.deltaTime;
+        if (timeForSingleBird > 0) return;
+
+        Instantiate(singleBirdPrefab, detailsContainer);
+
+        timeForSingleBird = Random.Range(6f, 12f);
+    }
+
     void Layer1BackgroundGeneration()
     {
         timeForNextLayer1 -= Time.deltaTime * ObjectPassingBy.speedMultiplier;
@@ -189,5 +206,8 @@ public class MapGenerator : MonoBehaviour
             Instantiate(layer2Background, new Vector2(actualX, 0), Quaternion.identity, backgroundContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
             Instantiate(layer3Background, new Vector2(actualX, 0), Quaternion.identity, backgroundContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
         }
+
+        Instantiate(birdGroupPrefab, new Vector3(Random.Range(startX - 2, finishX + 2), 0, birdGroupPrefab.transform.position.z), Quaternion.identity, detailsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
+        Instantiate(singleBirdPrefab, new Vector3(Random.Range(startX - 2, finishX + 2), 0, birdGroupPrefab.transform.position.z), Quaternion.identity, detailsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
     }
 }

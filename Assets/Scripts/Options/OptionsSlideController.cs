@@ -5,6 +5,7 @@ public class OptionsSlideController : MonoBehaviour
 {
     private Transform gameCameraTransform, advancedOptionsTransform;
     private HudController hudScript;
+    private Animator cameraAnim;
 
     [SerializeField] private float enterExitSpeed;
     private float safeDistanceFromCamera, lerpProgress, realCameraRotation;
@@ -25,6 +26,7 @@ public class OptionsSlideController : MonoBehaviour
         gameCameraTransform = GameObject.Find("Camera/CameraRiser/Main Camera").transform;
         GameObject.Find("CanvasOptions").GetComponent<Canvas>().worldCamera = gameCameraTransform.GetComponent<Camera>();
         realCameraRotation = gameCameraTransform.eulerAngles.z;
+        cameraAnim = GameObject.Find("Camera").GetComponent<Animator>();
 
         hudScript = GameObject.Find("________________Canvas________________").GetComponent<HudController>();
         hudScript.SetIsInOptions = true;
@@ -129,16 +131,25 @@ public class OptionsSlideController : MonoBehaviour
     public void GoToAdvancedOptions()
     {
         advancedOptionsEntering = true;
+        CameraSlide(true);
     }
 
     public void ComeFromAdvancedOptions()
     {
         advancedOptionsEntering = false;
+        CameraSlide(false);
     }
 
     public void OptionsExit()
     {
         entering = false;
         hudScript.SetIsInOptions = false;
+        //CameraSlide(false);
+    }
+
+    private void CameraSlide(bool isRight)
+    {
+        if (isRight) cameraAnim.SetTrigger("SlideRight");
+        else cameraAnim.SetTrigger("SlideLeft");
     }
 }

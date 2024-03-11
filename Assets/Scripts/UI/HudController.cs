@@ -201,7 +201,6 @@ public class HudController : MonoBehaviour
     private void SendVariableInfo()
     {
         playerScript.SetIsPaused = pretendsToBePaused;
-        mapGeneratorScript.SetIsPaused = isPaused;
         InGameSound.timeSpeed = actualTimescale;
         MusicSound.timeSpeed = actualTimescale;
     }

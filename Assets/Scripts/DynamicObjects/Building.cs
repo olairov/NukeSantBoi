@@ -55,7 +55,7 @@ public class Building : MonoBehaviour
             transform.localScale = new Vector3(transform.localScale.x, -transform.localScale.y, transform.localScale.z);
         }
 
-        if (isWide && Random.value > 0.995f) Instantiate(buildingPrefab, transform.parent).GetComponent<Building>().SetImUpsideDown = true;
+        if (isWide && Random.value > 0.999f) Instantiate(buildingPrefab, transform.parent).GetComponent<Building>().SetImUpsideDown = true;
 
         transform.position = new Vector3(imUpsideDown ? transform.position.x + 4 : transform.position.x, Camera.main.ScreenToWorldPoint(Vector3.zero).y + randomY, iStrapSky ? -3f : -0.5f);
 
