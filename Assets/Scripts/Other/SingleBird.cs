@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SingleBird : MonoBehaviour
 {
-    private float yPos, randDelay;
+    private float yPos, randDelay, lastYcosCalculatedYAdder;
 
     void Start()
     {
@@ -27,6 +27,15 @@ public class SingleBird : MonoBehaviour
 
     void Update()
     {
-        transform.position = new Vector3(transform.position.x, yPos + Mathf.Cos(Time.time + randDelay) / 5, transform.position.z);
+        UpdateYPos();
+    }
+
+    void UpdateYPos()
+    {
+        float cosCalculatedYAdder = Mathf.Cos(Time.time + randDelay) / 5; // Difference added this way to let ObjectPassingBy calculate the Y in function of the camera pos.
+
+        transform.position += new Vector3(0, cosCalculatedYAdder - lastYcosCalculatedYAdder, 0);
+
+        lastYcosCalculatedYAdder = cosCalculatedYAdder;
     }
 }

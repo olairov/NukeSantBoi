@@ -9,7 +9,7 @@ public class ObjectPassingBy : MonoBehaviour
     private Vector3 lastFramePos;
 
     public static float speedMultiplier, realSpeedMultiplier;
-    public float passingSpeed, realPassingSpeed;
+    public float passingSpeed, realPassingSpeed, myYpos;
     private float appearingDistance = 10, lastCameraYpos, speedAdder;
 
     [SerializeField] private bool background, fakePassingSpeed;
@@ -53,14 +53,15 @@ public class ObjectPassingBy : MonoBehaviour
 
         if (!PlayerController.dead) speedAdder = (Mathf.Cos(playerTransform.eulerAngles.z / 57.3f) + 0.6f) * 0.625f; // Enter the mathematical equation in geogebra.com/classic.
         if (speedAdder < 0) speedAdder = 0;
-        // SpeedAdder is public so that when you die while looping, camera movement remains.
+        // SpeedAdder is gloabal so that when you die while looping, camera movement remains.
 
         transform.position += new Vector3(speedAdder * 7f * Time.deltaTime * realSpeedMultiplier, 0, 0);
     }
 
     void UpdateYpos()
     {
-        transform.position = new Vector3(transform.position.x, transform.position.y - (cameraTransform.position.y - lastCameraYpos) * passingSpeed, transform.position.z);
+        myYpos = transform.position.y - (cameraTransform.position.y - lastCameraYpos) * passingSpeed;
+        transform.position = new Vector3(transform.position.x, myYpos, transform.position.z);
 
         lastCameraYpos = cameraTransform.position.y;
     }

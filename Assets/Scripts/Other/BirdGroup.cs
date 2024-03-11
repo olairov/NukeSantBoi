@@ -4,19 +4,26 @@ using UnityEngine;
 
 public class BirdGroup : MonoBehaviour
 {
+    private ObjectPassingBy myMovingScript;
+
     private List<float> birdsStartTimes = new List<float>();
-    private float timeSinceAppeared, yPos, randDelay;
+    private float timeSinceAppeared, yPos, randDelay, lastYcosCalculatedYAdder;
 
     private bool finishedStartingBirds;
 
     void Start()
     {
+        myMovingScript = transform.GetComponent<ObjectPassingBy>();
+
         ChoseStats();
+        lastYcosCalculatedYAdder = Mathf.Cos(Time.time + randDelay) / 5;
     }
 
     private void ChoseStats()
     {
-        transform.localScale = Vector3.one * Random.Range(0.6f, 1f);
+        float distance = Random.Range(0.6f, 1f);
+        transform.localScale = Vector3.one * distance;
+        transform.GetComponent<ObjectPassingBy>().realPassingSpeed *= distance;
 
         int childNum = transform.childCount; // Get the num of children before the loop, as while on it, this number is likely to change.
 
@@ -33,6 +40,7 @@ public class BirdGroup : MonoBehaviour
         }
 
         yPos = Random.Range(1f, 5f);
+        if (distance > 0.8f) transform.position = new Vector3(transform.position.x, yPos, 11); // Make the bird be in front of the nearest buildings when they are bigger.
         randDelay = Random.Range(0, 3.14f);
     }
 
@@ -40,7 +48,16 @@ public class BirdGroup : MonoBehaviour
     {
         if (!finishedStartingBirds) StartBirdAnimations();
 
-        transform.position = new Vector3(transform.position.x, yPos + Mathf.Cos(Time.time + randDelay) / 5, transform.position.z);
+        UpdateYPos();
+    }
+
+    void UpdateYPos()
+    {
+        float cosCalculatedYAdder = Mathf.Cos(Time.time + randDelay) / 5; // Difference added this way to let ObjectPassingBy calculate the Y in function of the camera pos.
+
+        transform.position += new Vector3(0, cosCalculatedYAdder - lastYcosCalculatedYAdder, 0);
+
+        lastYcosCalculatedYAdder = cosCalculatedYAdder;
     }
 
     private void StartBirdAnimations()

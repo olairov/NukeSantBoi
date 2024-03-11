@@ -10,12 +10,12 @@ public class ScreenLoadAnim : MonoBehaviour
 
     private Transform cameraTransform;
 
-    private float safeDistanceFromCamera, timeSinceLevelLoad, timeSinceStartOfSceneQuit = 1;
+    private float safeDistanceFromCamera, timeSinceLevelLoad = -0.3f, timeSinceStartOfSceneQuit = 1;
 
     static private string sceneToLoad, originScene;
 
     [SerializeField] private bool isFromMenu;
-    private bool alreadyCalledLoader, alreadyFinishedEntering, justStarted = true, allowedToExitFromScene;
+    private bool alreadyCalledLoader, alreadyFinishedEntering, allowedToExitFromScene;
 
     void Start()
     {
@@ -29,8 +29,6 @@ public class ScreenLoadAnim : MonoBehaviour
         }
         transform.position = new Vector3(transform.position.x, 0, transform.position.z);
 
-        //if (sceneToLoad != null) StartCoroutine(StartOfLoadingScene());
-        //else allowedToExitFromScene = true;
         allowedToExitFromScene = true;
     }
 
@@ -43,12 +41,6 @@ public class ScreenLoadAnim : MonoBehaviour
 
     void ExitFromScene()
     {
-        if (sceneToLoad == "Game" && originScene == "Menu" && justStarted)
-        {
-            timeSinceLevelLoad -= 0.7f;
-            justStarted = false;
-        }
-
         timeSinceLevelLoad += Time.unscaledDeltaTime * 5;
 
         if (timeSinceLevelLoad < 0) return;
@@ -105,7 +97,7 @@ public class ScreenLoadAnim : MonoBehaviour
             GameObject.Find("Canvas/ScreenLoadUnload").GetComponent<ScreenLoadAnim>().RestartStats();
             SceneManager.UnloadSceneAsync("Options");
 
-            // Options from options means that from options, we want to exit that scene, and as anotherone might be enabled, I just disable options.
+            // Options from options means that from options, we want to exit that scene, and as another one might be enabled, we just disable options.
         }
         else
         {
@@ -114,21 +106,18 @@ public class ScreenLoadAnim : MonoBehaviour
         }
     }
 
-    IEnumerator StartOfLoadingScene()
+    IEnumerator StartOfLoadingScene() // Make sure the animation doesn't start until the scene has fully loaded.
     {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneToLoad);
-        asyncLoad.allowSceneActivation = false;
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneToLoad); // Start scene loading
+        asyncLoad.allowSceneActivation = false; // Prevent the scene from being activated until loaded
 
         while (!asyncLoad.isDone)
         {
-            // You can update a loading bar or do other things here if needed
+            // Maybe put a Loading Bar
 
-            if (asyncLoad.progress >= 0.9f)
+            if (asyncLoad.progress >= 0.9f) // The scene is almost ready
             {
-                // The scene is almost ready
                 asyncLoad.allowSceneActivation = true;  // Activate the scene
-                //allowedToExitFromScene = true;
-                SceneManager.UnloadSceneAsync(originScene);
             }
 
             yield return null;
@@ -136,12 +125,11 @@ public class ScreenLoadAnim : MonoBehaviour
 
         /*while (true)
         {
+            // Maybe put a Loading Bar
+
             if (asyncLoad.isDone)
             {
-                asyncLoad.allowSceneActivation = true;
-                allowedToExitFromScene = true;
-                SceneManager.UnloadSceneAsync(originScene);
-
+                asyncLoad.allowSceneActivation = true;  // Activate the scene
                 break;
             }
 

@@ -684,6 +684,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   passingSpeed: 3
   realPassingSpeed: -1.5
+  myYpos: 0
   background: 0
   fakePassingSpeed: 0
   appearingObject: 0
