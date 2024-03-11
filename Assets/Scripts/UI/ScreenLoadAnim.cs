@@ -10,12 +10,12 @@ public class ScreenLoadAnim : MonoBehaviour
 
     private Transform cameraTransform;
 
-    private float safeDistanceFromCamera, timeSinceLevelLoad = -0.7f, timeSinceStartOfSceneQuit = 1;
+    private float safeDistanceFromCamera, timeSinceLevelLoad, timeSinceStartOfSceneQuit = 1;
 
     static private string sceneToLoad, originScene;
 
     [SerializeField] private bool isFromMenu;
-    private bool alreadyCalledLoader, alreadyFinishedEntering, justStarted = true;
+    private bool alreadyCalledLoader, alreadyFinishedEntering, justStarted = true, allowedToExitFromScene;
 
     void Start()
     {
@@ -28,11 +28,15 @@ public class ScreenLoadAnim : MonoBehaviour
             cameraTransform = cameraTransform = GameObject.Find("Camera").transform.GetChild(0);
         }
         transform.position = new Vector3(transform.position.x, 0, transform.position.z);
+
+        //if (sceneToLoad != null) StartCoroutine(StartOfLoadingScene());
+        //else allowedToExitFromScene = true;
+        allowedToExitFromScene = true;
     }
 
     private void Update()
     {
-        if (timeSinceLevelLoad < 1 && timeSinceStartOfSceneQuit >= 1) ExitFromScene(); // When the scene just started, it exits from it.
+        if (timeSinceLevelLoad < 1 && timeSinceStartOfSceneQuit >= 1 && allowedToExitFromScene) ExitFromScene(); // When the scene just started, it exits from it.
 
         if (timeSinceStartOfSceneQuit < 1 && !alreadyFinishedEntering) EnterOnScene(); // When the scene is preparing to change, it enters on it.
     }
@@ -103,7 +107,46 @@ public class ScreenLoadAnim : MonoBehaviour
 
             // Options from options means that from options, we want to exit that scene, and as anotherone might be enabled, I just disable options.
         }
-        else SceneManager.LoadScene(sceneToLoad);
+        else
+        {
+            StartCoroutine(StartOfLoadingScene());
+            allowedToExitFromScene = false;
+        }
+    }
+
+    IEnumerator StartOfLoadingScene()
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneToLoad);
+        asyncLoad.allowSceneActivation = false;
+
+        while (!asyncLoad.isDone)
+        {
+            // You can update a loading bar or do other things here if needed
+
+            if (asyncLoad.progress >= 0.9f)
+            {
+                // The scene is almost ready
+                asyncLoad.allowSceneActivation = true;  // Activate the scene
+                //allowedToExitFromScene = true;
+                SceneManager.UnloadSceneAsync(originScene);
+            }
+
+            yield return null;
+        }
+
+        /*while (true)
+        {
+            if (asyncLoad.isDone)
+            {
+                asyncLoad.allowSceneActivation = true;
+                allowedToExitFromScene = true;
+                SceneManager.UnloadSceneAsync(originScene);
+
+                break;
+            }
+
+            yield return null;
+        }*/
     }
 
     public void LoadScene(string scene, string sceneFromCalled)
