@@ -144,7 +144,7 @@ public class MapGenerator : MonoBehaviour
 
         Instantiate(birdGroupPrefab, detailsContainer);
 
-        timeForNextBirdGroup = Random.Range(8f, 16f);
+        timeForNextBirdGroup = Random.Range(12f, 20f);
     }
 
     void GenerateSingleBirds()
@@ -154,7 +154,7 @@ public class MapGenerator : MonoBehaviour
 
         Instantiate(singleBirdPrefab, detailsContainer);
 
-        timeForSingleBird = Random.Range(6f, 12f);
+        timeForSingleBird = Random.Range(8f, 14f);
     }
 
     void Layer1BackgroundGeneration()
