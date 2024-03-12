@@ -32,7 +32,7 @@ public class SingleBird : MonoBehaviour
 
     void UpdateYPos()
     {
-        float cosCalculatedYAdder = Mathf.Cos(Time.time + randDelay) / 5; // Difference added this way to let ObjectPassingBy calculate the Y in function of the camera pos.
+        float cosCalculatedYAdder = Mathf.Cos(Time.time + randDelay) / 2; // Difference added this way to let ObjectPassingBy calculate the Y in function of the camera pos.
 
         transform.position += new Vector3(0, cosCalculatedYAdder - lastYcosCalculatedYAdder, 0);
 

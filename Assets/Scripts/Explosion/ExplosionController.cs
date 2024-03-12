@@ -6,7 +6,7 @@ using TMPro;
 public class ExplosionController : MonoBehaviour
 {
     [SerializeField] private GameObject pointsPrefab;
-    private Transform pointsContainer;
+    private Transform pointsContainer, playerTramsform;
 
     private SpriteRenderer mySprite;
 
@@ -23,6 +23,7 @@ public class ExplosionController : MonoBehaviour
         if (Time.timeSinceLevelLoad < 0.1f) Destroy(gameObject);
         
         pointsContainer = GameObject.Find("NotPhysicElementsContainer").transform;
+        playerTramsform = GameObject.Find("Player").transform;
         hudScript = GameObject.Find("________________Canvas________________").GetComponent<HudController>();
 
         mySprite = transform.GetComponent<SpriteRenderer>();
@@ -126,6 +127,6 @@ public class ExplosionController : MonoBehaviour
             comboNum++;
         }
 
-        if (other.CompareTag("Player")) collidedWithPlayer = true;
+        if (other.CompareTag("Player") && Mathf.Abs(Vector2.Distance(transform.position, playerTramsform.position)) < 2f) collidedWithPlayer = true;
     }
 }

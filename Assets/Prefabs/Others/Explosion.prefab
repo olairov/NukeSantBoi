@@ -9843,6 +9843,7 @@ MonoBehaviour:
   disableIfNotThreeDSound: 0
   disableWhenPlayerDie: 0
   ignorePause: 0
+  ignoreThreeDsound: 0
 --- !u!82 &2988868139547922410
 AudioSource:
   m_ObjectHideFlags: 0
@@ -10067,7 +10068,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 2
+  m_Radius: 2.6
 --- !u!50 &7425528693313676779
 Rigidbody2D:
   serializedVersion: 4
@@ -10123,6 +10124,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   passingSpeed: 5
   realPassingSpeed: 0
+  myYpos: 0
   background: 0
   fakePassingSpeed: 0
   appearingObject: 1
@@ -10250,6 +10252,7 @@ MonoBehaviour:
   disableIfNotThreeDSound: 0
   disableWhenPlayerDie: 0
   ignorePause: 0
+  ignoreThreeDsound: 0
 --- !u!1 &5573093618598483146
 GameObject:
   m_ObjectHideFlags: 0

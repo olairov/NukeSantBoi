@@ -207,7 +207,7 @@ public class MapGenerator : MonoBehaviour
             Instantiate(layer3Background, new Vector2(actualX, 0), Quaternion.identity, backgroundContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
         }
 
-        Instantiate(birdGroupPrefab, new Vector3(Random.Range(startX - 2, finishX + 2), 0, birdGroupPrefab.transform.position.z), Quaternion.identity, detailsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
-        Instantiate(singleBirdPrefab, new Vector3(Random.Range(startX - 2, finishX + 2), 0, birdGroupPrefab.transform.position.z), Quaternion.identity, detailsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
+        Instantiate(birdGroupPrefab, new Vector3(Random.Range(startX - 2, finishX + 5), 0, birdGroupPrefab.transform.position.z), Quaternion.identity, detailsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
+        Instantiate(singleBirdPrefab, new Vector3(Random.Range(startX - 2, finishX + 5), 0, birdGroupPrefab.transform.position.z), Quaternion.identity, detailsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
     }
 }

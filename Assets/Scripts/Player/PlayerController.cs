@@ -227,7 +227,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.tag == "Explosion") Die();
+        if (other.tag == "Explosion" && Mathf.Abs(Vector2.Distance(other.transform.position, transform.position)) < 2f) Die();
 
         // If you throw a bomb to something and just then you crash with it two explosions are generated in a very short distance.
         // That may look a little bit weird, so I have to find a way to nullify one of them. ->
