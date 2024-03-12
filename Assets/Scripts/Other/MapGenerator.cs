@@ -7,16 +7,19 @@ public class MapGenerator : MonoBehaviour
     public Sprite lastBackgroundLayer1, lastBackgroundLayer2, lastBackgroundLayer3, lastBuildingSprite, lastWideBuildingSprite;
 
     //Interactable objects prefabs:
-    [SerializeField] private GameObject buildingPrefab, wideBuildingPrefab, enemyPrefab, skystraperPrefab, obstaclePrefab, warningPrefab, birdGroupPrefab, singleBirdPrefab;
+    [SerializeField] private GameObject buildingPrefab, wideBuildingPrefab, enemyPrefab, skystraperPrefab, obstaclePrefab;
 
     //Other Prefabs:
-    [SerializeField] private GameObject wind1pref, wind2pref, wind3pref, wind4pref;
+    [SerializeField] private GameObject wind1pref, wind2pref, wind3pref, wind4pref, warningPrefab, birdGroupPrefab, singleBirdPrefab, cranePrefab;
 
     private Transform playerTransform ,buildingsContainer, enemiesContainer, obstaclesContainer, backgroundContainer, warningsContainer, particlesContainer, detailsContainer;
 
     static public float playerDistanceToStandardPos;
     [SerializeField] private float speedIncreaseFactor;
-    private float timeForNextBuilding, timeForNextEnemy, timeForNextObstacle, timeForNextParticle, timeForNextLayer1, timeForNextLayer2, timeForNextLayer3, timeForNextBirdGroup = 3, timeForSingleBird = 1;
+
+    // Times for every thing generation
+    private float timeForNextBuilding, timeForNextEnemy, timeForNextObstacle, timeForNextParticle, timeForNextLayer1, timeForNextLayer2,
+        timeForNextLayer3, timeForNextBirdGroup = 3, timeForSingleBird = 1, timeForNextCrane = 8;
 
     private int buildingsFromSkystraper;
 
@@ -60,8 +63,9 @@ public class MapGenerator : MonoBehaviour
         GenerateWindParticles();
         GenerateBirdGroups();
         GenerateSingleBirds();
+        GenerateCranes();
 
-        if(!PlayerController.dead) GenerateEnemies();
+        if (!PlayerController.dead) GenerateEnemies();
 
         Layer1BackgroundGeneration();
         Layer2BackgroundGeneration();
@@ -157,6 +161,16 @@ public class MapGenerator : MonoBehaviour
         timeForSingleBird = Random.Range(8f, 14f);
     }
 
+    void GenerateCranes()
+    {
+        timeForNextCrane -= Time.deltaTime;
+        if (timeForNextCrane > 0) return;
+
+        Instantiate(cranePrefab, detailsContainer);
+
+        timeForNextCrane = Random.Range(8f, 24f);
+    }
+
     void Layer1BackgroundGeneration()
     {
         timeForNextLayer1 -= Time.deltaTime * ObjectPassingBy.speedMultiplier;
@@ -209,5 +223,6 @@ public class MapGenerator : MonoBehaviour
 
         Instantiate(birdGroupPrefab, new Vector3(Random.Range(startX - 2, finishX + 5), 0, birdGroupPrefab.transform.position.z), Quaternion.identity, detailsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
         Instantiate(singleBirdPrefab, new Vector3(Random.Range(startX - 2, finishX + 5), 0, birdGroupPrefab.transform.position.z), Quaternion.identity, detailsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
+        Instantiate(cranePrefab, new Vector3(Random.Range(startX - 2, finishX + 5), 0, cranePrefab.transform.position.z), Quaternion.identity, detailsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
     }
 }

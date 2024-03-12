@@ -5857,13 +5857,14 @@ MonoBehaviour:
   enemyPrefab: {fileID: 2503070929597295574, guid: b0d23395a1c5f2e419ae701a15373a58, type: 3}
   skystraperPrefab: {fileID: 1161062619281861293, guid: c337d325ce8c89e4bb3b42bd49107c24, type: 3}
   obstaclePrefab: {fileID: 8916123517466623639, guid: 8e8a5fb5a98150a45bc023ce39dd69df, type: 3}
-  warningPrefab: {fileID: 1777913421278980149, guid: 03581aa3931af3b43a1990d6d3290960, type: 3}
-  birdGroupPrefab: {fileID: 7862433997937421755, guid: e3fcec73a87f18140b9519ff0339a4ea, type: 3}
-  singleBirdPrefab: {fileID: 8342589050914399541, guid: d255077168aaf184d87ca5e0496e81c6, type: 3}
   wind1pref: {fileID: 3064928887408917092, guid: 0355b14afbe8f3443a6c20bf1ea7dc23, type: 3}
   wind2pref: {fileID: 88672797662930169, guid: 1a1b0a30e1dbf884f8f70065dbdca488, type: 3}
   wind3pref: {fileID: 7771924444019298891, guid: 9aaa6f0f4b125dc4e9f267dfa68f98b1, type: 3}
   wind4pref: {fileID: 5565454798818487719, guid: 07ce1ea3aeb4d0542af8b19331b132a9, type: 3}
+  warningPrefab: {fileID: 1777913421278980149, guid: 03581aa3931af3b43a1990d6d3290960, type: 3}
+  birdGroupPrefab: {fileID: 7862433997937421755, guid: e3fcec73a87f18140b9519ff0339a4ea, type: 3}
+  singleBirdPrefab: {fileID: 8342589050914399541, guid: d255077168aaf184d87ca5e0496e81c6, type: 3}
+  cranePrefab: {fileID: 828266947501970034, guid: f6932f3252e9abd488acb866ae7cbb02, type: 3}
   speedIncreaseFactor: 0.007
 --- !u!1 &994695091
 GameObject:
@@ -7192,6 +7193,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   passingSpeed: 0
   realPassingSpeed: 0
+  myYpos: 0
   background: 0
   fakePassingSpeed: 0
   appearingObject: 0
@@ -10736,7 +10738,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -60, y: 0}
+  m_AnchoredPosition: {x: -59.99994, y: 0}
   m_SizeDelta: {x: 120, y: 0}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &2001069458
@@ -11110,6 +11112,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   passingSpeed: 0
   realPassingSpeed: 0
+  myYpos: 0
   background: 0
   fakePassingSpeed: 0
   appearingObject: 0

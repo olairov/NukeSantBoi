@@ -38,7 +38,6 @@ public class ExplosionController : MonoBehaviour
     {
         timeAlive += Time.deltaTime;
 
-        if (timeAlive > 0.08f && !alreadyEnabledHitbox) EnableHitbox();
         if (alreadyEnabledHitbox)
         {
             Acolor -= Time.deltaTime * 1.5f;
@@ -84,13 +83,6 @@ public class ExplosionController : MonoBehaviour
         {
             Time.timeScale = Mathf.Cos(timeAliveForTimeScale) / 4 + 0.75f;
         }
-    }
-
-    void EnableHitbox()
-    {
-        transform.GetComponent<Collider2D>().enabled = true;
-
-        alreadyEnabledHitbox = true;
     }
 
     void PlayDestructAudio()
