@@ -95,13 +95,6 @@ public class ExplosionController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Obstacle"))
-        {
-            pointsToAdd += 1;
-            other.GetComponent<ObstacleScript>().Die();
-
-            comboNum++;
-        }
         if (other.CompareTag("Building") || other.CompareTag("Skystraper"))
         {
             if (!other.GetComponent<Building>().dead) pointsToAdd += 3;
@@ -111,14 +104,50 @@ public class ExplosionController : MonoBehaviour
 
             comboNum++;
         }
-        if (other.CompareTag("Enemy"))
+        else
+        {
+            if (Vector2.Distance(transform.position, other.transform.position) < 2.6f) Destroy(other.transform); // If the object is close, kill it.
+            else Push(other.transform); // If it/s too far, push it away.
+        }
+
+        if (other.CompareTag("Player") && Mathf.Abs(Vector2.Distance(transform.position, playerTramsform.position)) < 2f) collidedWithPlayer = true;
+    }
+
+    void Destroy (Transform other)
+    {
+        if (other.CompareTag("Obstacle"))
+        {
+            pointsToAdd += 1;
+            other.GetComponent<ObstacleScript>().Die();
+
+            comboNum++;
+        }
+        else if (other.CompareTag("Building") || other.CompareTag("Skystraper"))
+        {
+            if (!other.GetComponent<Building>().dead) pointsToAdd += 3;
+            other.GetComponent<Building>().Destruct(transform.position);
+
+            PlayDestructAudio();
+
+            comboNum++;
+        }
+        else if (other.CompareTag("Enemy"))
         {
             pointsToAdd += 5;
             other.GetComponent<EnemyPlaneController>().Die();
 
             comboNum++;
         }
+    }
 
-        if (other.CompareTag("Player") && Mathf.Abs(Vector2.Distance(transform.position, playerTramsform.position)) < 2f) collidedWithPlayer = true;
+    void Push (Transform other)
+    {
+        Vector2 dirToObject = other.transform.position - transform.position;
+
+        if (other.CompareTag("Obstacle")) other.GetComponent<ObstacleScript>().PushAway(dirToObject);
+        else if (other.CompareTag("Building") || other.CompareTag("Skystraper")) 
+            if (!other.GetComponent<Building>().dead) other.GetComponent<Building>().PushAway(dirToObject);
+        else if (other.CompareTag("Enemy")) other.GetComponent<EnemyPlaneController>().PushAway(dirToObject);
+
     }
 }

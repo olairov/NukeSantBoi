@@ -212,4 +212,9 @@ public class Building : MonoBehaviour
             transform.Find("BrokenSprite").GetComponent<SpriteRenderer>().color = lastColor;
         }
     }
+
+    public void PushAway(Vector2 direction)
+    {
+
+    }
 }

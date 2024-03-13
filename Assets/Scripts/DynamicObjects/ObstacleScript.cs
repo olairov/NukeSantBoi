@@ -80,4 +80,9 @@ public class ObstacleScript : MonoBehaviour
         transform.GetComponent<Collider2D>().enabled = false;
         transform.GetComponent<ObjectPassingBy>().enabled = false;
     }
+
+    public void PushAway(Vector2 direction)
+    {
+        rb.AddForce(direction * 3, ForceMode2D.Impulse);
+    }
 }

@@ -122,4 +122,9 @@ public class EnemyPlaneController : MonoBehaviour
         transform.GetComponent<ObjectPassingBy>().enabled = false;
         transform.Find("Boost").gameObject.SetActive(false);
     }
+
+    public void PushAway(Vector2 direction)
+    {
+        rb.AddForce(direction * 3, ForceMode2D.Impulse);
+    }
 }
