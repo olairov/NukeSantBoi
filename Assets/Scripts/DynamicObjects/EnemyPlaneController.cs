@@ -8,8 +8,7 @@ public class EnemyPlaneController : MonoBehaviour
 
     [SerializeField] private float moveSpeed, rotFactor, playerRotationSensitivity, pushForce;
     public float actualRotationSpeed;
-    private float maxXdistance, rotationWhenDutyFinished, stabilizerLerp, rotationToAddWhenClose, XdistanceWhenEnteredCloseRange, timeAfterDutyFinished = 1, rotSpeedWhenFinished, residualRotation,
-        actualPushForce, pushingTime;
+    private float maxXdistance, rotationWhenDutyFinished, stabilizerLerp, rotationToAddWhenClose, XdistanceWhenEnteredCloseRange, timeAfterDutyFinished = 1, rotSpeedWhenFinished, residualRotation;
 
     public bool dead, dutyFinished, enteredCloseRange;
 
@@ -64,8 +63,6 @@ public class EnemyPlaneController : MonoBehaviour
         actualRotationSpeed = (transform.eulerAngles.z - lastFrameRot) / Time.deltaTime;
 
         transform.position += new Vector3(0, -(transform.eulerAngles.z - 90) * Time.deltaTime * moveSpeed * ObjectPassingBy.realSpeedMultiplier, 0); // Move in Y in function of plane's rotation.
-
-        if (pushingTime > 0) BeingPushed();
     }
 
     void TowardsPlayer()
@@ -124,17 +121,5 @@ public class EnemyPlaneController : MonoBehaviour
         transform.GetComponent<Collider2D>().enabled = false;
         transform.GetComponent<ObjectPassingBy>().enabled = false;
         transform.Find("Boost").gameObject.SetActive(false);
-    }
-
-    public void PushAway(float Ydirection, float distance)
-    {
-        actualPushForce = Ydirection * pushForce / distance;
-        pushingTime = 1;
-    }
-
-    void BeingPushed()
-    {
-        pushingTime -= Time.deltaTime;
-        transform.position += new Vector3(0, actualPushForce * pushingTime * Time.deltaTime, 0);
     }
 }

@@ -6,7 +6,7 @@ using TMPro;
 public class ExplosionController : MonoBehaviour
 {
     [SerializeField] private GameObject pointsPrefab;
-    private Transform pointsContainer, playerTramsform, obstaclesContainer, enemiiesContainer;
+    private Transform pointsContainer, playerTramsform, obstaclesContainer, buildingsContainer;
 
     private SpriteRenderer mySprite;
 
@@ -20,22 +20,27 @@ public class ExplosionController : MonoBehaviour
 
     void Start()
     {
-        if (Time.timeSinceLevelLoad < 0.1f) Destroy(gameObject);
-        
-        pointsContainer = GameObject.Find("NotPhysicElementsContainer").transform;
-        playerTramsform = GameObject.Find("Player").transform;
-        obstaclesContainer = GameObject.Find("ObstaclesContainer").transform;
-        enemiiesContainer = GameObject.Find("EnemiesContainer").transform;
-        hudScript = GameObject.Find("________________Canvas________________").GetComponent<HudController>();
+        if (Time.timeSinceLevelLoad < 0.1f)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            pointsContainer = GameObject.Find("NotPhysicElementsContainer").transform;
+            playerTramsform = GameObject.Find("Player").transform;
+            obstaclesContainer = GameObject.Find("ObstaclesContainer").transform;
+            buildingsContainer = GameObject.Find("BuildingsContainer").transform;
+            hudScript = GameObject.Find("________________Canvas________________").GetComponent<HudController>();
 
-        mySprite = transform.GetComponent<SpriteRenderer>();
+            mySprite = transform.GetComponent<SpriteRenderer>();
 
-        transform.position = new Vector3(transform.position.x, transform.position.y, -10);
-        transform.parent = GameObject.Find("ExplosionContainer").transform;
+            transform.position = new Vector3(transform.position.x, transform.position.y, -10);
+            transform.parent = GameObject.Find("ExplosionContainer").transform;
 
-        Camera.main.GetComponent<ShakeController>().Shake();
+            Camera.main.GetComponent<ShakeController>().Shake();
 
-        PushObjects();
+            PushObjects();
+        }
     }
 
     private void Update()
@@ -115,12 +120,15 @@ public class ExplosionController : MonoBehaviour
         }
         else if (other.CompareTag("Building") || other.CompareTag("Skystraper"))
         {
-            if (!other.GetComponent<Building>().dead) pointsToAdd += 3;
+            if (!other.GetComponent<Building>().dead)
+            {
+                pointsToAdd += 3;
+                comboNum++;
+            }
+
             other.GetComponent<Building>().Destruct(transform.position);
 
             PlayDestructAudio();
-
-            comboNum++;
         }
         else if (other.CompareTag("Enemy"))
         {
@@ -140,11 +148,11 @@ public class ExplosionController : MonoBehaviour
                 obstacleTransform.GetComponent<ObstacleScript>().PushAway((obstacleTransform.transform.position - transform.position).normalized, Vector2.Distance(obstacleTransform.position, transform.position));
         }
 
-        for (int enemyIdx = 0; enemyIdx < enemiiesContainer.childCount; enemyIdx++)
+        for (int buildingIdx = 0; buildingIdx < buildingsContainer.childCount; buildingIdx++)
         {
-            Transform enemyTransform = enemiiesContainer.GetChild(enemyIdx);
-            if (Vector2.Distance(enemyTransform.position, transform.position) > transform.GetComponent<CircleCollider2D>().radius)
-                enemyTransform.GetComponent<EnemyPlaneController>().PushAway((enemyTransform.transform.position - transform.position).normalized.y, Vector2.Distance(enemyTransform.position, transform.position));
+            Transform buildingTransform = buildingsContainer.GetChild(buildingIdx);
+            if (!buildingTransform.name.Contains("UpperPart"))
+                buildingTransform.GetComponent<Building>().PushAway((buildingTransform.transform.position - transform.position).normalized.x, Vector2.Distance(buildingTransform.position, transform.position));
         }
     }
 }

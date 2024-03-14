@@ -13,8 +13,8 @@ public class Building : MonoBehaviour
 
     private Transform particlesContainer, myBackSprite;
 
-    [SerializeField] private float colorValuesIncreaseWhenDie;
-    private float rotationSpeed, fallingSpeed, timeSinceDestruction, cameraWidthInUnits;
+    [SerializeField] private float colorValuesIncreaseWhenDie, pushAwayForce;
+    private float rotationSpeed, fallingSpeed, timeSinceDestruction, cameraWidthInUnits, pushAwayTime, pushAwayProgress;
 
     public bool dead;
     private bool iStrapSky, isWide, imUpsideDown;
@@ -41,6 +41,7 @@ public class Building : MonoBehaviour
     {
         DisplaceBackSprite();
         if (dead) Fall();
+        else if (pushAwayTime > 0 && !iStrapSky) KeepPushingAway();
     }
 
     void CreateStats()
@@ -213,8 +214,21 @@ public class Building : MonoBehaviour
         }
     }
 
-    public void PushAway(Vector2 direction)
+    public void PushAway(float Xdirection, float distance)
     {
+        pushAwayProgress = -Xdirection * pushAwayForce / (distance * 2.5f);
+        if (imUpsideDown) pushAwayForce *= -1;
 
+        pushAwayTime = 1;
+    }
+
+    private void KeepPushingAway()
+    {
+        pushAwayTime /= 1 + (Time.deltaTime * 3);
+
+        float pushAwayLerpProgress = (-pushAwayTime + 1) * 10;
+        if (pushAwayTime < 0.9f) pushAwayLerpProgress = pushAwayTime * 1.111f;
+
+        transform.eulerAngles = new Vector3(0, 0, pushAwayProgress * pushAwayLerpProgress);
     }
 }

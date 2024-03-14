@@ -91,14 +91,6 @@ public class ScreenLoadAnim : MonoBehaviour
         RestartStats();
 
         if (sceneToLoad == "Exit") Application.Quit();
-        else if (sceneToLoad == "Options" && originScene != "Options") SceneManager.LoadScene(sceneToLoad, LoadSceneMode.Additive);
-        else if (sceneToLoad == "Options" && originScene == "Options")
-        {
-            GameObject.Find("Canvas/ScreenLoadUnload").GetComponent<ScreenLoadAnim>().RestartStats();
-            SceneManager.UnloadSceneAsync("Options");
-
-            // Options from options means that from options, we want to exit that scene, and as another one might be enabled, we just disable options.
-        }
         else
         {
             StartCoroutine(StartOfLoadingScene());

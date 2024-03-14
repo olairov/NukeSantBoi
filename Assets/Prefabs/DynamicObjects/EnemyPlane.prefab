@@ -852,7 +852,7 @@ MonoBehaviour:
   possibleColor3: {r: 1, g: 0.7971698, b: 0.7971698, a: 1}
   moveSpeed: 0.1
   rotFactor: 15
-  playerRotationSensitivity: 0.15
+  playerRotationSensitivity: 0.1
   pushForce: 50
   actualRotationSpeed: 0
   dead: 0

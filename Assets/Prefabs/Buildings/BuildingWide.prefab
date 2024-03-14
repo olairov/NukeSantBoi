@@ -134,6 +134,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   passingSpeed: 5
   realPassingSpeed: 0
+  myYpos: 0
   background: 0
   fakePassingSpeed: 0
   appearingObject: 0
@@ -161,6 +162,7 @@ MonoBehaviour:
   backBuildingSprite3: {fileID: -1548818590, guid: 6d0d2cf6d8f33004392701554df285c0, type: 3}
   lastSprite: {fileID: 0}
   colorValuesIncreaseWhenDie: 90
+  pushAwayForce: 120
   dead: 0
 --- !u!61 &1161062619281861289
 BoxCollider2D:
