@@ -6,9 +6,10 @@ public class EnemyPlaneController : MonoBehaviour
 {
     [SerializeField] private Color burnColor, possibleColor1, possibleColor2, possibleColor3;
 
-    [SerializeField] private float moveSpeed, rotFactor, playerRotationSensitivity;
+    [SerializeField] private float moveSpeed, rotFactor, playerRotationSensitivity, pushForce;
     public float actualRotationSpeed;
-    private float maxXdistance, rotationWhenDutyFinished, stabilizerLerp, rotationToAddWhenClose, XdistanceWhenEnteredCloseRange, timeAfterDutyFinished = 1, rotSpeedWhenFinished, residualRotation;
+    private float maxXdistance, rotationWhenDutyFinished, stabilizerLerp, rotationToAddWhenClose, XdistanceWhenEnteredCloseRange, timeAfterDutyFinished = 1, rotSpeedWhenFinished, residualRotation,
+        actualPushForce, pushingTime;
 
     public bool dead, dutyFinished, enteredCloseRange;
 
@@ -63,6 +64,8 @@ public class EnemyPlaneController : MonoBehaviour
         actualRotationSpeed = (transform.eulerAngles.z - lastFrameRot) / Time.deltaTime;
 
         transform.position += new Vector3(0, -(transform.eulerAngles.z - 90) * Time.deltaTime * moveSpeed * ObjectPassingBy.realSpeedMultiplier, 0); // Move in Y in function of plane's rotation.
+
+        if (pushingTime > 0) BeingPushed();
     }
 
     void TowardsPlayer()
@@ -123,8 +126,15 @@ public class EnemyPlaneController : MonoBehaviour
         transform.Find("Boost").gameObject.SetActive(false);
     }
 
-    public void PushAway(Vector2 direction)
+    public void PushAway(float Ydirection, float distance)
     {
-        rb.AddForce(direction * 3, ForceMode2D.Impulse);
+        actualPushForce = Ydirection * pushForce / distance;
+        pushingTime = 1;
+    }
+
+    void BeingPushed()
+    {
+        pushingTime -= Time.deltaTime;
+        transform.position += new Vector3(0, actualPushForce * pushingTime * Time.deltaTime, 0);
     }
 }

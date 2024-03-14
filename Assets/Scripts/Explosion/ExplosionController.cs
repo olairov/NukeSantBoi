@@ -6,7 +6,7 @@ using TMPro;
 public class ExplosionController : MonoBehaviour
 {
     [SerializeField] private GameObject pointsPrefab;
-    private Transform pointsContainer, playerTramsform;
+    private Transform pointsContainer, playerTramsform, obstaclesContainer, enemiiesContainer;
 
     private SpriteRenderer mySprite;
 
@@ -24,6 +24,8 @@ public class ExplosionController : MonoBehaviour
         
         pointsContainer = GameObject.Find("NotPhysicElementsContainer").transform;
         playerTramsform = GameObject.Find("Player").transform;
+        obstaclesContainer = GameObject.Find("ObstaclesContainer").transform;
+        enemiiesContainer = GameObject.Find("EnemiesContainer").transform;
         hudScript = GameObject.Find("________________Canvas________________").GetComponent<HudController>();
 
         mySprite = transform.GetComponent<SpriteRenderer>();
@@ -32,6 +34,8 @@ public class ExplosionController : MonoBehaviour
         transform.parent = GameObject.Find("ExplosionContainer").transform;
 
         Camera.main.GetComponent<ShakeController>().Shake();
+
+        PushObjects();
     }
 
     private void Update()
@@ -95,21 +99,8 @@ public class ExplosionController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Building") || other.CompareTag("Skystraper"))
-        {
-            if (!other.GetComponent<Building>().dead) pointsToAdd += 3;
-            other.GetComponent<Building>().Destruct(transform.position);
-
-            PlayDestructAudio();
-
-            comboNum++;
-        }
-        else
-        {
-            if (Vector2.Distance(transform.position, other.transform.position) < 2.6f) Destroy(other.transform); // If the object is close, kill it.
-            else Push(other.transform); // If it/s too far, push it away.
-        }
-
+        Destroy(other.transform); // If the object is close, kill it.
+        
         if (other.CompareTag("Player") && Mathf.Abs(Vector2.Distance(transform.position, playerTramsform.position)) < 2f) collidedWithPlayer = true;
     }
 
@@ -140,14 +131,20 @@ public class ExplosionController : MonoBehaviour
         }
     }
 
-    void Push (Transform other)
+    void PushObjects ()
     {
-        Vector2 dirToObject = other.transform.position - transform.position;
+        for (int obstIdx = 0; obstIdx < obstaclesContainer.childCount; obstIdx++)
+        {
+            Transform obstacleTransform = obstaclesContainer.GetChild(obstIdx);
+            if (Vector2.Distance(obstacleTransform.position, transform.position) > transform.GetComponent<CircleCollider2D>().radius)
+                obstacleTransform.GetComponent<ObstacleScript>().PushAway((obstacleTransform.transform.position - transform.position).normalized, Vector2.Distance(obstacleTransform.position, transform.position));
+        }
 
-        if (other.CompareTag("Obstacle")) other.GetComponent<ObstacleScript>().PushAway(dirToObject);
-        else if (other.CompareTag("Building") || other.CompareTag("Skystraper")) 
-            if (!other.GetComponent<Building>().dead) other.GetComponent<Building>().PushAway(dirToObject);
-        else if (other.CompareTag("Enemy")) other.GetComponent<EnemyPlaneController>().PushAway(dirToObject);
-
+        for (int enemyIdx = 0; enemyIdx < enemiiesContainer.childCount; enemyIdx++)
+        {
+            Transform enemyTransform = enemiiesContainer.GetChild(enemyIdx);
+            if (Vector2.Distance(enemyTransform.position, transform.position) > transform.GetComponent<CircleCollider2D>().radius)
+                enemyTransform.GetComponent<EnemyPlaneController>().PushAway((enemyTransform.transform.position - transform.position).normalized.y, Vector2.Distance(enemyTransform.position, transform.position));
+        }
     }
 }

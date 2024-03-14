@@ -13,8 +13,8 @@ public class ObstacleScript : MonoBehaviour
 
     private Vector3 actualDirection;
 
-    [SerializeField] private float speed, rotSpeed;
-    private float timeForChange, randRotDelay;
+    [SerializeField] private float speed, rotSpeed, pushForce;
+    private float randRotDelay;
 
     private bool dead;
 
@@ -42,8 +42,6 @@ public class ObstacleScript : MonoBehaviour
     {
         actualDirection += new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0).normalized * Time.deltaTime * 50;
         actualDirection = Vector3.ClampMagnitude(actualDirection, 1);
-
-        timeForChange = Random.Range(0.5f, 2f);
     }
 
     void ChoseStats()
@@ -81,8 +79,8 @@ public class ObstacleScript : MonoBehaviour
         transform.GetComponent<ObjectPassingBy>().enabled = false;
     }
 
-    public void PushAway(Vector2 direction)
+    public void PushAway(Vector2 direction, float distance)
     {
-        rb.AddForce(direction * 3, ForceMode2D.Impulse);
+        rb.AddForce(direction * pushForce / distance, ForceMode2D.Impulse);
     }
 }
