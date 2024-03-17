@@ -58,11 +58,11 @@ public class ExplosionController : MonoBehaviour
             {
                 if (comboNum > 1)
                 {
-                    TMP_Text comboText = Instantiate(pointsPrefab, transform.position + new Vector3(2, 2.5f, -1), Quaternion.identity, pointsContainer).GetComponentInChildren<TMP_Text>();
+                    TMP_Text comboText = Instantiate(pointsPrefab, transform.position + new Vector3(2, 2.5f, -10), Quaternion.identity, pointsContainer).GetComponentInChildren<TMP_Text>();
                     comboText.fontSize /= 2;
                     comboText.text = "COMBO x" + comboNum;
                 }
-                Instantiate(pointsPrefab, transform.position + new Vector3(2, 1, -1), Quaternion.identity, pointsContainer).GetComponentInChildren<TMP_Text>().text = "+" + (pointsToAdd + (comboNum - 1));
+                Instantiate(pointsPrefab, transform.position + new Vector3(2, 1, -10), Quaternion.identity, pointsContainer).GetComponentInChildren<TMP_Text>().text = "+" + (pointsToAdd + (comboNum - 1));
 
                 hudScript.ChangePointsValue(pointsToAdd + (comboNum - 1));
             }

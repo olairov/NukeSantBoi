@@ -6,8 +6,6 @@ public class ObjectPassingBy : MonoBehaviour
 {
     private Transform cameraTransform, playerTransform;
 
-    private Vector3 lastFramePos;
-
     public static float speedMultiplier, realSpeedMultiplier;
     public float passingSpeed, realPassingSpeed, myYpos;
     private float appearingDistance = 10, lastCameraYpos, speedAdder;
@@ -23,8 +21,6 @@ public class ObjectPassingBy : MonoBehaviour
 
         cameraTransform = Camera.main.transform.parent;
         if (fakePassingSpeed) playerTransform = GameObject.Find("Player").transform;
-
-        lastFramePos = transform.position;
     }
 
     private void Update()

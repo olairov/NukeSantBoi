@@ -12,7 +12,7 @@ public class ScreenLoadAnim : MonoBehaviour
 
     private float safeDistanceFromCamera, timeSinceLevelLoad = -0.3f, timeSinceStartOfSceneQuit = 1;
 
-    static private string sceneToLoad, originScene;
+    static private string sceneToLoad;
 
     [SerializeField] private bool isFromMenu;
     private bool alreadyCalledLoader, alreadyFinishedEntering, allowedToExitFromScene;
@@ -134,7 +134,6 @@ public class ScreenLoadAnim : MonoBehaviour
         timeSinceStartOfSceneQuit -= Time.unscaledDeltaTime;
         transform.position = new Vector3(safeDistanceFromCamera, transform.position.y, transform.position.z);
         sceneToLoad = scene;
-        originScene = sceneFromCalled;
     }
 
     public void RestartStats()

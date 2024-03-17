@@ -54,7 +54,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -98,6 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ea7c4c4b5bd60442ab2c964f7de475a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  zPos: 0
   background1: {fileID: 21300000, guid: 7b69eed88f27fb34888442aa23138295, type: 3}
   background2: {fileID: 21300000, guid: 6918f7449a5c4c044a509cf58bffffa8, type: 3}
   background3: {fileID: 21300000, guid: 292f30397709dfd46bb76663e6d0e005, type: 3}
@@ -114,5 +115,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   passingSpeed: 4
-  appearingObject: 0
+  realPassingSpeed: 0
+  myYpos: 0
   background: 1
+  fakePassingSpeed: 0
+  appearingObject: 0
