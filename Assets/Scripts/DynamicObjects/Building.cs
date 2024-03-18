@@ -226,8 +226,8 @@ public class Building : MonoBehaviour
     {
         pushAwayTime /= 1 + (Time.deltaTime * 3);
 
-        float pushAwayLerpProgress = (-pushAwayTime + 1) * 10;
-        if (pushAwayTime < 0.9f) pushAwayLerpProgress = pushAwayTime * 1.111f;
+        float pushAwayLerpProgress = (-pushAwayTime + 1) * 5;
+        if (pushAwayTime < 0.8f) pushAwayLerpProgress = pushAwayTime * 1.111f;
 
         transform.eulerAngles = new Vector3(0, 0, pushAwayProgress * pushAwayLerpProgress);
     }
