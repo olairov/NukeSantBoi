@@ -11,6 +11,9 @@ public class Building : MonoBehaviour
 
     private MapGenerator mapGeneratorScript;
 
+    private Material instanceMaterial, backSpriteInstanceMaterial;
+    private SpriteRenderer myRenderer;
+
     private Transform particlesContainer, myBackSprite;
 
     [SerializeField] private float colorValuesIncreaseWhenDie, pushAwayForce;
@@ -28,12 +31,30 @@ public class Building : MonoBehaviour
     {
         mapGeneratorScript = GameObject.Find("__________________Map___________________").GetComponent<MapGenerator>();
         particlesContainer = GameObject.Find("ParticlesContainer").transform;
+        myRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
         myBackSprite = transform.GetChild(1);
+
+        // Set the material for the gap shader.
+        instanceMaterial = new Material(myRenderer.sharedMaterial);
+        myRenderer.material = instanceMaterial;
+        instanceMaterial.SetVector("_breakPos", new Vector2(0, 3));
+
+        // Set the material for the gap shader to the back sprite.
+        backSpriteInstanceMaterial = new Material(myBackSprite.GetComponent<SpriteRenderer>().sharedMaterial);
+        myBackSprite.GetComponent<SpriteRenderer>().material = backSpriteInstanceMaterial;
+        backSpriteInstanceMaterial.SetVector("_breakPos", new Vector2(0, 3));
 
         cameraWidthInUnits = (Camera.main.ScreenToWorldPoint(Vector3.one * Screen.width).x - Camera.main.ScreenToWorldPoint(Vector3.zero).x);
 
         if (transform.name.Contains("Sky")) iStrapSky = true;
-        if (transform.name.Contains("Wide")) isWide = true;
+        if (transform.name.Contains("Wide"))
+        {
+            isWide = true;
+
+            // Set the material for the gap shader accordingly to being wide.
+            instanceMaterial.SetFloat("_tiling", 4);
+            backSpriteInstanceMaterial.SetFloat("_tiling", 4);
+        }
         CreateStats();
     }
 
@@ -132,6 +153,7 @@ public class Building : MonoBehaviour
         if (iStrapSky) upperPartTransform = SkystraperFallStats(otherPos.y);
 
         StartCoroutine(Flash(upperPartTransform));
+        if (!iStrapSky) StartCoroutine(SetGap(otherPos));
 
         FallStats();
     }
@@ -179,6 +201,31 @@ public class Building : MonoBehaviour
 
         transform.position += new Vector3(0, fallingSpeed * timeSinceDestruction * Time.deltaTime, 0);
         transform.eulerAngles += new Vector3(0, 0, rotationSpeed * timeSinceDestruction * Time.deltaTime);
+    }
+
+    IEnumerator SetGap(Vector2 otherPos)
+    {
+        yield return new WaitForSeconds(0.1f);
+
+        Vector2 posToPutDecal = ((Vector2)transform.position - otherPos) / Mathf.PI - new Vector2(0, 1);
+
+        if (!isWide)
+        {
+            if (posToPutDecal.x < -0.4f) posToPutDecal = new Vector2(-0.4f, posToPutDecal.y);
+            else if (posToPutDecal.x > 0.4f) posToPutDecal = new Vector2(0.4f, posToPutDecal.y);
+
+            if (myRenderer.sprite != buildingSprite2 && myRenderer.sprite != buildingSprite3 && posToPutDecal.y < -2) posToPutDecal = new Vector2(posToPutDecal.x, -2f);
+            else if (posToPutDecal.y < -2.3f) posToPutDecal = new Vector2(posToPutDecal.x, -2.3f);
+        }
+        else
+        {
+            posToPutDecal = new Vector2(Mathf.Clamp(posToPutDecal.x, -1, 1), posToPutDecal.y);
+
+            if (posToPutDecal.y < -2.4f) posToPutDecal = new Vector2(posToPutDecal.x, -2.4f);
+        }
+
+        instanceMaterial.SetVector("_breakPos", posToPutDecal);
+        backSpriteInstanceMaterial.SetVector("_breakPos", posToPutDecal);
     }
 
     IEnumerator Flash(Transform upperPartTransform)

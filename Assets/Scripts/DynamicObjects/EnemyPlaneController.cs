@@ -58,7 +58,7 @@ public class EnemyPlaneController : MonoBehaviour
         }
 
         if (!dutyFinished) TowardsPlayer();
-        else AfterPlayer();
+        else if (Time.timeScale >= 0.5f) AfterPlayer();
 
         actualRotationSpeed = (transform.eulerAngles.z - lastFrameRot) / Time.deltaTime;
 
