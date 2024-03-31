@@ -10,7 +10,8 @@ public class OptionsButton : MonoBehaviour
     void Start()
     {
         optionsSlideScript = GameObject.Find("CanvasOptions/Options").GetComponent<OptionsSlideController>();
-        cameraShakeScript = GameObject.Find("Camera/CameraRiser/Main Camera").GetComponent<ShakeController>();
+        if (GameObject.Find("Camera/CameraRiser/Main Camera")) cameraShakeScript = GameObject.Find("Camera/CameraRiser/Main Camera").GetComponent<ShakeController>();
+        else cameraShakeScript = GameObject.Find("Main Camera").GetComponent<ShakeController>();
     }
 
     public void BackPressed()

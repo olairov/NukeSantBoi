@@ -10,7 +10,7 @@ public class OptionsSlideController : MonoBehaviour
     [SerializeField] private float enterExitSpeed;
     private float safeDistanceFromCamera, lerpProgress, realCameraRotation;
 
-    private bool entering = true, advancedOptionsEntering;
+    private bool entering = true, advancedOptionsEntering, imInGameScene;
 
     void Start()
     {
@@ -23,13 +23,22 @@ public class OptionsSlideController : MonoBehaviour
         advancedOptionsTransform = transform.Find("AdvancedOptions");
         advancedOptionsTransform.position = new Vector3(safeDistanceFromCamera, advancedOptionsTransform.position.y, advancedOptionsTransform.position.z);
 
-        gameCameraTransform = GameObject.Find("Camera/CameraRiser/Main Camera").transform;
+        if (GameObject.Find("Camera/CameraRiser/Main Camera")) imInGameScene = true;
+            
+        if (imInGameScene) gameCameraTransform = GameObject.Find("Camera/CameraRiser/Main Camera").transform;
+        else gameCameraTransform = GameObject.Find("Camera/Main Camera").transform;
+
         GameObject.Find("CanvasOptions").GetComponent<Canvas>().worldCamera = gameCameraTransform.GetComponent<Camera>();
         realCameraRotation = gameCameraTransform.eulerAngles.z;
-        cameraAnim = GameObject.Find("Camera").GetComponent<Animator>();
 
-        hudScript = GameObject.Find("________________Canvas________________").GetComponent<HudController>();
-        hudScript.SetIsInOptions = true;
+        if (imInGameScene) cameraAnim = GameObject.Find("Camera").GetComponent<Animator>();
+        else cameraAnim = gameCameraTransform.parent.GetComponent<Animator>();
+
+        if (imInGameScene)
+        {
+            hudScript = GameObject.Find("________________Canvas________________").GetComponent<HudController>();
+            hudScript.SetIsInOptions = true;
+        }
     }
 
     void Update()
@@ -143,8 +152,7 @@ public class OptionsSlideController : MonoBehaviour
     public void OptionsExit()
     {
         entering = false;
-        hudScript.SetIsInOptions = false;
-        //CameraSlide(false);
+        if (imInGameScene) hudScript.SetIsInOptions = false;
     }
 
     private void CameraSlide(bool isRight)
