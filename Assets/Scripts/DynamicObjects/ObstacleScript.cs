@@ -68,6 +68,7 @@ public class ObstacleScript : MonoBehaviour
         rb.angularDrag = 0;
         rb.gravityScale = 2;
         rb.drag = 0;
+        rb.velocity = Vector2.zero;
 
         rb.AddTorque(Random.Range(80f, 240f));
         if (Random.value > 0.5f) rb.angularVelocity *= -1;
