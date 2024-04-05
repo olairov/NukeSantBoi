@@ -10,10 +10,18 @@ public class OptionsSlideController : MonoBehaviour
     [SerializeField] private float enterExitSpeed;
     private float safeDistanceFromCamera, lerpProgress, realCameraRotation;
 
-    private bool entering = true, advancedOptionsEntering, imInGameScene;
+    private bool entering = true, advancedOptionsEntering, imInGameScene, notOtherSceneActive = true;
 
     void Start()
     {
+        if (SceneManager.sceneCount > 1)
+        {
+            GameObject.Find("OptionsCamera").SetActive(false);
+            if (GameObject.Find("Camera/CameraRiser/Main Camera")) imInGameScene = true;
+
+            notOtherSceneActive = false;
+        }
+
         safeDistanceFromCamera = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x * 4f;
 
         // Avoiding transparent area between the two options menus when lerping:
@@ -23,10 +31,9 @@ public class OptionsSlideController : MonoBehaviour
         advancedOptionsTransform = transform.Find("AdvancedOptions");
         advancedOptionsTransform.position = new Vector3(safeDistanceFromCamera, advancedOptionsTransform.position.y, advancedOptionsTransform.position.z);
 
-        if (GameObject.Find("Camera/CameraRiser/Main Camera")) imInGameScene = true;
-            
         if (imInGameScene) gameCameraTransform = GameObject.Find("Camera/CameraRiser/Main Camera").transform;
-        else gameCameraTransform = GameObject.Find("Camera/Main Camera").transform;
+        else if (!notOtherSceneActive) gameCameraTransform = GameObject.Find("Camera/Main Camera").transform;
+        else gameCameraTransform = GameObject.Find("OptionsCamera/Main Camera").transform;
 
         GameObject.Find("CanvasOptions").GetComponent<Canvas>().worldCamera = gameCameraTransform.GetComponent<Camera>();
         realCameraRotation = gameCameraTransform.eulerAngles.z;
