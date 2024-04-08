@@ -20,6 +20,7 @@ public class OptionsSlideController : MonoBehaviour
             if (GameObject.Find("Camera/CameraRiser/Main Camera")) imInGameScene = true;
 
             notOtherSceneActive = false;
+            GameObject.Find("EventSystemOptions").SetActive(false);
         }
 
         safeDistanceFromCamera = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x * 4f;

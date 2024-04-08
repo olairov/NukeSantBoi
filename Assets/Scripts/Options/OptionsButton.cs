@@ -13,7 +13,7 @@ public class OptionsButton : MonoBehaviour
 
         if (GameObject.Find("Camera/CameraRiser/Main Camera")) cameraShakeScript = GameObject.Find("Camera/CameraRiser/Main Camera").GetComponent<ShakeController>();
         else if (GameObject.Find("Camera/Main Camera")) cameraShakeScript = GameObject.Find("Camera/Main Camera").GetComponent<ShakeController>();
-        else GameObject.Find("OptionsCamera/Main Camera").GetComponent<ShakeController>();
+        else cameraShakeScript = GameObject.Find("OptionsCamera/Main Camera").GetComponent<ShakeController>();
     }
 
     public void BackPressed()
@@ -24,7 +24,9 @@ public class OptionsButton : MonoBehaviour
 
     public void ShakePressed()
     {
-        cameraShakeScript.SetDefinitiveMaxRadius(PlayerPrefs.GetFloat("ScreenshakeValue"));
+        if (PlayerPrefs.HasKey("ScreenshakeValue")) cameraShakeScript.SetDefinitiveMaxRadius(PlayerPrefs.GetFloat("ScreenshakeValue"));
+        else cameraShakeScript.SetDefinitiveMaxRadius(0.5f);
+
         cameraShakeScript.Shake();
     }
 
