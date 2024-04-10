@@ -65,7 +65,7 @@ public class HudController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetButtonUp("Pause")) PauseManager();
+        if (Input.GetButtonDown("Pause")) PauseManager();
 
         AdjustTimeScale();
 

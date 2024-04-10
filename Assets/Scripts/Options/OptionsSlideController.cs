@@ -6,6 +6,7 @@ public class OptionsSlideController : MonoBehaviour
     private Transform gameCameraTransform, advancedOptionsTransform;
     private HudController hudScript;
     private Animator cameraAnim;
+    private AudioSource menuEnterSound, menuExitSound;
 
     [SerializeField] private float enterExitSpeed;
     private float safeDistanceFromCamera, lerpProgress, realCameraRotation;
@@ -29,18 +30,26 @@ public class OptionsSlideController : MonoBehaviour
         Transform emptyColorFillTransform = transform.Find("EmptyColorFill");
         emptyColorFillTransform.position = new Vector3(safeDistanceFromCamera / 2, emptyColorFillTransform.position.y, emptyColorFillTransform.position.z);
 
+        // Store and initialize Advanced Options
         advancedOptionsTransform = transform.Find("AdvancedOptions");
         advancedOptionsTransform.position = new Vector3(safeDistanceFromCamera, advancedOptionsTransform.position.y, advancedOptionsTransform.position.z);
 
+        // Get the camera transform
         if (imInGameScene) gameCameraTransform = GameObject.Find("Camera/CameraRiser/Main Camera").transform;
         else if (!notOtherSceneActive) gameCameraTransform = GameObject.Find("Camera/Main Camera").transform;
         else gameCameraTransform = GameObject.Find("OptionsCamera/Main Camera").transform;
 
+        // Initialize the canvas to adapt it to the camera and get standard camera's rotation to substract it from the actual camera rotation when it changes.
         GameObject.Find("CanvasOptions").GetComponent<Canvas>().worldCamera = gameCameraTransform.GetComponent<Camera>();
         realCameraRotation = gameCameraTransform.eulerAngles.z;
 
+        // Store the animator of the camera to be able to send the animation activation signal.
         if (imInGameScene) cameraAnim = GameObject.Find("Camera").GetComponent<Animator>();
         else cameraAnim = gameCameraTransform.parent.GetComponent<Animator>();
+
+        // Store Sounds for entering and exitting from the menu.
+        menuEnterSound = GameObject.Find("UIsoundsOptions/MenuInSound").GetComponent<AudioSource>();
+        menuExitSound = GameObject.Find("UIsoundsOptions/MenuOutSound").GetComponent<AudioSource>();
 
         if (imInGameScene)
         {
@@ -56,7 +65,7 @@ public class OptionsSlideController : MonoBehaviour
 
         transform.localEulerAngles = new Vector3(0, 0, - realCameraRotation + gameCameraTransform.eulerAngles.z);
 
-        if (Input.GetButtonUp("Pause"))
+        if (Input.GetButtonDown("Pause"))
         {
             if (advancedOptionsEntering) ComeFromAdvancedOptions();
             else OptionsExit();
@@ -149,18 +158,24 @@ public class OptionsSlideController : MonoBehaviour
     {
         advancedOptionsEntering = true;
         CameraSlide(true);
+
+        menuEnterSound.Play();
     }
 
     public void ComeFromAdvancedOptions()
     {
         advancedOptionsEntering = false;
         CameraSlide(false);
+
+        menuExitSound.Play();
     }
 
     public void OptionsExit()
     {
         entering = false;
         if (imInGameScene) hudScript.SetIsInOptions = false;
+
+        menuExitSound.Play();
     }
 
     private void CameraSlide(bool isRight)

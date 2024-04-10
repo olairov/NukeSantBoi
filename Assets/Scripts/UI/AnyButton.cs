@@ -21,9 +21,18 @@ public class AnyButton : MonoBehaviour
     {
         if (!doesntHaveShadow) shadowTransform = transform.Find("Image/Shadow").transform;
 
-        selectSound = GameObject.Find("UIsounds/SelectSound").GetComponent<AudioSource>();
-        clickSound = GameObject.Find("UIsounds/ClickSound").GetComponent<AudioSource>();
-        pressSound = GameObject.Find("UIsounds/PressSound").GetComponent<AudioSource>();
+        if (GameObject.Find("UIsounds"))
+        {
+            selectSound = GameObject.Find("UIsounds/SelectSound").GetComponent<AudioSource>();
+            clickSound = GameObject.Find("UIsounds/ClickSound").GetComponent<AudioSource>();
+            pressSound = GameObject.Find("UIsounds/PressSound").GetComponent<AudioSource>();
+        }
+        else
+        {
+            selectSound = GameObject.Find("UIsoundsOptions/SelectSound").GetComponent<AudioSource>();
+            clickSound = GameObject.Find("UIsoundsOptions/ClickSound").GetComponent<AudioSource>();
+            pressSound = GameObject.Find("UIsoundsOptions/PressSound").GetComponent<AudioSource>();
+        }
 
         if (resizerTransform == null) resizerTransform = transform.Find("Image");
         if (!imSlider) myShake = resizerTransform.GetComponent<ShakeController>();
