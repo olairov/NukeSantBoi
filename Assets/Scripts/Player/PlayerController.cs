@@ -204,7 +204,7 @@ public class PlayerController : MonoBehaviour
         dead = true;
 
         Cursor.visible = true;
-        transform.GetComponent<AudioListener>().enabled = false;
+        GameObject.Find("AudioListener").GetComponent<AudioListener>().enabled = false;
         GameObject.Find("Camera/CameraRiser/Main Camera/VignetteEffect").GetComponent<VignetteEffectController>().Explosion(true);
 
         for (int childNum = 0; childNum < transform.Find("Parts").childCount; childNum++) transform.Find("Parts").GetChild(childNum).GetComponent<SpriteRenderer>().color = burnColor;
