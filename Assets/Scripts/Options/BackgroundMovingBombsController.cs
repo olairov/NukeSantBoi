@@ -17,11 +17,12 @@ public class BackgroundMovingBombsController : MonoBehaviour
 
     private void CreateRowsAndList()
     {
+        Vector3 myOriginalPos = transform.position;
+        transform.position = Vector3.zero;
+
         Transform firstBombsRow = transform.GetChild(0);
 
         float startPosition = Camera.main.ScreenToWorldPoint(Vector3.zero).x, limitPosition = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, 0, 0)).x;
-
-        Debug.Log("Start Position: " + startPosition + ", Limit Position: " + limitPosition);
 
         firstBombsRow.position = new Vector3(startPosition, 0, 0);
         rowsList.Add(firstBombsRow.GetComponent<RawImage>());
@@ -32,6 +33,8 @@ public class BackgroundMovingBombsController : MonoBehaviour
             newRow.position = new Vector3(startPosition + displacement, 0, 0);
             rowsList.Add(newRow.GetComponent<RawImage>());
         }
+
+        transform.position = myOriginalPos;
     }
 
     void Update()
@@ -41,8 +44,8 @@ public class BackgroundMovingBombsController : MonoBehaviour
 
     private void DisplaceRows()
     {
-        lastY += bombsSpeed * Time.deltaTime;
-        lastFasterY += bombsSpeed * 1.5f * Time.deltaTime;
+        lastY += bombsSpeed * Time.unscaledDeltaTime;
+        lastFasterY += bombsSpeed * 1.5f * Time.unscaledDeltaTime;
 
         for (int row = 0; row < rowsList.Count; row++)
         {
