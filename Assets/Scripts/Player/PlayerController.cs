@@ -7,12 +7,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject bombPrefab, explosionPrefab;
     [SerializeField] private Transform bombContainer;
     [SerializeField] private Color burnColor;
-    private Transform cameraParentTransform;
+    private Transform cameraParentTransform, targetTransform;
 
     private ChargeController chargeScript;
 
     [SerializeField] private float rotSpeed, moveSpeed, bombThrowForce, deviationSpeed, bombReloadTime, downForceWhenBackwardsMagnitude;
-    private float deviationTime, deviationRandomForce, deviationExtraForce = 1, rotationDifference, timeUntilNextBomb, Yvelocity, lastCameraYpos, downForceWhenBackwards, lastDownForceWhenFrontflip, leftCameraCornerXpos, targetCameraXpos;
+    private float deviationTime, deviationRandomForce, deviationExtraForce = 1, rotationDifference, timeUntilNextBomb, Yvelocity, lastCameraYpos, downForceWhenBackwards, leftCameraCornerXpos, targetCameraXpos;
 
     static public bool dead;
     private bool isPaused, willShotWhenPossible, canDropBombWithClick = true;
@@ -37,6 +37,7 @@ public class PlayerController : MonoBehaviour
         transform.position = new Vector3(Camera.main.ScreenToWorldPoint(new Vector2(Screen.width / 5, 0)).x, 2, transform.position.z);
 
         cameraParentTransform = Camera.main.transform.parent;
+        targetTransform = GameObject.Find("Target").transform;
 
         lastCameraYpos = cameraParentTransform.position.y;
         dead = false;
@@ -142,7 +143,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        Vector2 direction = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+        Vector2 direction = targetTransform.position - transform.position;
         Vector2 bombStartVelocity = direction.normalized * bombThrowForce + new Vector2(0, Yvelocity);
 
         float speedAdder = (Mathf.Cos(transform.eulerAngles.z / 57.3f) + 0.6f) * 0.625f;

@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class OptionsSlideController : MonoBehaviour
 {
-    private Transform gameCameraTransform, advancedOptionsTransform;
+    private Transform gameCameraTransform, moreOptionsTransform;
     private HudController hudScript;
     private Animator cameraAnim;
     private AudioSource menuEnterSound, menuExitSound;
@@ -31,8 +31,8 @@ public class OptionsSlideController : MonoBehaviour
         emptyColorFillTransform.position = new Vector3(safeDistanceFromCamera / 2, emptyColorFillTransform.position.y, emptyColorFillTransform.position.z);
 
         // Store and initialize Advanced Options
-        advancedOptionsTransform = transform.Find("AdvancedOptions");
-        advancedOptionsTransform.position = new Vector3(safeDistanceFromCamera, advancedOptionsTransform.position.y, advancedOptionsTransform.position.z);
+        moreOptionsTransform = transform.Find("MoreOptions");
+        moreOptionsTransform.position = new Vector3(safeDistanceFromCamera, moreOptionsTransform.position.y, moreOptionsTransform.position.z);
 
         // Get the camera transform
         if (imInGameScene) gameCameraTransform = GameObject.Find("Camera/CameraRiser/Main Camera").transform;
@@ -149,7 +149,7 @@ public class OptionsSlideController : MonoBehaviour
         transform.position = new Vector3(Mathf.Lerp(safeDistanceFromCamera, -safeDistanceFromCamera, lerpProgress), Mathf.Lerp(safeDistanceFromCamera * yDifferenceFromCamera, -safeDistanceFromCamera * yDifferenceFromCamera, lerpProgress), transform.position.z);
 
         // For some rason, advanced options changes its position, so it's repositioned:
-        advancedOptionsTransform.position = new Vector3(transform.position.x + safeDistanceFromCamera, Mathf.Lerp(safeDistanceFromCamera * yDifferenceFromCamera, -safeDistanceFromCamera * yDifferenceFromCamera, lerpProgress) + safeDistanceFromCamera * yDifferenceFromCamera, advancedOptionsTransform.position.z);
+        moreOptionsTransform.position = new Vector3(transform.position.x + safeDistanceFromCamera, Mathf.Lerp(safeDistanceFromCamera * yDifferenceFromCamera, -safeDistanceFromCamera * yDifferenceFromCamera, lerpProgress) + safeDistanceFromCamera * yDifferenceFromCamera, moreOptionsTransform.position.z);
     }
 
     // Functs called from buttons -->

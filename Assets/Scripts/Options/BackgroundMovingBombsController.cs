@@ -49,7 +49,7 @@ public class BackgroundMovingBombsController : MonoBehaviour
 
         for (int row = 0; row < rowsList.Count; row++)
         {
-            rowsList[row].uvRect = new Rect(0, row % 2 == 0? lastY : lastFasterY, 1, 7);
+            rowsList[row].uvRect = new Rect(0, row % 2 == 0? lastY : lastFasterY, 1, 6);
         }
     }
 }

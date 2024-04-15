@@ -7,7 +7,13 @@ public class TargetController : MonoBehaviour
     private Camera mainCamera;
     private Animator myAnimator;
 
-    private bool isPaused;
+    private float mouseSensitivity = 1;
+    public float SetMouseSensitivity
+    {
+        set { mouseSensitivity = value; }
+    }
+
+    private bool isPaused, lastFrameWasPaused = true;
     public bool SetIsPaused
     {
         set { isPaused = value; }
@@ -31,10 +37,34 @@ public class TargetController : MonoBehaviour
 
     void UpdatePos()
     {
-        Vector2 targetPos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        //Vector2 targetPos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
 
-        transform.position = targetPos;
+        transform.position += new Vector3(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"), 0) * 0.4f * mouseSensitivity;
 
-        if (isPaused || PlayerController.dead) transform.position = new Vector3(0, -20, 0);
+        // Keeping the target inside the bounds
+
+        if (transform.position.x < mainCamera.ScreenToWorldPoint(Vector3.zero).x)
+            transform.position = new Vector3(mainCamera.ScreenToWorldPoint(Vector3.zero).x, transform.position.y, transform.position.z);
+
+        if (transform.position.x > mainCamera.ScreenToWorldPoint(new Vector3(Screen.width, 0, 0)).x)
+            transform.position = new Vector3(mainCamera.ScreenToWorldPoint(new Vector3(Screen.width, 0, 0)).x, transform.position.y, transform.position.z);
+
+        if (transform.position.y < mainCamera.ScreenToWorldPoint(Vector3.zero).y)
+            transform.position = new Vector3(transform.position.x, mainCamera.ScreenToWorldPoint(Vector3.zero).y, transform.position.z);
+
+        if (transform.position.y > mainCamera.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y)
+            transform.position = new Vector3(transform.position.x, mainCamera.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y, transform.position.z);
+
+        // If game is paused or finished, use OS's cursor.
+        if (isPaused || PlayerController.dead)
+        {
+            transform.position = new Vector3(0, -20, 0);
+            lastFrameWasPaused = true;
+        }
+        else if (lastFrameWasPaused)
+        {
+            transform.position = Vector3.zero;
+            lastFrameWasPaused = false;
+        }
     }
 }

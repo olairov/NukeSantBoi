@@ -4,17 +4,23 @@ using UnityEngine;
 
 public class OptionsInitializer : MonoBehaviour
 {
-    private ShakeController cameraShakeScript;
+    [SerializeField] private bool imFromGameScene;
 
     private void Start()
     {
-        cameraShakeScript = Camera.main.GetComponent<ShakeController>();
-        StartEverything();
+        StartSceneParameters();
     }
 
-    public void StartEverything()
+    public void StartSceneParameters()
     {
         AudioListener.volume = PlayerPrefs.GetFloat("MainVolumeValue");
-        cameraShakeScript.SetDefinitiveMaxRadius(PlayerPrefs.GetFloat("ScreenshakeValue"));
+        Camera.main.GetComponent<ShakeController>().SetDefinitiveMaxRadius(PlayerPrefs.GetFloat("ScreenshakeValue"));
+
+        if (imFromGameScene) StartGameSceneExclusiveParameters();
+    }
+
+    private void StartGameSceneExclusiveParameters()
+    {
+        GameObject.Find("Target").GetComponent<TargetController>().SetMouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivityValue");
     }
 }
