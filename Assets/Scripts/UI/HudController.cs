@@ -6,8 +6,6 @@ using TMPro;
 public class HudController : MonoBehaviour
 {
     private PlayerController playerScript;
-    private MapGenerator mapGeneratorScript;
-    private TargetController targetScript;
 
     private AudioSource menuInSound, menuOutSound;
 
@@ -36,6 +34,10 @@ public class HudController : MonoBehaviour
     {
         set { isInOptions = value; }
     }
+    public bool GetPretendsToBePaused
+    {
+        get { return pretendsToBePaused; }
+    }
 
     private void Start()
     {
@@ -49,8 +51,6 @@ public class HudController : MonoBehaviour
 
         pauseMenu.Find("Highscore").GetComponent<TMP_Text>().text = PlayerPrefs.GetInt("Highscore").ToString();
         playerScript = GameObject.Find("Player").GetComponent<PlayerController>();
-        mapGeneratorScript = GameObject.Find("__________________Map___________________").GetComponent<MapGenerator>();
-        targetScript = GameObject.Find("Target").GetComponent<TargetController>();
 
         cameraComponent = cameraTransform.GetComponentInChildren<Camera>();
 
@@ -98,7 +98,6 @@ public class HudController : MonoBehaviour
         
         pretendsToBePaused = true;
 
-        targetScript.SetIsPaused = true;
         Cursor.visible = true;
 
         menuInSound.Play();
@@ -108,7 +107,6 @@ public class HudController : MonoBehaviour
     {
         pretendsToBePaused = false;
 
-        targetScript.SetIsPaused = false;
         Cursor.visible = false;
 
         menuOutSound.Play();
