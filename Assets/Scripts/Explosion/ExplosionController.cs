@@ -12,7 +12,7 @@ public class ExplosionController : MonoBehaviour
 
     private HudController hudScript;
 
-    private float timeAlive, timeAliveForTimeScale, Acolor = 1;
+    private float timeAlive, timeAliveForTimeScale, Acolor = 1, screenshakeValue;
 
     private int pointsToAdd, comboNum;
 
@@ -36,6 +36,8 @@ public class ExplosionController : MonoBehaviour
 
             transform.position = new Vector3(transform.position.x, transform.position.y, -10);
             transform.parent = GameObject.Find("ExplosionContainer").transform;
+
+            screenshakeValue = PlayerPrefs.GetFloat("ScreenshakeValue");
 
             Camera.main.GetComponent<ShakeController>().Shake();
 
@@ -90,7 +92,7 @@ public class ExplosionController : MonoBehaviour
         if (timeAliveForTimeScale >= Mathf.PI * 2) Time.timeScale = 1;
         else
         {
-            Time.timeScale = Mathf.Cos(timeAliveForTimeScale) / 4 + 0.75f;
+            Time.timeScale = -(Mathf.Cos(timeAliveForTimeScale) / 4 + 0.75f) * screenshakeValue + 0.9f;
         }
     }
 

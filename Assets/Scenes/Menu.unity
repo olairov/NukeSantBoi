@@ -1319,6 +1319,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1ab5bce864c99c4890e639a1e2f0b56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  imFromGameScene: 0
 --- !u!4 &670694286
 Transform:
   m_ObjectHideFlags: 0
@@ -2316,7 +2317,7 @@ GameObject:
   - component: {fileID: 1068629435}
   - component: {fileID: 1068629434}
   m_Layer: 5
-  m_Name: StoreButton
+  m_Name: ShopButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2423,7 +2424,7 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 1068629435}
           m_TargetAssemblyTypeName: MenuButton, Assembly-CSharp
-          m_MethodName: PlayPressed
+          m_MethodName: ShopPressed
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}

@@ -136,7 +136,7 @@ public class OptionsSlideController : MonoBehaviour
         if (lerpProgress <= 0)
         {
             lerpProgress = 0;
-            SceneManager.UnloadSceneAsync("Options");
+            SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(1));
         }
     }
 

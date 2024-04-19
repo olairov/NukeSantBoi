@@ -24,7 +24,13 @@ public class MenuButton : MonoBehaviour
 
     public void OptionsPressed()
     {
-        if (SceneManager.sceneCount > 1) SceneManager.UnloadSceneAsync("Options");
+        if (SceneManager.sceneCount > 1) SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(1));
         SceneManager.LoadScene("Options", LoadSceneMode.Additive);
+    }
+
+    public void ShopPressed()
+    {
+        if (SceneManager.sceneCount > 1) SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(1));
+        SceneManager.LoadScene("Shop", LoadSceneMode.Additive);
     }
 }
