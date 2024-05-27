@@ -92,7 +92,11 @@ public class ExplosionController : MonoBehaviour
         if (timeAliveForTimeScale >= Mathf.PI * 2) Time.timeScale = 1;
         else
         {
-            Time.timeScale = -(Mathf.Cos(timeAliveForTimeScale) / 4 + 0.75f) * screenshakeValue + 0.9f;
+            float multiplier = screenshakeValue / 2;
+
+            Time.timeScale = Mathf.Cos(timeAliveForTimeScale) * multiplier + 1 - multiplier;
+
+            // FORMULA: y = cos(x) * c + 1 - c
         }
     }
 
