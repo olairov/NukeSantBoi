@@ -10,6 +10,7 @@ public class ShakeController : MonoBehaviour
     private float strengthMultiplier, shakeMoveProgress, shakeTimeLeft, definitiveMaxRadius;
 
     [SerializeField] private bool unaffectedByStrengthMultiplier;
+    private bool lastRound, finishedShake;
 
     private void Start()
     {
@@ -28,9 +29,12 @@ public class ShakeController : MonoBehaviour
         EveryFrameShakeProcess();
     }
 
-    public void Shake()
+    public void Shake() // Called from the outside to start the shake process.
     {
-        if (Time.timeSinceLevelLoad < 0.3f) return;
+        if (Time.timeSinceLevelLoad < 0.3f) return; // For some misterious reason, sometimes a screenshake is generated in the beginning of the game.
+
+        lastRound = false;
+        finishedShake = false;
 
         CreateWave(false);
         shakeTimeLeft = timeShakeLasts;
@@ -40,7 +44,7 @@ public class ShakeController : MonoBehaviour
     {
         if (definitiveMaxRadius <= 0) return;
 
-        if (shakeTimeLeft > 0) UpdatePos();
+        if (!finishedShake) UpdatePos();
         else
         {
             transform.localEulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, 0);
@@ -63,15 +67,21 @@ public class ShakeController : MonoBehaviour
     {
         shakeMoveProgress += Time.unscaledDeltaTime * interval;
 
-        if (shakeMoveProgress > Mathf.PI)
+        if (shakeMoveProgress > Mathf.PI * 2)
         {
-            shakeMoveProgress = Mathf.PI;
+            shakeMoveProgress = Mathf.PI * 2;
             CreateWave(false);
         }
 
         shakeTimeLeft -= Time.unscaledDeltaTime;
         if (shakeTimeLeft <= 0)
         {
+            if (lastRound)
+            {
+                finishedShake = true;
+                return;
+            }
+
             shakeTimeLeft = 0;
             CreateWave(true);
         }
@@ -92,7 +102,11 @@ public class ShakeController : MonoBehaviour
                 if (Mathf.Abs((targetPos - waveStartPos).magnitude) > minWaveDistance * strengthMultiplier) break;
             }
         }
-        else targetPos = Vector2.zero;
+        else
+        {
+            targetPos = Vector2.zero;
+            lastRound = true;
+        }
 
         shakeMoveProgress = 0;
     }

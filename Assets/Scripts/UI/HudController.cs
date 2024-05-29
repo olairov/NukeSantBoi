@@ -128,7 +128,7 @@ public class HudController : MonoBehaviour
             isPaused = false;
         }
 
-        Time.timeScale = actualTimescale;
+        if (actualTimescale != 1) Time.timeScale = actualTimescale;
     }
 
     void CameraPauseAdjust()

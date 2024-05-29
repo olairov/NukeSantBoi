@@ -45,6 +45,11 @@ public class ExplosionController : MonoBehaviour
         }
     }
 
+    private void FixedUpdate()
+    {
+        if (timeAliveForTimeScale < Mathf.PI * 2) Debug.Log("Screenshake value: " + screenshakeValue + ", Time alive: " + timeAliveForTimeScale + ", REAL time Scale: " + Time.timeScale);
+    }
+
     private void Update()
     {
         timeAlive += Time.deltaTime;
@@ -83,7 +88,7 @@ public class ExplosionController : MonoBehaviour
         AdjustTimescale();
     }
 
-    void AdjustTimescale()
+    void AdjustTimescale() // Make time warp for an extended epic explosion moment.
     {
         timeAliveForTimeScale += Time.unscaledDeltaTime * 17;
 
@@ -92,7 +97,7 @@ public class ExplosionController : MonoBehaviour
         if (timeAliveForTimeScale >= Mathf.PI * 2) Time.timeScale = 1;
         else
         {
-            float multiplier = screenshakeValue / 2;
+            float multiplier = screenshakeValue / 3; // <--- Increase this number for less time warp. Min is 2. Max is infinite (More than 10 won't be noticeable).
 
             Time.timeScale = Mathf.Cos(timeAliveForTimeScale) * multiplier + 1 - multiplier;
 
