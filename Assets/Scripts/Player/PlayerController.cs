@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private GameObject bombPrefab, explosionPrefab;
+    [SerializeField] private GameObject bombPrefab, explosionPrefab, simpleBombDropAnim;
     [SerializeField] private Transform bombContainer;
     [SerializeField] private Color burnColor;
-    private Transform cameraParentTransform, targetTransform;
+    private Transform cameraParentTransform, targetTransform, nonPhysicalElementsContainer;
 
     private ChargeController chargeScript;
+
+    private AudioSource bombThrowSound;
 
     [SerializeField] private float rotSpeed, moveSpeed, bombThrowForce, deviationSpeed, bombReloadTime, downForceWhenBackwardsMagnitude;
     private float deviationTime, deviationRandomForce, deviationExtraForce = 1, rotationDifference, timeUntilNextBomb, Yvelocity, lastCameraYpos, downForceWhenBackwards, leftCameraCornerXpos, targetCameraXpos;
@@ -38,6 +40,10 @@ public class PlayerController : MonoBehaviour
 
         cameraParentTransform = Camera.main.transform.parent;
         targetTransform = GameObject.Find("Target").transform;
+
+        nonPhysicalElementsContainer = GameObject.Find("NotPhysicElementsContainer").transform;
+
+        bombThrowSound = transform.Find("Sounds/BombThrow").GetComponent<AudioSource>();
 
         lastCameraYpos = cameraParentTransform.position.y;
         dead = false;
@@ -139,9 +145,11 @@ public class PlayerController : MonoBehaviour
     {
         if (timeUntilNextBomb != 0)
         {
-            if (timeUntilNextBomb < 0.25f) willShotWhenPossible = true;
+            if (timeUntilNextBomb < 0.25f) willShotWhenPossible = true; // If the player shoots a little before the bomb is charged, It will shoot it when it's available.
             return;
         }
+
+        PlayDropBombSound();        
 
         Vector2 direction = targetTransform.position - transform.position;
         Vector2 bombStartVelocity = direction.normalized * bombThrowForce + new Vector2(0, Yvelocity);
@@ -155,6 +163,25 @@ public class PlayerController : MonoBehaviour
         timeUntilNextBomb = bombReloadTime / ObjectPassingBy.realSpeedMultiplier;
 
         chargeScript.DropBomb(timeUntilNextBomb);
+
+        SimpleBombDropAnimation(direction.normalized);
+    }
+
+    void SimpleBombDropAnimation(Vector2 bombDirection)
+    {
+        GameObject newBombDropAnim = Instantiate(simpleBombDropAnim, transform.position, Quaternion.identity, nonPhysicalElementsContainer);
+
+        newBombDropAnim.transform.up = bombDirection;
+        newBombDropAnim.transform.GetChild(0).GetComponent<SimpleBombDropAnimDestroyer>().SetMyDirection = bombDirection;
+    }
+
+    void PlayDropBombSound()
+    {
+        bombThrowSound.Stop();
+
+        bombThrowSound.pitch = Random.Range(0.9f, 1.3f);
+
+        bombThrowSound.Play();
     }
 
     void Deviation(bool isMoving)

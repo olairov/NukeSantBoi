@@ -6,11 +6,17 @@ public class InGameSound : MonoBehaviour
 {
     private AudioSource myAudio;
 
+    [SerializeField] private float appearingSpeed;
     static public float volumeMultiplier = 1, timeSpeed = 1;
-    private float realVolume, vanishingLerp = 1;
+    private float realVolume, vanishingLerp = 1, appearingOrDisappearingSmoothlyMultiplyer;
+    public float SetRealVolume
+    {
+        set { realVolume = value; }
+    }
 
-    static public bool threeDsound = true;
-    [SerializeField] private bool disableIfNotThreeDSound, disableWhenPlayerDie, ignorePause, ignoreThreeDsound;
+    private bool appearing;
+    static public bool threeDsound = true, disappearing;
+    [SerializeField] private bool disableIfNotThreeDSound, disableWhenPlayerDie, ignorePause, ignoreThreeDsound, appearingSmoothly, disappearingSmoothly;
 
     void Start()
     {
@@ -20,26 +26,37 @@ public class InGameSound : MonoBehaviour
         myAudio = transform.GetComponent<AudioSource>();
         realVolume = myAudio.volume;
 
+        if (appearingSmoothly) appearing = true;
+        else appearingOrDisappearingSmoothlyMultiplyer = 1;
+        disappearing = false;
+
         myAudio.volume = realVolume * volumeMultiplier;
     }
 
     void Update()
     {
+        if (appearing) AppearingSmoothlyProcess();
+        if (disappearing && disappearingSmoothly) DisappearingSmoothlyProcess();
+
         if (disableWhenPlayerDie && PlayerController.dead)
         {
             myAudio.volume = 0;
             return;
         }
 
-        myAudio.volume = realVolume * volumeMultiplier * timeSpeed;
-        if (ignorePause) myAudio.volume = realVolume * volumeMultiplier;
+        myAudio.volume = realVolume * volumeMultiplier * timeSpeed * appearingOrDisappearingSmoothlyMultiplyer;
+        if (ignorePause) myAudio.volume = realVolume * volumeMultiplier * appearingOrDisappearingSmoothlyMultiplyer;
 
-        if (threeDsound) { if (!ignorePause) myAudio.spatialBlend = 1; }
+        if (threeDsound)
+        {
+            if (!ignoreThreeDsound) myAudio.spatialBlend = 1;
+        }
         else
         {
             myAudio.spatialBlend = 0;
             if (disableIfNotThreeDSound) myAudio.volume = 0;
         }
+        
         if (PlayerController.dead)
         {
             myAudio.spatialBlend = 0;
@@ -49,6 +66,31 @@ public class InGameSound : MonoBehaviour
                 vanishingLerp -= Time.unscaledDeltaTime * 0.5f;
                 myAudio.volume *= vanishingLerp;
             }
+        }
+    }
+
+    void AppearingSmoothlyProcess()
+    {
+        if (appearingOrDisappearingSmoothlyMultiplyer < 1)
+        {
+            appearingOrDisappearingSmoothlyMultiplyer += appearingSpeed * Time.unscaledDeltaTime;
+        }
+        else
+        {
+            appearingOrDisappearingSmoothlyMultiplyer = 1;
+            appearing = false;
+        }
+    }
+
+    void DisappearingSmoothlyProcess()
+    {
+        if (appearingOrDisappearingSmoothlyMultiplyer > 0)
+        {
+            appearingOrDisappearingSmoothlyMultiplyer -= appearingSpeed * Time.unscaledDeltaTime;
+        }
+        else
+        {
+            appearingOrDisappearingSmoothlyMultiplyer = 0;
         }
     }
 }

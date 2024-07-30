@@ -12,7 +12,7 @@ public class MapGenerator : MonoBehaviour
     //Other Prefabs:
     [SerializeField] private GameObject wind1pref, wind2pref, wind3pref, wind4pref, warningPrefab, birdGroupPrefab, singleBirdPrefab, cranePrefab;
 
-    private Transform playerTransform ,buildingsContainer, enemiesContainer, obstaclesContainer, backgroundContainer, warningsContainer, particlesContainer, detailsContainer;
+    private Transform playerTransform ,buildingsContainer, enemiesContainer, obstaclesContainer, backgroundContainer, warningsContainerCanvas, particlesContainer, detailsContainer;
 
     static public float playerDistanceToStandardPos;
     [SerializeField] private float speedIncreaseFactor;
@@ -30,7 +30,7 @@ public class MapGenerator : MonoBehaviour
         enemiesContainer = GameObject.Find("EnemiesContainer").transform;
         obstaclesContainer = GameObject.Find("ObstaclesContainer").transform;
         backgroundContainer = GameObject.Find("BackgroundContainer").transform;
-        warningsContainer = GameObject.Find("NotPhysicElementsContainer").transform;
+        warningsContainerCanvas = GameObject.Find("Canvas/Warning").transform;
         particlesContainer = GameObject.Find("ParticlesContainer").transform;
         detailsContainer = GameObject.Find("DetailsContainer").transform;
 
@@ -85,7 +85,7 @@ public class MapGenerator : MonoBehaviour
             if (timeForNextEnemy < 1.2f) GenerateEnemies();
             timeForNextEnemy = 4;
 
-            if (!PlayerController.dead) Instantiate(warningPrefab, Camera.main.ScreenToWorldPoint(new Vector3(Screen.width * 0.75f, Screen.height * 0.75f, 7)), Quaternion.Euler(0, 0, 180), warningsContainer);
+            if (!PlayerController.dead) Instantiate(warningPrefab, warningsContainerCanvas);
         }
         else
         {

@@ -10,6 +10,8 @@ public class ExplosionController : MonoBehaviour
 
     private SpriteRenderer mySprite;
 
+    private AudioSource concreteSound, glassSound;
+
     private HudController hudScript;
 
     private float timeAlive, timeAliveForTimeScale, Acolor = 1, screenshakeValue;
@@ -34,6 +36,9 @@ public class ExplosionController : MonoBehaviour
 
             mySprite = transform.GetComponent<SpriteRenderer>();
 
+            concreteSound = transform.Find("Sounds/ConcreteSound").GetComponent<AudioSource>();
+            glassSound = transform.Find("Sounds/GlassSound").GetComponent<AudioSource>();
+
             transform.position = new Vector3(transform.position.x, transform.position.y, -10);
             transform.parent = GameObject.Find("ExplosionContainer").transform;
 
@@ -43,11 +48,6 @@ public class ExplosionController : MonoBehaviour
 
             PushObjects();
         }
-    }
-
-    private void FixedUpdate()
-    {
-        if (timeAliveForTimeScale < Mathf.PI * 2) Debug.Log("Screenshake value: " + screenshakeValue + ", Time alive: " + timeAliveForTimeScale + ", REAL time Scale: " + Time.timeScale);
     }
 
     private void Update()
@@ -97,20 +97,23 @@ public class ExplosionController : MonoBehaviour
         if (timeAliveForTimeScale >= Mathf.PI * 2) Time.timeScale = 1;
         else
         {
-            float multiplier = screenshakeValue / 3; // <--- Increase this number for less time warp. Min is 2. Max is infinite (More than 10 won't be noticeable).
+            float multiplier = screenshakeValue / 3; // <--- Increase this number for LESS time warp. Min is 2. Max is infinite (More than 10 won't be noticeable).
 
             Time.timeScale = Mathf.Cos(timeAliveForTimeScale) * multiplier + 1 - multiplier;
-
-            // FORMULA: y = cos(x) * c + 1 - c
+            // FORMULA: y = cos(x) * a + 1 - a
         }
     }
 
-    void PlayDestructAudio()
+    void PlayDestructAudio(bool isSkyscraper)
     {
-        AudioSource myAudio = transform.GetComponent<AudioSource>();
+        concreteSound.pitch = Random.Range(0.75f, 1.4f);
+        concreteSound.Play();
 
-        myAudio.pitch = Random.Range(0.75f, 1.4f);
-        myAudio.Play();
+        if (isSkyscraper)
+        {
+            glassSound.pitch = Random.Range(0.9f, 1.1f);
+            glassSound.Play();
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -139,7 +142,8 @@ public class ExplosionController : MonoBehaviour
 
             other.GetComponent<Building>().Destruct(transform.position);
 
-            PlayDestructAudio();
+            if (other.CompareTag("Building")) PlayDestructAudio(false);
+            else PlayDestructAudio(true);
         }
         else if (other.CompareTag("Enemy"))
         {

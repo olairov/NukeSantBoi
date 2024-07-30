@@ -391,6 +391,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resizerTransform: {fileID: 0}
   resizingSpeed: 7
+  amountOfSliderSoundPlaces: 0
   doesntHaveShadow: 0
   imSlider: 0
 --- !u!114 &149955138
@@ -1318,7 +1319,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: d1e0b728002eb0847a43b85da067d6b7, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -2011,7 +2012,7 @@ GameObject:
   m_Component:
   - component: {fileID: 975344032}
   m_Layer: 0
-  m_Name: UIsoundsOptions
+  m_Name: UIsoundsShop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2025,7 +2026,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 975344031}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 534.0242, y: 300.86282, z: -35.578857}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3234,10 +3235,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bfaefafd4640f94681268d984a00088, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  appearingSpeed: 0
   disableIfNotThreeDSound: 0
   disableWhenPlayerDie: 0
   ignorePause: 1
   ignoreThreeDsound: 0
+  appearingSmoothly: 0
+  disappearingSmoothly: 0
 --- !u!1 &1734041762
 GameObject:
   m_ObjectHideFlags: 0

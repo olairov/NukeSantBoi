@@ -349,6 +349,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resizerTransform: {fileID: 1305987922}
   resizingSpeed: 7
+  amountOfSliderSoundPlaces: 40
   doesntHaveShadow: 1
   imSlider: 1
 --- !u!114 &4199513
@@ -820,6 +821,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resizerTransform: {fileID: 741261184}
   resizingSpeed: 7
+  amountOfSliderSoundPlaces: 0
   doesntHaveShadow: 1
   imSlider: 0
 --- !u!114 &22044534
@@ -2064,6 +2066,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resizerTransform: {fileID: 0}
   resizingSpeed: 7
+  amountOfSliderSoundPlaces: 0
   doesntHaveShadow: 0
   imSlider: 0
 --- !u!1 &156630470
@@ -3876,6 +3879,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resizerTransform: {fileID: 1587498932}
   resizingSpeed: 7
+  amountOfSliderSoundPlaces: 20
   doesntHaveShadow: 1
   imSlider: 1
 --- !u!114 &348946833
@@ -4348,7 +4352,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -49.997192, y: 0}
+  m_AnchoredPosition: {x: -49.99713, y: 0}
   m_SizeDelta: {x: 100, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &444057905
@@ -4713,6 +4717,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resizerTransform: {fileID: 0}
   resizingSpeed: 7
+  amountOfSliderSoundPlaces: 0
   doesntHaveShadow: 0
   imSlider: 0
 --- !u!1 &471771341
@@ -5176,6 +5181,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resizerTransform: {fileID: 0}
   resizingSpeed: 7
+  amountOfSliderSoundPlaces: 0
   doesntHaveShadow: 0
   imSlider: 0
 --- !u!1 &527646649
@@ -7350,6 +7356,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resizerTransform: {fileID: 358078423}
   resizingSpeed: 7
+  amountOfSliderSoundPlaces: 20
   doesntHaveShadow: 1
   imSlider: 1
 --- !u!114 &879493247
@@ -8663,6 +8670,7 @@ Transform:
   - {fileID: 1696271606}
   - {fileID: 925910787}
   - {fileID: 921494707}
+  - {fileID: 1500496870}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -11711,6 +11719,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resizerTransform: {fileID: 128484552}
   resizingSpeed: 7
+  amountOfSliderSoundPlaces: 20
   doesntHaveShadow: 1
   imSlider: 1
 --- !u!114 &1370148253
@@ -12082,6 +12091,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resizerTransform: {fileID: 0}
   resizingSpeed: 7
+  amountOfSliderSoundPlaces: 0
   doesntHaveShadow: 0
   imSlider: 0
 --- !u!1 &1452068550
@@ -12552,6 +12562,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resizerTransform: {fileID: 1780642728}
   resizingSpeed: 7
+  amountOfSliderSoundPlaces: 1
   doesntHaveShadow: 1
   imSlider: 1
 --- !u!1 &1485772441
@@ -12607,6 +12618,147 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!1 &1500496869
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1500496870}
+  - component: {fileID: 1500496872}
+  - component: {fileID: 1500496871}
+  m_Layer: 0
+  m_Name: SliderSound
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1500496870
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1500496869}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 975344032}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1500496871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1500496869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20f70319d8d65954fa041ccb28ff5556, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!82 &1500496872
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1500496869}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 7ecf7c1161fa6fd4cb5ced8c40453b25, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 0.7
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1511058484
 GameObject:
   m_ObjectHideFlags: 0
@@ -13016,6 +13168,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resizerTransform: {fileID: 0}
   resizingSpeed: 7
+  amountOfSliderSoundPlaces: 0
   doesntHaveShadow: 0
   imSlider: 0
 --- !u!114 &1576955913
@@ -13899,7 +14052,7 @@ MonoBehaviour:
   disableIfNotThreeDSound: 0
   disableWhenPlayerDie: 0
   ignorePause: 1
-  ignoreThreeDsound: 0
+  ignoreThreeDsound: 1
 --- !u!1 &1716957756
 GameObject:
   m_ObjectHideFlags: 0
@@ -14181,6 +14334,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resizerTransform: {fileID: 0}
   resizingSpeed: 7
+  amountOfSliderSoundPlaces: 0
   doesntHaveShadow: 0
   imSlider: 0
 --- !u!114 &1744350968
@@ -16153,6 +16307,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resizerTransform: {fileID: 822641403}
   resizingSpeed: 7
+  amountOfSliderSoundPlaces: 25
   doesntHaveShadow: 1
   imSlider: 1
 --- !u!1 &1996021077
@@ -17428,6 +17583,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resizerTransform: {fileID: 230716838}
   resizingSpeed: 7
+  amountOfSliderSoundPlaces: 0
   doesntHaveShadow: 1
   imSlider: 0
 --- !u!114 &2138690841

@@ -8,11 +8,14 @@ public class EnemyPlaneController : MonoBehaviour
 
     [SerializeField] private float moveSpeed, rotFactor, playerRotationSensitivity, pushForce;
     public float actualRotationSpeed;
-    private float maxXdistance, rotationWhenDutyFinished, stabilizerLerp, rotationToAddWhenClose, XdistanceWhenEnteredCloseRange, timeAfterDutyFinished = 1, rotSpeedWhenFinished, residualRotation;
+    private float maxXdistance, rotationWhenDutyFinished, stabilizerLerp, rotationToAddWhenClose, XdistanceWhenEnteredCloseRange, timeAfterDutyFinished = 1,
+                  rotSpeedWhenFinished, residualRotation, dyingXpos, playerXpos;
 
     public bool dead, dutyFinished, enteredCloseRange;
 
     private Transform playerTransform;
+
+    private InGameSound boostSoundOptionsModifier;
 
     private Rigidbody2D rb;
 
@@ -22,10 +25,13 @@ public class EnemyPlaneController : MonoBehaviour
         else playerTransform = GameObject.Find("Player").transform;
 
         rb = transform.GetComponent<Rigidbody2D>();
+        boostSoundOptionsModifier = transform.Find("Boost/BoostSound").GetComponent<InGameSound>();
 
         ChoseColor();
 
-        maxXdistance = transform.position.x - Camera.main.ScreenToWorldPoint(new Vector2(Screen.width / 5, 0)).x;
+        dyingXpos = Camera.main.ScreenToWorldPoint(Vector3.zero).x - 10;
+        playerXpos = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width / 5, 0)).x;
+        maxXdistance = transform.position.x - playerXpos;
         transform.position = new Vector3(transform.position.x, Random.Range(Camera.main.ScreenToWorldPoint(Vector3.zero).y, Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y), transform.position.z);
     }
 
@@ -43,7 +49,9 @@ public class EnemyPlaneController : MonoBehaviour
     {
         if (!dead) RotateAndMove();
 
-        if (transform.position.y < Camera.main.ScreenToWorldPoint(Vector3.zero).y - 1 || transform.position.y > Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y + 1) Destroy(gameObject);
+        if (transform.position.y < Camera.main.ScreenToWorldPoint(Vector3.zero).y - 5 || transform.position.y > Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y + 5) Destroy(gameObject);
+
+        if (transform.position.x < playerXpos && InGameSound.threeDsound) BoostSoundDecay();
     }
 
     void RotateAndMove()
@@ -92,7 +100,7 @@ public class EnemyPlaneController : MonoBehaviour
         transform.eulerAngles = new Vector3(0, 0, Mathf.Clamp(rotationAdder + 90 + rotationToAddWhenClose, 30, 150));
     }
 
-    void AfterPlayer() // After the player dies or goes too far, tha plane smoothly stabilizes to an horizontal direction.
+    void AfterPlayer() // After the player dies or goes out of reach, the plane smoothly stabilizes to an horizontal direction.
     {
         timeAfterDutyFinished += Time.deltaTime * 3;
         residualRotation += rotSpeedWhenFinished / timeAfterDutyFinished; // Mantain the rotation the plane had when it finished duty.
@@ -102,6 +110,16 @@ public class EnemyPlaneController : MonoBehaviour
         
         transform.eulerAngles = new Vector3(0, 0, Mathf.Clamp(Mathf.Lerp(rotationWhenDutyFinished, 90, stabilizerLerp) + residualRotation * (1 - stabilizerLerp), 10, 170));
         // Clamped so that it doesn't rotate too much. Residual rotation is added multiplied by stabilizerLerp inversed, so that residualRotation has less effect with time.
+    }
+
+    void BoostSoundDecay() // Make the Boost Sound disappear smoothly, instead of a hard cut when the plane disappears once out of camera.
+    {
+        float decayProgress = ((-transform.position.x + playerXpos) / (dyingXpos - playerXpos) + 1) / 4;
+        // Gives the index of remoteness from the player once it has passed by the enemy plane (from 1 to 0). 1 is the exact X player position, 0 is the enemy's disappearing
+        // X position (defined by ObjectPassingBy). Then it is divided by 4 Because the MAX sound volume of the boost is 0.25.
+
+        boostSoundOptionsModifier.SetRealVolume = decayProgress;
+        // Then, the boost sound volume is set to the decay progress (from 0.25 to 0) progressively, so that the sound disappears smoothly.
     }
 
     public void Die()
