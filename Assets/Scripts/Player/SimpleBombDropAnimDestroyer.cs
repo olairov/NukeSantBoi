@@ -10,17 +10,11 @@ public class SimpleBombDropAnimDestroyer : MonoBehaviour
         set { myDirection = value; }
     }
 
-    private Transform playerTransform;
-
     private void Start()
     {
-        playerTransform = GameObject.Find("Player").transform;
+        Transform playerTransform = GameObject.Find("Player").transform;
         transform.parent.position = playerTransform.position + myDirection;
-    }
-
-    private void Update()
-    {
-        
+        transform.position = new Vector3(transform.position.x + (transform.position.x - playerTransform.position.x) / 2, transform.position.y, transform.position.z);
     }
 
     public void Destroy()

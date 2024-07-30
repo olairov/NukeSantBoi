@@ -13,8 +13,6 @@ public class SingleBird : MonoBehaviour
 
     void Initialize()
     {
-        transform.GetComponent<Animator>().SetTrigger("Start");
-
         yPos = Random.Range(0f, 5f);
         randDelay = Random.Range(0, 3.14f);
 

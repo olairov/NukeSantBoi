@@ -6,7 +6,7 @@ using TMPro;
 public class ExplosionController : MonoBehaviour
 {
     [SerializeField] private GameObject pointsPrefab;
-    private Transform pointsContainer, playerTramsform, obstaclesContainer, buildingsContainer;
+    private Transform pointsContainer, playerTramsform, obstaclesContainer, buildingsContainer, interactiveDetailsContainer;
 
     private SpriteRenderer mySprite;
 
@@ -29,9 +29,11 @@ public class ExplosionController : MonoBehaviour
         else
         {
             pointsContainer = GameObject.Find("NotPhysicElementsContainer").transform;
-            playerTramsform = GameObject.Find("Player").transform;
+            if (GameObject.Find("Player")) playerTramsform = GameObject.Find("Player").transform;
+            else Destroy(gameObject);
             obstaclesContainer = GameObject.Find("ObstaclesContainer").transform;
             buildingsContainer = GameObject.Find("BuildingsContainer").transform;
+            interactiveDetailsContainer = GameObject.Find("DetailsContainer/DetailsThatMoveAwayWhenExplosion").transform;
             hudScript = GameObject.Find("________________Canvas________________").GetComponent<HudController>();
 
             mySprite = transform.GetComponent<SpriteRenderer>();
@@ -168,6 +170,12 @@ public class ExplosionController : MonoBehaviour
             Transform buildingTransform = buildingsContainer.GetChild(buildingIdx);
             if (!buildingTransform.name.Contains("UpperPart"))
                 buildingTransform.GetComponent<Building>().PushAway((buildingTransform.transform.position - transform.position).normalized.x, Vector2.Distance(buildingTransform.position, transform.position));
+        }
+
+        for (int detailIdx = 0; detailIdx < interactiveDetailsContainer.childCount; detailIdx++)
+        {
+            Transform interactiveDetailTransform = interactiveDetailsContainer.GetChild(detailIdx);
+            interactiveDetailTransform.GetComponent<MoveAwayWhenExplosion>().PushAway((interactiveDetailTransform.transform.position - transform.position).normalized.x, Vector2.Distance(interactiveDetailTransform.position, transform.position));
         }
     }
 }

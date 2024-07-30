@@ -7,19 +7,20 @@ public class MapGenerator : MonoBehaviour
     public Sprite lastBackgroundLayer1, lastBackgroundLayer2, lastBackgroundLayer3, lastBuildingSprite, lastWideBuildingSprite;
 
     //Interactable objects prefabs:
-    [SerializeField] private GameObject buildingPrefab, wideBuildingPrefab, enemyPrefab, skystraperPrefab, obstaclePrefab;
+    [SerializeField] private GameObject buildingPrefab, wideBuildingPrefab, enemyPrefab, skystraperPrefab, obstaclePrefab, frontBirdPrefab, bushPrefab;
 
     //Other Prefabs:
     [SerializeField] private GameObject wind1pref, wind2pref, wind3pref, wind4pref, warningPrefab, birdGroupPrefab, singleBirdPrefab, cranePrefab;
 
-    private Transform playerTransform ,buildingsContainer, enemiesContainer, obstaclesContainer, backgroundContainer, warningsContainerCanvas, particlesContainer, detailsContainer;
+    private Transform playerTransform ,buildingsContainer, enemiesContainer, obstaclesContainer, backgroundContainer, warningsContainerCanvas, particlesContainer,
+        detailsContainer, interactiveDetailsContainer;
 
     static public float playerDistanceToStandardPos;
     [SerializeField] private float speedIncreaseFactor;
 
     // Times for every thing generation
     private float timeForNextBuilding, timeForNextEnemy, timeForNextObstacle, timeForNextParticle, timeForNextLayer1, timeForNextLayer2,
-        timeForNextLayer3, timeForNextBirdGroup = 3, timeForSingleBird = 1, timeForNextCrane = 8;
+        timeForNextLayer3, timeForNextBirdGroup = 3, timeForSingleBird = 1, timeForNextCrane = 8, timeForNextFrontBird, timeForNextBush = 1;
 
     private int buildingsFromSkystraper;
 
@@ -33,12 +34,15 @@ public class MapGenerator : MonoBehaviour
         warningsContainerCanvas = GameObject.Find("Canvas/Warning").transform;
         particlesContainer = GameObject.Find("ParticlesContainer").transform;
         detailsContainer = GameObject.Find("DetailsContainer").transform;
+        interactiveDetailsContainer = detailsContainer.Find("DetailsThatMoveAwayWhenExplosion");
 
         FirstGeneration();
 
         playerDistanceToStandardPos = 0;
         ObjectPassingBy.realSpeedMultiplier = 1;
         ObjectPassingBy.speedMultiplier = 1;
+
+        timeForNextFrontBird = Random.Range(10, 60);
     }
 
     void Update()
@@ -64,6 +68,8 @@ public class MapGenerator : MonoBehaviour
         GenerateBirdGroups();
         GenerateSingleBirds();
         GenerateCranes();
+        GenerateFrontBirds();
+        GenerateBushes();
 
         if (!PlayerController.dead) GenerateEnemies();
 
@@ -171,6 +177,26 @@ public class MapGenerator : MonoBehaviour
         timeForNextCrane = Random.Range(8f, 24f);
     }
 
+    void GenerateFrontBirds()
+    {
+        timeForNextFrontBird -= Time.deltaTime;
+        if (timeForNextFrontBird > 0) return;
+
+        Instantiate(frontBirdPrefab, new Vector3(0, Random.Range(6f, -6f), -10), Quaternion.identity, detailsContainer);
+
+        timeForNextFrontBird = Random.Range(18, 60);
+    }
+
+    void GenerateBushes()
+    {
+        timeForNextBush -= Time.deltaTime * ObjectPassingBy.speedMultiplier;
+        if (timeForNextBush > 0) return;
+
+        Instantiate(bushPrefab, interactiveDetailsContainer);
+
+        timeForNextBush = Random.Range(1f, 4f);
+    }
+
     void Layer1BackgroundGeneration()
     {
         timeForNextLayer1 -= Time.deltaTime * ObjectPassingBy.speedMultiplier;
@@ -212,6 +238,11 @@ public class MapGenerator : MonoBehaviour
         {
             if (Random.value < 0.7f) Instantiate(buildingPrefab, new Vector3(actualX, buildingDefaultPos.y, buildingDefaultPos.z), Quaternion.identity, buildingsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
             else Instantiate(wideBuildingPrefab, new Vector2(actualX, buildingDefaultPos.y), Quaternion.identity, buildingsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
+        }
+
+        for (float actualX = startX; actualX > finishX; actualX -= Random.Range(6, 10))
+        {
+            Instantiate(bushPrefab, new Vector3(actualX, -6, 0), Quaternion.identity, interactiveDetailsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
         }
 
         for (float actualX = startX + 5; actualX > finishX - 30; actualX -= 24.5f)

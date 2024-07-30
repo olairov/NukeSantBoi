@@ -173,6 +173,7 @@ public class PlayerController : MonoBehaviour
 
         newBombDropAnim.transform.up = bombDirection;
         newBombDropAnim.transform.GetChild(0).GetComponent<SimpleBombDropAnimDestroyer>().SetMyDirection = bombDirection;
+        newBombDropAnim.GetComponent<Rigidbody2D>().velocity = new Vector2(0, Yvelocity);
     }
 
     void PlayDropBombSound()
