@@ -9,6 +9,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Color burnColor;
     private Transform cameraParentTransform, targetTransform, nonPhysicalElementsContainer;
 
+    [SerializeField] private Joystick movementJoystick;
+
     private ChargeController chargeScript;
 
     private AudioSource bombThrowSound;
@@ -60,12 +62,15 @@ public class PlayerController : MonoBehaviour
         else
         {
             timeUntilNextBomb = 0;
-            if (willShotWhenPossible && !dead && !isPaused) DropBomb();
+            if (willShotWhenPossible && !dead && !isPaused) DropBomb(targetTransform.position - transform.position);
             willShotWhenPossible = false;
         }
 
-        if (Input.GetButtonDown("Jump") && !dead && !isPaused) DropBomb();
-        if (Input.GetButtonDown("Fire1") && !dead && !isPaused && canDropBombWithClick) DropBomb();
+        if (!TouchControllersManager.isUsingPhone)
+        {
+            if (Input.GetButtonDown("Jump") && !dead && !isPaused) DropBomb(targetTransform.position - transform.position);
+            if (Input.GetButtonDown("Fire1") && !dead && !isPaused && canDropBombWithClick) DropBomb(targetTransform.position - transform.position);
+        }
 
         if ((transform.position.y < Camera.main.ScreenToWorldPoint(Vector3.zero).y || transform.position.y > Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y + 0.5f) && !isPaused)
         {
@@ -90,7 +95,9 @@ public class PlayerController : MonoBehaviour
     {
         if (!isPaused)
         {
-            float movement = (int)Input.GetAxisRaw("Horizontal");
+            float movement = 0;
+            if (!TouchControllersManager.isUsingPhone) movement = (int)Input.GetAxisRaw("Horizontal");
+            else movement = -movementJoystick.Vertical;
 
             float multiplierInCaseOfFrontFlip = 1;
             if (movement > 0 && transform.eulerAngles.z < 150)
@@ -106,7 +113,8 @@ public class PlayerController : MonoBehaviour
 
             rb.AddTorque(-movement * multiplierInCaseOfFrontFlip * rotSpeed * Time.deltaTime);
 
-            Deviation(Input.GetButton("Horizontal"));
+            if (!TouchControllersManager.isUsingPhone) Deviation(Input.GetButton("Horizontal"));
+            else Deviation(-movementJoystick.Vertical != 0);
         }
 
         float lastYpos = transform.position.y;
@@ -141,7 +149,7 @@ public class PlayerController : MonoBehaviour
         lastCameraYpos = cameraParentTransform.position.y;
     }
 
-    void DropBomb()
+    public void DropBomb(Vector2 direction)
     {
         if (timeUntilNextBomb != 0)
         {
@@ -149,9 +157,8 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        PlayDropBombSound();        
+        PlayDropBombSound();
 
-        Vector2 direction = targetTransform.position - transform.position;
         Vector2 bombStartVelocity = direction.normalized * bombThrowForce + new Vector2(0, Yvelocity);
 
         float speedAdder = (Mathf.Cos(transform.eulerAngles.z / 57.3f) + 0.6f) * 0.625f;

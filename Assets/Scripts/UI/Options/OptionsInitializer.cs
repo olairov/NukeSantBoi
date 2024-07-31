@@ -15,12 +15,5 @@ public class OptionsInitializer : MonoBehaviour
     {
         AudioListener.volume = PlayerPrefs.GetFloat("MainVolumeValue");
         Camera.main.GetComponent<ShakeController>().SetDefinitiveMaxRadius(PlayerPrefs.GetFloat("ScreenshakeValue"));
-
-        if (imFromGameScene) StartGameSceneExclusiveParameters();
-    }
-
-    private void StartGameSceneExclusiveParameters()
-    {
-        GameObject.Find("Target").GetComponent<TargetController>().SetMouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivityValue");
     }
 }

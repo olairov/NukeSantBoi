@@ -90,7 +90,7 @@ public class AnyButton : MonoBehaviour
     {
         pointingLerp += Time.unscaledDeltaTime * resizingSpeed;
 
-        if (!pointed)
+        if (!pointed || TouchControllersManager.isUsingPhone)
         {
             if (pointingLerp > 0.5f) pointingLerp = 0.5f;
         }

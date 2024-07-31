@@ -8,5 +8,11 @@ public class MenuInitializer : MonoBehaviour
     {
         AudioListener.volume = PlayerPrefs.GetFloat("MainVolumeValue");
         Time.timeScale = 1;
+        TouchControllersManager.isUsingPhone = false;
+    }
+
+    private void Update()
+    {
+        if (Input.touchCount > 0) TouchControllersManager.isUsingPhone = true;
     }
 }

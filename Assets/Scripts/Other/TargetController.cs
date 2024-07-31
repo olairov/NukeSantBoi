@@ -8,12 +8,6 @@ public class TargetController : MonoBehaviour
     private Animator myAnimator;
     private HudController hudScript;
 
-    private float mouseSensitivity = 1;
-    public float SetMouseSensitivity
-    {
-        set { mouseSensitivity = value; }
-    }
-
     void Start()
     {
         mainCamera = Camera.main;
@@ -30,6 +24,12 @@ public class TargetController : MonoBehaviour
         else if ((Input.GetButtonUp("Fire1") && !Input.GetButton("Jump")) || (Input.GetButtonUp("Jump") && !Input.GetButton("Fire1"))) myAnimator.SetBool("Clicked", false);
 
         UpdatePos();
+        DisableWhenMobile();
+    }
+
+    void DisableWhenMobile()
+    {
+        if (TouchControllersManager.isUsingPhone) transform.position = new Vector3(0, -20, 0);
     }
 
     void UpdatePos()
