@@ -58,7 +58,7 @@ public class OptionsSlideController : MonoBehaviour
         }
     }
 
-    void Update()
+    void LateUpdate()
     {
         LerpProgressAdjuster();
         PositionLerp();
@@ -70,6 +70,8 @@ public class OptionsSlideController : MonoBehaviour
             if (advancedOptionsEntering) ComeFromAdvancedOptions();
             else OptionsExit();
         }
+
+        moreOptionsTransform.position = new Vector3(moreOptionsTransform.position.x, 0, moreOptionsTransform.position.z);
     }
 
     private void LerpProgressAdjuster()
@@ -144,12 +146,12 @@ public class OptionsSlideController : MonoBehaviour
 
     private void PositionLerp()
     {
-        float yDifferenceFromCamera = Mathf.Tan(gameCameraTransform.eulerAngles.z * Mathf.Deg2Rad);
+        float ySafeDistanceFromCamera = Mathf.Tan(gameCameraTransform.eulerAngles.z * Mathf.Deg2Rad) * safeDistanceFromCamera;
 
-        transform.position = new Vector3(Mathf.Lerp(safeDistanceFromCamera, -safeDistanceFromCamera, lerpProgress), Mathf.Lerp(safeDistanceFromCamera * yDifferenceFromCamera, -safeDistanceFromCamera * yDifferenceFromCamera, lerpProgress), transform.position.z);
+        transform.position = new Vector3(Mathf.Lerp(safeDistanceFromCamera, -safeDistanceFromCamera, lerpProgress), Mathf.Lerp(ySafeDistanceFromCamera, -ySafeDistanceFromCamera, lerpProgress), transform.position.z);
 
         // For some rason, advanced options changes its position, so it's repositioned:
-        moreOptionsTransform.position = new Vector3(transform.position.x + safeDistanceFromCamera, Mathf.Lerp(safeDistanceFromCamera * yDifferenceFromCamera, -safeDistanceFromCamera * yDifferenceFromCamera, lerpProgress) + safeDistanceFromCamera * yDifferenceFromCamera, moreOptionsTransform.position.z);
+        moreOptionsTransform.position = new Vector3(transform.position.x + safeDistanceFromCamera, 0, moreOptionsTransform.position.z);
     }
 
     // Functs called from buttons -->

@@ -4,14 +4,12 @@ using UnityEngine;
 
 public class BombJoystick : MonoBehaviour
 {
-    private Joystick myJoystick;
+    private JoystickController myJoystick;
 
     private Animator touchArrowAnim;
     private Transform arrowTransform;
 
-    private Vector2 lastDirection;
-
-    private bool arrowActivated;
+    private bool arrowActivated, lastFrameTouched, validTouch;
 
     private PlayerController playerScript;
 
@@ -22,38 +20,41 @@ public class BombJoystick : MonoBehaviour
         arrowTransform = GameObject.Find("Player/TouchArrow").transform;
         touchArrowAnim = arrowTransform.GetComponent<Animator>();
 
-        myJoystick = transform.GetComponent<Joystick>();
+        myJoystick = transform.GetComponent<JoystickController>();
         playerScript = GameObject.Find("Player").GetComponent<PlayerController>();
     }
 
     void Update()
     {
         if (PlayerController.dead) return;
+        validTouch = myJoystick.direction.magnitude > 0.02f;
+
         CheckJoystick();
         TouchArrowManagement();
+
+        lastFrameTouched = myJoystick.touchingJoystick;
     }
 
     void CheckJoystick()
     {
-        if (lastDirection != Vector2.zero && myJoystick.Direction == Vector2.zero) playerScript.DropBomb(lastDirection);
-
-        lastDirection = myJoystick.Direction;
+        if (!myJoystick.touchingJoystick && lastFrameTouched && validTouch)
+            playerScript.DropBomb(myJoystick.direction.normalized);
     }
 
     void TouchArrowManagement()
     {
-        if (myJoystick.Direction != Vector2.zero)
+        if (myJoystick.touchingJoystick)
         {
-            arrowTransform.up = -myJoystick.Direction;
+            arrowTransform.up = -myJoystick.direction;
 
-            if (!arrowActivated)
+            if (!arrowActivated && validTouch)
             {
                 arrowActivated = true;
                 touchArrowAnim.SetBool("enabled", true);
             }
         }
 
-        if (myJoystick.Direction == Vector2.zero && arrowActivated)
+        if (!myJoystick.touchingJoystick && arrowActivated || !validTouch)
         {
             arrowActivated = false;
             touchArrowAnim.SetBool("enabled", false);

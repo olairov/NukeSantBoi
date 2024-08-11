@@ -10,6 +10,7 @@ TagManager:
   - Obstacle
   - Enemy
   - playerPoint
+  - SkystraperUpperPart
   layers:
   - Default
   - TransparentFX
@@ -17,8 +18,8 @@ TagManager:
   - CanExplode
   - Water
   - UI
-  - HaveOutline
-  - 
+  - DontCollideWithCanExplode
+  - IgnoreAttacks
   - 
   - 
   - 

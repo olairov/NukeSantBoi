@@ -14,10 +14,10 @@ public class Building : MonoBehaviour
     private Material instanceMaterial, backSpriteInstanceMaterial;
     private SpriteRenderer myRenderer;
 
-    private Transform particlesContainer, myBackSprite;
+    private Transform particlesContainer, myBackSprite, cameraRiserTransform;
 
     [SerializeField] private float colorValuesIncreaseWhenDie, pushAwayForce;
-    private float rotationSpeed, fallingSpeed, timeSinceDestruction, cameraWidthInUnits, pushAwayTime, pushAwayProgress;
+    private float rotationSpeed, fallingSpeed, timeSinceDestruction, cameraWidthInUnits, pushAwayTime, pushAwayProgress, actualFallRotation, myYdefaultPos;
 
     public bool dead;
     private bool iStrapSky, isWide, imUpsideDown;
@@ -31,6 +31,7 @@ public class Building : MonoBehaviour
     {
         mapGeneratorScript = GameObject.Find("__________________Map___________________").GetComponent<MapGenerator>();
         particlesContainer = GameObject.Find("ParticlesContainer").transform;
+        cameraRiserTransform = GameObject.Find("Camera/CameraRiser").transform;
         myRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
         myBackSprite = transform.GetChild(1);
 
@@ -67,8 +68,8 @@ public class Building : MonoBehaviour
 
     void CreateStats()
     {
-        float randomY = Random.Range(0f, 3f);
-        if (isWide) randomY = Random.Range(0f, 2f);
+        float randomY = Random.Range(0f, 2.3f);
+        if (isWide) randomY = Random.Range(0f, 1.5f);
         if (iStrapSky) randomY = 0;
 
         if (imUpsideDown)
@@ -79,7 +80,8 @@ public class Building : MonoBehaviour
 
         if (isWide && Random.value > 0.999f) Instantiate(buildingPrefab, transform.parent).GetComponent<Building>().SetImUpsideDown = true;
 
-        transform.position = new Vector3(imUpsideDown ? transform.position.x + 4 : transform.position.x, Camera.main.ScreenToWorldPoint(Vector3.zero).y + randomY, iStrapSky ? -3f : -0.5f);
+        myYdefaultPos = Camera.main.ScreenToWorldPoint(Vector3.zero).y + randomY;
+        transform.position = new Vector3(imUpsideDown ? transform.position.x + 4 : transform.position.x, myYdefaultPos, iStrapSky ? -3f : -0.5f);
 
         if (iStrapSky) return;
 
@@ -175,32 +177,37 @@ public class Building : MonoBehaviour
 
     void FallStats()
     {
-        rotationSpeed = Random.Range(8f, 16f);
+        rotationSpeed = Random.Range(8f, 12f);
+        if (iStrapSky) rotationSpeed *= 0.7f;
+
         fallingSpeed = -Random.Range(3, 6);
         if (iStrapSky? true : Random.value > 0.5f) rotationSpeed *= -1;
     }
 
     Transform SkystraperFallStats(float otherY)
     {
-        transform.position = new Vector3(transform.position.x, otherY - 25.7f, transform.position.z);
+        float cameraYposOffsetFix = transform.position.y - myYdefaultPos;
+        transform.position = new Vector3(transform.position.x, otherY - 26f - cameraYposOffsetFix, transform.position.z);
 
         Transform upperPartTransform = Instantiate(skystraperUpperPart, transform.parent).transform;
-        upperPartTransform.position = new Vector3(transform.position.x, otherY + 15.7f, transform.position.z);
+        upperPartTransform.position = new Vector3(transform.position.x, otherY + 16f - cameraYposOffsetFix, transform.position.z);
         upperPartTransform.GetComponent<Rigidbody2D>().AddForce(Vector3.up * 7, ForceMode2D.Impulse);
-        upperPartTransform.GetComponent<Rigidbody2D>().AddTorque(Random.Range(80, 180));
+        upperPartTransform.GetComponent<Rigidbody2D>().AddTorque(Random.Range(200, 300));
         if (Random.value > 0.5f) upperPartTransform.GetComponent<Rigidbody2D>().angularVelocity *= -1;
 
-        Instantiate(skyStraperPieces, new Vector3(transform.position.x, otherY, -7), Quaternion.identity, particlesContainer);
+        Instantiate(skyStraperPieces, new Vector3(transform.position.x, otherY - cameraYposOffsetFix, -7), Quaternion.identity, particlesContainer);
 
         return upperPartTransform;
     }
 
     void Fall()
     {
-        timeSinceDestruction += Time.deltaTime;
+        timeSinceDestruction += Time.deltaTime; // Multiplying by this, its fall speed increases exponentially.
 
         transform.position += new Vector3(0, fallingSpeed * timeSinceDestruction * Time.deltaTime, 0);
-        transform.eulerAngles += new Vector3(0, 0, rotationSpeed * timeSinceDestruction * Time.deltaTime);
+        
+        actualFallRotation += rotationSpeed * timeSinceDestruction * Time.deltaTime;
+        if (iStrapSky) transform.eulerAngles = new Vector3(0, 0, actualFallRotation);
     }
 
     IEnumerator SetGap(Vector2 otherPos)
@@ -240,8 +247,13 @@ public class Building : MonoBehaviour
             upperPartSpriteRenderer = upperPartTransform.GetComponent<SpriteRenderer>();
             originalUpperPartColor = upperPartSpriteRenderer.color;
             upperPartSpriteRenderer.color = flashColor;
-            transform.Find("BrokenSprite").GetComponent<SpriteRenderer>().color = flashColor;
-            upperPartTransform.Find("BrokenSprite").GetComponent<SpriteRenderer>().color = flashColor;
+            transform.Find("UpperSprite").GetComponent<SpriteRenderer>().color = flashColor;
+            upperPartTransform.Find("LowerSprite").GetComponent<SpriteRenderer>().color = flashColor;
+
+            // Make both upper and lower part's skystraper script know it has already been broken.
+
+            GetComponent<SkystraperBreakAgain>().SetAlreadyBroken = true;
+            upperPartTransform.GetComponent<SkystraperBreakAgain>().SetAlreadyBroken = true;
         }
 
         mySpriteRenderer.color = flashColor;
@@ -256,8 +268,8 @@ public class Building : MonoBehaviour
             Color lastUpperPartColor = new Color(originalUpperPartColor.r + colorValuesIncreaseWhenDie, originalUpperPartColor.g + colorValuesIncreaseWhenDie, originalUpperPartColor.b + colorValuesIncreaseWhenDie);
 
             upperPartSpriteRenderer.color = lastUpperPartColor;
-            upperPartTransform.Find("BrokenSprite").GetComponent<SpriteRenderer>().color = lastUpperPartColor;
-            transform.Find("BrokenSprite").GetComponent<SpriteRenderer>().color = lastColor;
+            upperPartTransform.Find("LowerSprite").GetComponent<SpriteRenderer>().color = lastUpperPartColor;
+            transform.Find("UpperSprite").GetComponent<SpriteRenderer>().color = lastColor;
         }
     }
 
@@ -271,11 +283,12 @@ public class Building : MonoBehaviour
 
     private void KeepPushingAway()
     {
+        // This makes pushAwayTime decrease less every frame. At first it decreases fast, and then very slow, to create a smooth effect.
         pushAwayTime /= 1 + (Time.deltaTime * 3);
 
         float pushAwayLerpProgress = (-pushAwayTime + 1) * 5;
-        if (pushAwayTime < 0.8f) pushAwayLerpProgress = pushAwayTime * 1.111f;
+        if (pushAwayTime < 0.8f) pushAwayLerpProgress = pushAwayTime * 1.111f; // I should have commented this before.
 
-        transform.eulerAngles = new Vector3(0, 0, dead? pushAwayProgress * pushAwayLerpProgress * 3 : pushAwayProgress * pushAwayLerpProgress);
+        transform.eulerAngles = new Vector3(0, 0, dead? pushAwayProgress * pushAwayLerpProgress * 3 + actualFallRotation : pushAwayProgress * pushAwayLerpProgress);
     }
 }

@@ -2660,12 +2660,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxRadius: 8
-  interval: 60
+  shakeSpeed: 50
   timeShakeLasts: 0.3
   minWaveDistance: 5
   rotationScale: 2
   xDisplacement: 0
   unaffectedByStrengthMultiplier: 1
+  infiniteShake: 0
+  shakeInStart: 0
 --- !u!114 &230716841
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4147,12 +4149,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxRadius: 8
-  interval: 60
+  shakeSpeed: 50
   timeShakeLasts: 0.3
   minWaveDistance: 5
   rotationScale: 2
   xDisplacement: 0
   unaffectedByStrengthMultiplier: 1
+  infiniteShake: 0
+  shakeInStart: 0
 --- !u!225 &401556389
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -4352,7 +4356,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -49.99713, y: 0}
+  m_AnchoredPosition: {x: -49.997192, y: 0}
   m_SizeDelta: {x: 100, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &444057905
@@ -5760,12 +5764,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxRadius: 8
-  interval: 60
+  shakeSpeed: 50
   timeShakeLasts: 0.3
   minWaveDistance: 5
   rotationScale: 2
   xDisplacement: 0
   unaffectedByStrengthMultiplier: 1
+  infiniteShake: 0
+  shakeInStart: 0
 --- !u!222 &562721504
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6547,12 +6553,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxRadius: 8
-  interval: 60
+  shakeSpeed: 50
   timeShakeLasts: 0.3
   minWaveDistance: 5
   rotationScale: 2
   xDisplacement: 0
   unaffectedByStrengthMultiplier: 1
+  infiniteShake: 0
+  shakeInStart: 0
 --- !u!114 &741261186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8618,12 +8626,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxRadius: 8
-  interval: 60
+  shakeSpeed: 50
   timeShakeLasts: 0.3
   minWaveDistance: 5
   rotationScale: 2
   xDisplacement: 0
   unaffectedByStrengthMultiplier: 1
+  infiniteShake: 0
+  shakeInStart: 0
 --- !u!225 &975202036
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -9594,12 +9604,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxRadius: 8
-  interval: 60
+  shakeSpeed: 50
   timeShakeLasts: 0.3
   minWaveDistance: 5
   rotationScale: 2
   xDisplacement: 0
   unaffectedByStrengthMultiplier: 1
+  infiniteShake: 0
+  shakeInStart: 0
 --- !u!225 &1081353949
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -13126,7 +13138,7 @@ GameObject:
   - component: {fileID: 1576955913}
   - component: {fileID: 1576955912}
   m_Layer: 5
-  m_Name: GameButton
+  m_Name: SettingsButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14049,10 +14061,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bfaefafd4640f94681268d984a00088, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  appearingSpeed: 0
   disableIfNotThreeDSound: 0
   disableWhenPlayerDie: 0
   ignorePause: 1
   ignoreThreeDsound: 1
+  appearingSmoothly: 0
+  disappearingSmoothly: 0
 --- !u!1 &1716957756
 GameObject:
   m_ObjectHideFlags: 0
@@ -15189,12 +15204,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxRadius: 8
-  interval: 60
+  shakeSpeed: 50
   timeShakeLasts: 0.3
   minWaveDistance: 5
   rotationScale: 2
   xDisplacement: 0
   unaffectedByStrengthMultiplier: 1
+  infiniteShake: 0
+  shakeInStart: 0
 --- !u!114 &1871183212
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15745,12 +15762,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxRadius: 8
-  interval: 60
+  shakeSpeed: 50
   timeShakeLasts: 0.3
   minWaveDistance: 5
   rotationScale: 2
   xDisplacement: 0
   unaffectedByStrengthMultiplier: 1
+  infiniteShake: 0
+  shakeInStart: 0
 --- !u!225 &1966049480
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -17230,12 +17249,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxRadius: 1.2
-  interval: 60
+  shakeSpeed: 0
   timeShakeLasts: 0.5
   minWaveDistance: 1
   rotationScale: 1
   xDisplacement: 0
   unaffectedByStrengthMultiplier: 0
+  infiniteShake: 0
+  shakeInStart: 0
 --- !u!114 &2087050875
 MonoBehaviour:
   m_ObjectHideFlags: 0

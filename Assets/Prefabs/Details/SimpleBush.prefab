@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 9084043014546198095}
   - component: {fileID: 9084043014546198094}
   - component: {fileID: 9084043014546198089}
-  - component: {fileID: 9084043014546198093}
   - component: {fileID: 9084043014546198092}
   m_Layer: 0
   m_Name: SimpleBush
@@ -105,20 +104,7 @@ MonoBehaviour:
   background: 0
   fakePassingSpeed: 0
   appearingObject: 0
---- !u!114 &9084043014546198093
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9084043014546198088}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e360647ab41daa43b93a8c56b208c50, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pushAwayForce: 200
-  pushAwayTimeLasts: 2
+  imSkystraperPart: 0
 --- !u!114 &9084043014546198092
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -131,4 +117,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 113d6f2efc64e3b4da518d1aa61798f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cantInstantiateMoreBushes: 0
+  imFartherBush: 0
+  imCloserBush: 0

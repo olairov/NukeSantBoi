@@ -47,7 +47,7 @@ public class LoopChecker : MonoBehaviour
 
     void AddPointsWhenLoop()
     {
-        Instantiate(pointsPrefab, transform.position + new Vector3(0, 1, -1), Quaternion.identity, pointsContainer).GetComponentInChildren<TMP_Text>().text = "+ 4";
-        hudScript.ChangePointsValue(4);
+        Instantiate(pointsPrefab, transform.position + new Vector3(0, 1, -1), Quaternion.identity, pointsContainer).GetComponentInChildren<TMP_Text>().text = "+ 2";
+        hudScript.ChangePointsValue(2);
     }
 }

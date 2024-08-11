@@ -11,12 +11,16 @@ public class ObstacleScript : MonoBehaviour
 
     private Rigidbody2D rb;
 
-    private Vector3 actualDirection;
+    private Vector2 actualDirection;
 
-    [SerializeField] private float speed, rotSpeed, pushForce;
+    [SerializeField] private float speed, rotSpeed, pushForce, speedMax;
     private float randRotDelay;
 
-    private bool dead;
+    private bool dead, imDuplicated;
+    public bool SetImDuplicated
+    {
+        set { imDuplicated = value; }
+    }
 
     void Start()
     {
@@ -31,17 +35,26 @@ public class ObstacleScript : MonoBehaviour
 
     void Update()
     {
-        rb.AddForce(actualDirection * Time.deltaTime * speed);
+        if (rb.velocity.magnitude < speedMax) rb.AddForce(actualDirection * Time.deltaTime * speed);
 
         if (!dead) transform.eulerAngles = new Vector3(0, 0, Mathf.Cos(Time.time * rotSpeed + randRotDelay) * 12);
 
-        DirChange();
+        DirChange(Vector2.zero);
     }
 
-    void DirChange()
+    public void DirChange(Vector2 direction) // Give direction a Vector2.zero for a random direction election.
     {
-        actualDirection += new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0).normalized * Time.deltaTime * 50;
-        actualDirection = Vector3.ClampMagnitude(actualDirection, 1);
+        if (direction == Vector2.zero)
+        {
+            actualDirection += new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
+            //actualDirection = Vector3.ClampMagnitude(actualDirection, 1);
+        }
+        else
+        {
+            actualDirection += direction;
+        }
+
+        Vector2.ClampMagnitude(actualDirection, 1); // Prevent it from reaching too high speeds;
     }
 
     void ChoseStats()
@@ -54,9 +67,10 @@ public class ObstacleScript : MonoBehaviour
         else if (randValue > 0.2f) transform.GetComponent<SpriteRenderer>().color = possibleColor4;
         else transform.GetComponent<SpriteRenderer>().color = possibleColor5;
 
-        if (Random.value > 0.9f)
+        if (Random.value > 0.9f && !imDuplicated)
         {
-            Instantiate(obstaclePrefab, new Vector3(transform.position.x + 8f, transform.position.y < 0 ? transform.position.y + 5 : transform.position.y - 5, transform.position.z), Quaternion.identity, obstaclesContainer);
+            Vector3 otherPos = new Vector3(transform.position.x, transform.position.y < 0 ? transform.position.y + 5 : transform.position.y - 5, transform.position.z);
+            Instantiate(obstaclePrefab, otherPos, Quaternion.identity, obstaclesContainer).GetComponent<ObstacleScript>().SetImDuplicated = true;
         }
     }
 

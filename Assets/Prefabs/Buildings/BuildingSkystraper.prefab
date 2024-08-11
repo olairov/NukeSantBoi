@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1161062619281861290}
+  - component: {fileID: -8107733846008995842}
   - component: {fileID: 1161062619281861291}
   - component: {fileID: 1161062619281861206}
   - component: {fileID: 1161062619281861289}
@@ -37,6 +38,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-8107733846008995842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1161062619281861293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf7cde42d88c4a34381cb546d7b10e5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  middlePartPrefab: {fileID: 1161062619281861293, guid: 23809c93efffeb84f921d1840f3e0ad8, type: 3}
+  completeDestroyParticlesPref: {fileID: 4847225872823265081, guid: 2c5aee4c42cd2944ba21629ee2300cc5, type: 3}
+  cutInHalfParticlesPref: {fileID: 2309843396066869276, guid: da76396cf5662744f82cbfaf8a2d3121, type: 3}
+  brokenPartSprite: {fileID: 0}
 --- !u!114 &1161062619281861291
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -286,7 +303,7 @@ GameObject:
   - component: {fileID: 5896962325651507051}
   - component: {fileID: 9189300084735499940}
   m_Layer: 3
-  m_Name: BrokenSprite
+  m_Name: UpperSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -300,7 +317,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6149967100457723511}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.046, y: 26, z: 0.1}
+  m_LocalPosition: {x: -0.047, y: 26, z: 0.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

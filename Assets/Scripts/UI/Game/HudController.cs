@@ -6,6 +6,7 @@ using TMPro;
 public class HudController : MonoBehaviour
 {
     private PlayerController playerScript;
+    private JoystickController bombingJoystickScript;
 
     private AudioSource menuInSound, menuOutSound;
 
@@ -51,6 +52,7 @@ public class HudController : MonoBehaviour
 
         pauseMenu.Find("Highscore").GetComponent<TMP_Text>().text = PlayerPrefs.GetInt("Highscore").ToString();
         playerScript = GameObject.Find("Player").GetComponent<PlayerController>();
+        bombingJoystickScript = GameObject.Find("Canvas/TouchControllers/Controllers/Bombing Joystick").GetComponent<JoystickController>();
 
         cameraComponent = cameraTransform.GetComponentInChildren<Camera>();
 
@@ -197,7 +199,9 @@ public class HudController : MonoBehaviour
 
     private void SendVariableInfo()
     {
-        playerScript.SetIsPaused = pretendsToBePaused;
+        playerScript.SetIsPaused(pretendsToBePaused);
+        bombingJoystickScript.SetIsPaused = pretendsToBePaused;
+
         InGameSound.timeSpeed = actualTimescale;
         MusicSound.timeSpeed = actualTimescale;
     }

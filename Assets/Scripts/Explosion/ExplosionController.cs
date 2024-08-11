@@ -6,7 +6,7 @@ using TMPro;
 public class ExplosionController : MonoBehaviour
 {
     [SerializeField] private GameObject pointsPrefab;
-    private Transform pointsContainer, playerTramsform, obstaclesContainer, buildingsContainer, interactiveDetailsContainer;
+    private Transform pointsContainer, playerTramsform, obstaclesContainer, buildingsContainer;
 
     private SpriteRenderer mySprite;
 
@@ -30,10 +30,8 @@ public class ExplosionController : MonoBehaviour
         {
             pointsContainer = GameObject.Find("NotPhysicElementsContainer").transform;
             if (GameObject.Find("Player")) playerTramsform = GameObject.Find("Player").transform;
-            else Destroy(gameObject);
             obstaclesContainer = GameObject.Find("ObstaclesContainer").transform;
             buildingsContainer = GameObject.Find("BuildingsContainer").transform;
-            interactiveDetailsContainer = GameObject.Find("DetailsContainer/DetailsThatMoveAwayWhenExplosion").transform;
             hudScript = GameObject.Find("________________Canvas________________").GetComponent<HudController>();
 
             mySprite = transform.GetComponent<SpriteRenderer>();
@@ -48,6 +46,8 @@ public class ExplosionController : MonoBehaviour
 
             Camera.main.GetComponent<ShakeController>().Shake();
 
+            GameObject.Find("__________________Map___________________").GetComponent<MapGenerator>().ExplosionGenerated();
+
             PushObjects();
         }
     }
@@ -61,24 +61,11 @@ public class ExplosionController : MonoBehaviour
             Acolor -= Time.deltaTime * 1.5f;
             mySprite.color = new Color(mySprite.color.r, mySprite.color.g, mySprite.color.b, Acolor);
         }
-        if (timeAlive > 0.1f && !alreadyAddedPoints && comboNum > 0)
+        if (timeAlive > 0.1f)
         {
-            if (!PlayerController.dead && pointsToAdd != 0)
-            {
-                if (comboNum > 1)
-                {
-                    TMP_Text comboText = Instantiate(pointsPrefab, transform.position + new Vector3(2, 2.5f, -10), Quaternion.identity, pointsContainer).GetComponentInChildren<TMP_Text>();
-                    comboText.fontSize /= 2;
-                    comboText.text = "COMBO x" + comboNum;
-                }
-                Instantiate(pointsPrefab, transform.position + new Vector3(2, 1, -10), Quaternion.identity, pointsContainer).GetComponentInChildren<TMP_Text>().text = "+" + (pointsToAdd + (comboNum - 1));
-
-                hudScript.ChangePointsValue(pointsToAdd + (comboNum - 1));
-            }
-
             transform.GetComponent<Collider2D>().enabled = false;
 
-            alreadyAddedPoints = true;
+            if (!alreadyAddedPoints && comboNum > 0) AddPoints();
         }
 
         if (comboNum > 0 && !alreadySentVignetteEffectAnim)
@@ -88,6 +75,24 @@ public class ExplosionController : MonoBehaviour
         }
 
         AdjustTimescale();
+    }
+
+    void AddPoints()
+    {
+        if (!PlayerController.dead && pointsToAdd != 0)
+        {
+            if (comboNum > 1)
+            {
+                TMP_Text comboText = Instantiate(pointsPrefab, transform.position + new Vector3(2, 2.5f, -10), Quaternion.identity, pointsContainer).GetComponentInChildren<TMP_Text>();
+                comboText.fontSize /= 2;
+                comboText.text = "COMBO x" + comboNum;
+            }
+            Instantiate(pointsPrefab, transform.position + new Vector3(2, 1, -10), Quaternion.identity, pointsContainer).GetComponentInChildren<TMP_Text>().text = "+" + (pointsToAdd + (comboNum - 1));
+
+            hudScript.ChangePointsValue(pointsToAdd + (comboNum - 1));
+        }
+
+        alreadyAddedPoints = true;
     }
 
     void AdjustTimescale() // Make time warp for an extended epic explosion moment.
@@ -122,7 +127,7 @@ public class ExplosionController : MonoBehaviour
     {
         Destroy(other.transform); // If the object is close, kill it.
         
-        if (other.CompareTag("Player") && Mathf.Abs(Vector2.Distance(transform.position, playerTramsform.position)) < 2f) collidedWithPlayer = true;
+        if (playerTramsform != null && other.CompareTag("Player") && Vector2.Distance(transform.position, playerTramsform.position) < 2f) collidedWithPlayer = true;
     }
 
     void Destroy (Transform other)
@@ -154,6 +159,11 @@ public class ExplosionController : MonoBehaviour
 
             comboNum++;
         }
+
+        if (other.CompareTag("Skystraper") || other.CompareTag("SkystraperUpperPart")) // So that the skystrapers can break multiple times.
+        {
+            other.GetComponent<SkystraperBreakAgain>().BreakAgain(transform.position);
+        }
     }
 
     void PushObjects ()
@@ -168,14 +178,8 @@ public class ExplosionController : MonoBehaviour
         for (int buildingIdx = 0; buildingIdx < buildingsContainer.childCount; buildingIdx++)
         {
             Transform buildingTransform = buildingsContainer.GetChild(buildingIdx);
-            if (!buildingTransform.name.Contains("UpperPart"))
+            if (!buildingTransform.CompareTag("SkystraperUpperPart"))
                 buildingTransform.GetComponent<Building>().PushAway((buildingTransform.transform.position - transform.position).normalized.x, Vector2.Distance(buildingTransform.position, transform.position));
-        }
-
-        for (int detailIdx = 0; detailIdx < interactiveDetailsContainer.childCount; detailIdx++)
-        {
-            Transform interactiveDetailTransform = interactiveDetailsContainer.GetChild(detailIdx);
-            interactiveDetailTransform.GetComponent<MoveAwayWhenExplosion>().PushAway((interactiveDetailTransform.transform.position - transform.position).normalized.x, Vector2.Distance(interactiveDetailTransform.position, transform.position));
         }
     }
 }

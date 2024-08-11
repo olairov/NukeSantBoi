@@ -48,6 +48,6 @@ public class BombController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.layer == 3) Explode();
+        if (other.gameObject.layer == 3 || other.gameObject.layer == 6) Explode();
     }
 }

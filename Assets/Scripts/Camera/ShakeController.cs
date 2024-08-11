@@ -6,10 +6,15 @@ public class ShakeController : MonoBehaviour
 {
     private Vector2 waveStartPos, targetPos;
 
-    [SerializeField] private float maxRadius, interval, timeShakeLasts, minWaveDistance, rotationScale, xDisplacement;
-    private float strengthMultiplier, shakeMoveProgress, shakeTimeLeft, definitiveMaxRadius;
+    // Xdisplacement is only used for objects whose X default position is not x;
+    [SerializeField] private float maxRadius, shakeSpeed, timeShakeLasts, minWaveDistance, rotationScale, xDisplacement;
+    private float strengthMultiplier, shakeMoveProgress, shakeTimeLeft, definitiveMaxRadius, yVariableDisplacement;
+    public float SetYdisplacement
+    {
+        set { yVariableDisplacement = value; }
+    }
 
-    [SerializeField] private bool unaffectedByStrengthMultiplier;
+    [SerializeField] private bool unaffectedByStrengthMultiplier, infiniteShake, shakeInStart;
     private bool lastRound, finishedShake;
 
     private void Start()
@@ -17,11 +22,14 @@ public class ShakeController : MonoBehaviour
         if (unaffectedByStrengthMultiplier)
         {
             SetDefinitiveMaxRadius(1f);
-            return;
+        }
+        else
+        {
+            if (PlayerPrefs.HasKey("ScreenshakeValue")) SetDefinitiveMaxRadius(PlayerPrefs.GetFloat("ScreenshakeValue"));
+            else SetDefinitiveMaxRadius(0.5f);
         }
 
-        if (PlayerPrefs.HasKey("ScreenshakeValue")) SetDefinitiveMaxRadius(PlayerPrefs.GetFloat("ScreenshakeValue"));
-        else SetDefinitiveMaxRadius(0.5f);
+        if (shakeInStart) Shake();
     }
 
     void Update()
@@ -31,7 +39,7 @@ public class ShakeController : MonoBehaviour
 
     public void Shake() // Called from the outside to start the shake process.
     {
-        if (Time.timeSinceLevelLoad < 0.3f) return; // For some misterious reason, sometimes a screenshake is generated in the beginning of the game.
+        if (Time.timeSinceLevelLoad < 0.3f && !shakeInStart) return; // For some mysterious reason, sometimes a screenshake is generated in the beginning of the game.
 
         lastRound = false;
         finishedShake = false;
@@ -57,7 +65,7 @@ public class ShakeController : MonoBehaviour
 
         float smoothedMoveProgress = Mathf.Abs(Mathf.Cos(shakeMoveProgress) / 2 - 0.5f);
 
-        transform.localPosition = new Vector3(Mathf.Lerp(waveStartPos.x, targetPos.x, smoothedMoveProgress) + xDisplacement, Mathf.Lerp(waveStartPos.y, targetPos.y, smoothedMoveProgress), transform.localPosition.z);
+        transform.localPosition = new Vector3(Mathf.Lerp(waveStartPos.x, targetPos.x, smoothedMoveProgress) + xDisplacement, Mathf.Lerp(waveStartPos.y, targetPos.y, smoothedMoveProgress) + yVariableDisplacement, transform.localPosition.z);
         
         float adjustedRotationLerping = transform.localPosition.x / (definitiveMaxRadius * 2 * strengthMultiplier) + 0.5f;
         transform.localEulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.Lerp(-rotationScale, rotationScale, adjustedRotationLerping) * (definitiveMaxRadius / maxRadius));
@@ -65,7 +73,7 @@ public class ShakeController : MonoBehaviour
 
     private void UpdateShakeMoveProgress()
     {
-        shakeMoveProgress += Time.unscaledDeltaTime * interval;
+        shakeMoveProgress += Time.unscaledDeltaTime * shakeSpeed;
 
         if (shakeMoveProgress > Mathf.PI * 2)
         {
@@ -73,7 +81,7 @@ public class ShakeController : MonoBehaviour
             CreateWave(false);
         }
 
-        shakeTimeLeft -= Time.unscaledDeltaTime;
+        if (!infiniteShake) shakeTimeLeft -= Time.unscaledDeltaTime;
         if (shakeTimeLeft <= 0)
         {
             if (lastRound)
@@ -89,10 +97,10 @@ public class ShakeController : MonoBehaviour
 
     private void CreateWave(bool isLast)
     {
-        if (shakeTimeLeft > 0) strengthMultiplier = shakeTimeLeft / timeShakeLasts;
+        if (shakeTimeLeft > 0 && !infiniteShake) strengthMultiplier = shakeTimeLeft / timeShakeLasts;
         else strengthMultiplier = 1;
 
-        waveStartPos = transform.localPosition;
+        waveStartPos = transform.localPosition - new Vector3(0, yVariableDisplacement);
 
         if (!isLast)
         {

@@ -45,10 +45,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bfaefafd4640f94681268d984a00088, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  appearingSpeed: 0
   disableIfNotThreeDSound: 0
   disableWhenPlayerDie: 0
   ignorePause: 0
   ignoreThreeDsound: 0
+  appearingSmoothly: 0
+  disappearingSmoothly: 0
 --- !u!82 &6136076543503989023
 AudioSource:
   m_ObjectHideFlags: 0
@@ -10103,10 +10106,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bfaefafd4640f94681268d984a00088, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  appearingSpeed: 0
   disableIfNotThreeDSound: 0
   disableWhenPlayerDie: 0
   ignorePause: 0
   ignoreThreeDsound: 0
+  appearingSmoothly: 0
+  disappearingSmoothly: 0
 --- !u!82 &2988868139547922410
 AudioSource:
   m_ObjectHideFlags: 0
@@ -10625,8 +10631,8 @@ ParticleSystem:
     startColor:
       serializedVersion: 2
       minMaxState: 2
-      minColor: {r: 0.2735849, g: 0.2735849, b: 0.2735849, a: 0.1764706}
-      maxColor: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 0.09803922}
+      minColor: {r: 0.2735849, g: 0.2735849, b: 0.2735849, a: 0.21568628}
+      maxColor: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 0.13725491}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -15260,10 +15266,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bfaefafd4640f94681268d984a00088, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  appearingSpeed: 0
   disableIfNotThreeDSound: 0
   disableWhenPlayerDie: 0
   ignorePause: 0
   ignoreThreeDsound: 0
+  appearingSmoothly: 0
+  disappearingSmoothly: 0
 --- !u!82 &3953111015412927406
 AudioSource:
   m_ObjectHideFlags: 0
@@ -15582,8 +15591,8 @@ ParticleSystem:
     startColor:
       serializedVersion: 2
       minMaxState: 2
-      minColor: {r: 0.8962264, g: 0.8486672, b: 0.7905393, a: 0.47058824}
-      maxColor: {r: 1, g: 1, b: 1, a: 0.3137255}
+      minColor: {r: 0.8962264, g: 0.8486672, b: 0.7905393, a: 0.09803922}
+      maxColor: {r: 1, g: 1, b: 1, a: 0.05882353}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -20121,7 +20130,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: aa24adb5511a18e49ba31a2e76fd36d3, type: 2}
+  - {fileID: 2100000, guid: c551fad92e145bb42b281e479db63a45, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -374,7 +374,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -20}
-  m_SizeDelta: {x: 380, y: 120}
+  m_SizeDelta: {x: 425, y: 130}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &185298581
 MonoBehaviour:
@@ -645,12 +645,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxRadius: 8
-  interval: 60
+  shakeSpeed: 50
   timeShakeLasts: 0.3
   minWaveDistance: 5
   rotationScale: 2
   xDisplacement: 0
   unaffectedByStrengthMultiplier: 1
+  infiniteShake: 0
+  shakeInStart: 0
 --- !u!222 &256643932
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1253,12 +1255,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxRadius: 1.2
-  interval: 60
+  shakeSpeed: 0
   timeShakeLasts: 0.5
   minWaveDistance: 1
   rotationScale: 1
   xDisplacement: 0
   unaffectedByStrengthMultiplier: 0
+  infiniteShake: 0
+  shakeInStart: 0
 --- !u!114 &660278721
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1508,13 +1512,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1af6aa290eee4a1479195162db0ccfd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxRadius: 40
-  interval: 60
+  maxRadius: 60
+  shakeSpeed: 50
   timeShakeLasts: 0.5
-  minWaveDistance: 10
+  minWaveDistance: 30
   rotationScale: 2
   xDisplacement: 0
   unaffectedByStrengthMultiplier: 1
+  infiniteShake: 0
+  shakeInStart: 0
 --- !u!1 &753979159
 GameObject:
   m_ObjectHideFlags: 0
@@ -2223,12 +2229,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxRadius: 8
-  interval: 60
+  shakeSpeed: 50
   timeShakeLasts: 0.3
   minWaveDistance: 5
   rotationScale: 2
   xDisplacement: 0
   unaffectedByStrengthMultiplier: 1
+  infiniteShake: 0
+  shakeInStart: 0
 --- !u!222 &1007327581
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3175,7 +3183,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 30, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1188893482
 CanvasRenderer:
@@ -3210,12 +3218,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxRadius: 8
-  interval: 60
+  shakeSpeed: 50
   timeShakeLasts: 0.3
   minWaveDistance: 5
   rotationScale: 2
   xDisplacement: 0
   unaffectedByStrengthMultiplier: 1
+  infiniteShake: 0
+  shakeInStart: 0
 --- !u!1 &1290613110
 GameObject:
   m_ObjectHideFlags: 0
@@ -4111,7 +4121,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -6, y: -6}
-  m_SizeDelta: {x: 410, y: 120}
+  m_SizeDelta: {x: 430, y: 130}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1562194197
 MonoBehaviour:
@@ -5733,12 +5743,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxRadius: 8
-  interval: 60
+  shakeSpeed: 50
   timeShakeLasts: 0.3
   minWaveDistance: 5
   rotationScale: 2
   xDisplacement: 0
   unaffectedByStrengthMultiplier: 1
+  infiniteShake: 0
+  shakeInStart: 0
 --- !u!225 &2118591297
 CanvasGroup:
   m_ObjectHideFlags: 0

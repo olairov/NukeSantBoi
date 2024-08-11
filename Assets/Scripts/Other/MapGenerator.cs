@@ -11,18 +11,22 @@ public class MapGenerator : MonoBehaviour
 
     //Other Prefabs:
     [SerializeField] private GameObject wind1pref, wind2pref, wind3pref, wind4pref, warningPrefab, birdGroupPrefab, singleBirdPrefab, cranePrefab;
+    [SerializeField] private GameObject enemyWarning;
 
     private Transform playerTransform ,buildingsContainer, enemiesContainer, obstaclesContainer, backgroundContainer, warningsContainerCanvas, particlesContainer,
-        detailsContainer, interactiveDetailsContainer;
+        detailsContainer;
 
     static public float playerDistanceToStandardPos;
     [SerializeField] private float speedIncreaseFactor;
 
     // Times for every thing generation
-    private float timeForNextBuilding, timeForNextEnemy, timeForNextObstacle, timeForNextParticle, timeForNextLayer1, timeForNextLayer2,
+    private float timeForNextBuilding, timeForNextEnemy = 3, timeForNextObstacle, timeForNextParticle, timeForNextLayer1, timeForNextLayer2,
         timeForNextLayer3, timeForNextBirdGroup = 3, timeForSingleBird = 1, timeForNextCrane = 8, timeForNextFrontBird, timeForNextBush = 1;
 
-    private int buildingsFromSkystraper;
+    private int buildingsFromSkystraper, explosionsGenerated;
+
+    static private bool firstGamesBuildingGenerated;
+    private bool canGenerateEnemies, firstBuildingGenerated;
 
     void Start()
     {
@@ -34,7 +38,6 @@ public class MapGenerator : MonoBehaviour
         warningsContainerCanvas = GameObject.Find("Canvas/Warning").transform;
         particlesContainer = GameObject.Find("ParticlesContainer").transform;
         detailsContainer = GameObject.Find("DetailsContainer").transform;
-        interactiveDetailsContainer = detailsContainer.Find("DetailsThatMoveAwayWhenExplosion");
 
         FirstGeneration();
 
@@ -53,12 +56,10 @@ public class MapGenerator : MonoBehaviour
         {
             ObjectPassingBy.realSpeedMultiplier += Time.deltaTime * speedIncreaseFactor;
 
-            float fallSpeedMultiplier = Mathf.Cos((playerTransform.eulerAngles.z - 122) / 57.3f) * 1.6f - 0.5f; // For slightly increase speed when going down.
-            if (fallSpeedMultiplier < 1) fallSpeedMultiplier = 1;
             float speedMultiplierFactor = (Mathf.Cos((playerTransform.eulerAngles.z - 180) / 57.3f) * 1.2f + 0.5f); // For Loops.
             if (speedMultiplierFactor > 1) speedMultiplierFactor = 1;
 
-            ObjectPassingBy.speedMultiplier = ObjectPassingBy.realSpeedMultiplier * speedMultiplierFactor * fallSpeedMultiplier;
+            ObjectPassingBy.speedMultiplier = ObjectPassingBy.realSpeedMultiplier * speedMultiplierFactor;
         }
         else ObjectPassingBy.speedMultiplier /= Time.deltaTime / 4 + 1;
 
@@ -71,11 +72,14 @@ public class MapGenerator : MonoBehaviour
         GenerateFrontBirds();
         GenerateBushes();
 
-        if (!PlayerController.dead) GenerateEnemies();
+        if (!PlayerController.dead && canGenerateEnemies) GenerateEnemies();
 
         Layer1BackgroundGeneration();
         Layer2BackgroundGeneration();
         Layer3BackgroundGeneration();
+
+        //ObjectPassingBy.speedMultiplier = 0;
+        //ObjectPassingBy.realSpeedMultiplier = 0;
     }
 
     void GenerateBuildings()
@@ -83,13 +87,18 @@ public class MapGenerator : MonoBehaviour
         timeForNextBuilding -= Time.unscaledDeltaTime * Time.timeScale * ObjectPassingBy.speedMultiplier;
         if (timeForNextBuilding > 0) return;
 
+        if (!firstGamesBuildingGenerated)
+        {
+            firstGamesBuildingGenerated = true;
+            firstBuildingGenerated = true;
+            timeForNextBuilding = 2;
+            return; // For some reason, the first building of the first game overlaps with another one, so bye bye.
+        }
+
         if (Random.value * ObjectPassingBy.realSpeedMultiplier < 0.15f && buildingsFromSkystraper > 3 * ObjectPassingBy.realSpeedMultiplier)
         {
             Instantiate(skystraperPrefab, buildingsContainer);
             buildingsFromSkystraper = 0;
-
-            if (timeForNextEnemy < 1.2f) GenerateEnemies();
-            timeForNextEnemy = 4;
 
             if (!PlayerController.dead) Instantiate(warningPrefab, warningsContainerCanvas);
         }
@@ -107,7 +116,13 @@ public class MapGenerator : MonoBehaviour
             }
         }
 
-        timeForNextBuilding = Random.Range(1.6f, 2.2f);
+        if (firstBuildingGenerated) timeForNextBuilding = Random.Range(1.6f, 2.2f);
+        else
+        {
+            firstBuildingGenerated = true;
+            timeForNextBuilding = 2.2f;
+            // For any other reason, the first building to be generated at the beginning appears to close to the next one. Now it doesn't.
+        }
 
         buildingsFromSkystraper++;
     }
@@ -119,7 +134,7 @@ public class MapGenerator : MonoBehaviour
 
         Instantiate(enemyPrefab, enemiesContainer);
 
-        timeForNextEnemy = Random.Range(1.6f, 3.6f);
+        timeForNextEnemy = Random.Range(4.5f, 6f);
     }
 
     void GenerateObstacles()
@@ -192,9 +207,9 @@ public class MapGenerator : MonoBehaviour
         timeForNextBush -= Time.deltaTime * ObjectPassingBy.speedMultiplier;
         if (timeForNextBush > 0) return;
 
-        Instantiate(bushPrefab, interactiveDetailsContainer);
+        Instantiate(bushPrefab, detailsContainer);
 
-        timeForNextBush = Random.Range(1f, 4f);
+        timeForNextBush = Random.Range(1.2f, 2.4f);
     }
 
     void Layer1BackgroundGeneration()
@@ -234,7 +249,7 @@ public class MapGenerator : MonoBehaviour
 
         Vector3 buildingDefaultPos = buildingPrefab.transform.position;
 
-        for (float actualX = startX; actualX > finishX; actualX -= 7.5f)
+        for (float actualX = startX; actualX > finishX; actualX -= 8.5f)
         {
             if (Random.value < 0.7f) Instantiate(buildingPrefab, new Vector3(actualX, buildingDefaultPos.y, buildingDefaultPos.z), Quaternion.identity, buildingsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
             else Instantiate(wideBuildingPrefab, new Vector2(actualX, buildingDefaultPos.y), Quaternion.identity, buildingsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
@@ -242,7 +257,7 @@ public class MapGenerator : MonoBehaviour
 
         for (float actualX = startX; actualX > finishX; actualX -= Random.Range(6, 10))
         {
-            Instantiate(bushPrefab, new Vector3(actualX, -6, 0), Quaternion.identity, interactiveDetailsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
+            Instantiate(bushPrefab, new Vector3(actualX, -6, 0), Quaternion.identity, detailsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
         }
 
         for (float actualX = startX + 5; actualX > finishX - 30; actualX -= 24.5f)
@@ -255,5 +270,15 @@ public class MapGenerator : MonoBehaviour
         Instantiate(birdGroupPrefab, new Vector3(Random.Range(startX - 2, finishX + 5), 0, birdGroupPrefab.transform.position.z), Quaternion.identity, detailsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
         Instantiate(singleBirdPrefab, new Vector3(Random.Range(startX - 2, finishX + 5), 0, birdGroupPrefab.transform.position.z), Quaternion.identity, detailsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
         Instantiate(cranePrefab, new Vector3(Random.Range(startX - 2, finishX + 5), 0, cranePrefab.transform.position.z), Quaternion.identity, detailsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
+    }
+
+    public void ExplosionGenerated()
+    {
+        explosionsGenerated++;
+        if (explosionsGenerated > 6 && !PlayerController.dead)
+        {
+            canGenerateEnemies = true;
+            enemyWarning.SetActive(true);
+        }
     }
 }

@@ -7,23 +7,31 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject bombPrefab, explosionPrefab, simpleBombDropAnim;
     [SerializeField] private Transform bombContainer;
     [SerializeField] private Color burnColor;
-    private Transform cameraParentTransform, targetTransform, nonPhysicalElementsContainer;
+    private Transform cameraRiserTransform, targetTransform, nonPhysicalElementsContainer;
 
-    [SerializeField] private Joystick movementJoystick;
+    private Vector2 savedShootingDirection;
 
     private ChargeController chargeScript;
 
     private AudioSource bombThrowSound;
 
-    [SerializeField] private float rotSpeed, moveSpeed, bombThrowForce, deviationSpeed, bombReloadTime, downForceWhenBackwardsMagnitude;
-    private float deviationTime, deviationRandomForce, deviationExtraForce = 1, rotationDifference, timeUntilNextBomb, Yvelocity, lastCameraYpos, downForceWhenBackwards, leftCameraCornerXpos, targetCameraXpos;
+    private SpriteRenderer arrowSprite;
+    [SerializeField] private Color unchargedArrowColor;
+    private Color chargedArrowColor;
+
+    protected BaseMovement movement;
+
+    [SerializeField] private float bombThrowForce, bombReloadTime, regularBuildingPassingSpeed;
+    private float timeUntilNextBomb, Yvelocity, lastCameraYpos, leftCameraCornerXpos, targetCameraXpos;
+    public float GetPlayerYvelocity
+    {
+        get { return Yvelocity; }
+    }
+
+    public int touchMovementDirection;
 
     static public bool dead;
     private bool isPaused, willShotWhenPossible, canDropBombWithClick = true;
-    public bool SetIsPaused
-    {
-        set { isPaused = value; }
-    }
     public bool SetCanDropBomb
     {
         set { canDropBombWithClick = value; }
@@ -33,36 +41,67 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        dead = false;
+
         rb = transform.GetComponent<Rigidbody2D>();
+
+        SetMovementType(0);
+        movement.SetPlayerStats();
 
         chargeScript = GameObject.Find("Canvas/Charge").GetComponent<ChargeController>();
         chargeScript.SetDefaultTimeUntilNextBomb = bombReloadTime;
         
         transform.position = new Vector3(Camera.main.ScreenToWorldPoint(new Vector2(Screen.width / 5, 0)).x, 2, transform.position.z);
 
-        cameraParentTransform = Camera.main.transform.parent;
+        cameraRiserTransform = Camera.main.transform.parent;
         targetTransform = GameObject.Find("Target").transform;
 
         nonPhysicalElementsContainer = GameObject.Find("NotPhysicElementsContainer").transform;
 
         bombThrowSound = transform.Find("Sounds/BombThrow").GetComponent<AudioSource>();
+        arrowSprite = transform.Find("TouchArrow").GetComponent<SpriteRenderer>();
+        chargedArrowColor = arrowSprite.color;
 
-        lastCameraYpos = cameraParentTransform.position.y;
-        dead = false;
+        lastCameraYpos = cameraRiserTransform.position.y;
 
         leftCameraCornerXpos = Camera.main.ScreenToWorldPoint(new Vector2(-1, 0)).x;
         targetCameraXpos = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width / 5, 0)).x;
     }
 
+    public void SetMovementType(int movementType)
+    {
+        if (dead) return;
+
+        switch (movementType)
+        {
+            case 1:
+                movement = new MovementTypeB(transform, rb);
+                break;
+            case 2:
+                movement = new MovementTypeC(transform, rb);
+                break;
+            default:
+                movement = new MovementTypeA(transform, rb);
+                break;
+        }
+    }
+
     void Update()
     {
-        if (!dead)RotateAndMove();
+        float lastYpos = transform.position.y;
+        if (!dead)
+        {
+            movement.MovementProcess();
+            UpdateYposInFunctionOfCameraPos();
+        }
+        Yvelocity = (transform.position.y - lastYpos) / Time.deltaTime;
 
         if (timeUntilNextBomb > 0) timeUntilNextBomb -= Time.deltaTime;
         else
         {
             timeUntilNextBomb = 0;
-            if (willShotWhenPossible && !dead && !isPaused) DropBomb(targetTransform.position - transform.position);
+            arrowSprite.color = chargedArrowColor;
+            if (willShotWhenPossible && !dead && !isPaused) DropBomb(savedShootingDirection);
             willShotWhenPossible = false;
         }
 
@@ -91,69 +130,23 @@ public class PlayerController : MonoBehaviour
         transform.position = new Vector3(Mathf.Lerp(leftCameraCornerXpos, targetCameraXpos, MapGenerator.playerDistanceToStandardPos), transform.position.y, transform.position.z);
     }
 
-    void RotateAndMove()
-    {
-        if (!isPaused)
-        {
-            float movement = 0;
-            if (!TouchControllersManager.isUsingPhone) movement = (int)Input.GetAxisRaw("Horizontal");
-            else movement = -movementJoystick.Vertical;
-
-            float multiplierInCaseOfFrontFlip = 1;
-            if (movement > 0 && transform.eulerAngles.z < 150)
-            {
-                multiplierInCaseOfFrontFlip = Mathf.Cos((transform.eulerAngles.z + 75) / 47.75f) * 0.4f + 1;
-                // Basically, the more straight-down you are facing, the more slower you'll be able to rotate forward.
-                // I divide the angles by 47.75 instead of 57.3 (180 / pi, explained why in a comment below) so that the amplitude of the wave is 300 units,
-                // what divided into two is 150, instead of 360 units. I do that because I want that the curve starts in 0 and finishes in 150.
-                
-                transform.position += new Vector3(0, (multiplierInCaseOfFrontFlip - 1) * 4 * Time.deltaTime, 0);
-                //pushing the ship down so that it's difficult to do a frontflip.
-            }
-
-            rb.AddTorque(-movement * multiplierInCaseOfFrontFlip * rotSpeed * Time.deltaTime);
-
-            if (!TouchControllersManager.isUsingPhone) Deviation(Input.GetButton("Horizontal"));
-            else Deviation(-movementJoystick.Vertical != 0);
-        }
-
-        float lastYpos = transform.position.y;
-        float forceToAddFormula = Mathf.Cos(-transform.eulerAngles.z / 57.3f - Mathf.PI / 2);
-
-        LoopDownForce();
-
-        Vector3 forceToAdd = new Vector3(0, forceToAddFormula * moveSpeed * ((ObjectPassingBy.speedMultiplier - 1) / 2.5f + 1) * Time.deltaTime, 0);
-        transform.position += forceToAdd;
-
-        UpdateYposInFunctionOfCameraPos();
-
-        Yvelocity = (transform.position.y - lastYpos) / Time.deltaTime;
-    }
-
-    void LoopDownForce()
-    {
-        float additionDownForceWhenBackwards = Mathf.Cos((transform.eulerAngles.z - 180) / 57.3f) * 0.8f - 0.2f;
-        // I divide the rotation between 57.3 (180 / pi) so that the amplitude of the wave is 360 units, instead of 2pi units, to representate it in degrees.
-
-        if (additionDownForceWhenBackwards > 0) additionDownForceWhenBackwards *= 3;
-        downForceWhenBackwards += additionDownForceWhenBackwards * downForceWhenBackwardsMagnitude * Time.deltaTime;
-        if (downForceWhenBackwards > 0) downForceWhenBackwards = 0;
-
-        transform.position += new Vector3(0, downForceWhenBackwards * Time.deltaTime, 0);
-    }
-
     void UpdateYposInFunctionOfCameraPos()
     {
-        transform.position = new Vector3(transform.position.x, transform.position.y - (cameraParentTransform.position.y - lastCameraYpos), transform.position.z);
+        transform.position = new Vector3(transform.position.x, transform.position.y - (cameraRiserTransform.localPosition.y - lastCameraYpos) * (regularBuildingPassingSpeed + 1), transform.position.z);
+        // Multiplied by regularBuildingPassingSpeed to also take into account the scenary's movement in function of the camera movement.
 
-        lastCameraYpos = cameraParentTransform.position.y;
+        lastCameraYpos = cameraRiserTransform.localPosition.y;
     }
 
     public void DropBomb(Vector2 direction)
     {
         if (timeUntilNextBomb != 0)
         {
-            if (timeUntilNextBomb < 0.25f) willShotWhenPossible = true; // If the player shoots a little before the bomb is charged, It will shoot it when it's available.
+            if (timeUntilNextBomb < 0.25f) // If the player shoots a little before the bomb is charged, It will shoot it when it's available.
+            {
+                willShotWhenPossible = true;
+                savedShootingDirection = direction;
+            }
             return;
         }
 
@@ -170,6 +163,8 @@ public class PlayerController : MonoBehaviour
         timeUntilNextBomb = bombReloadTime / ObjectPassingBy.realSpeedMultiplier;
 
         chargeScript.DropBomb(timeUntilNextBomb);
+
+        arrowSprite.color = unchargedArrowColor;
 
         SimpleBombDropAnimation(direction.normalized);
     }
@@ -192,41 +187,6 @@ public class PlayerController : MonoBehaviour
         bombThrowSound.Play();
     }
 
-    void Deviation(bool isMoving)
-    {
-        if (deviationTime <= 0) ChangeDeviation();
-        deviationTime -= Time.unscaledDeltaTime;
-
-        if (Input.GetButtonDown("Horizontal")) rotationDifference = transform.eulerAngles.z;
-        if (Input.GetButtonUp("Horizontal"))
-        {
-            rotationDifference = Mathf.Abs((transform.eulerAngles.z - rotationDifference) / 100);
-            deviationExtraForce = 15 * rotationDifference;
-            if (deviationExtraForce > 8) deviationExtraForce = 8;
-        }
-        if (deviationExtraForce > 1) deviationExtraForce -= Time.deltaTime * 7;
-        else deviationExtraForce = 1;
-
-        if (isMoving) rb.AddTorque(deviationRandomForce * deviationSpeed * deviationExtraForce * 0.3f * Time.deltaTime);
-        else rb.AddTorque(deviationRandomForce * deviationSpeed * deviationExtraForce * Time.deltaTime);
-    }
-
-    void ChangeDeviation()
-    {
-        if (deviationExtraForce == 1)
-        {
-            deviationTime = Random.Range(0.1f, 0.3f);
-            deviationRandomForce = Random.Range(-1f, 1f);
-        }
-        else
-        {
-            deviationTime = 0.18f;
-
-            if (deviationRandomForce < 0) deviationRandomForce = 0.5f;
-            else deviationRandomForce = -0.5f;
-        }
-    }
-
     void GenerateExplosion()
     {
         if (dead) return;
@@ -239,8 +199,8 @@ public class PlayerController : MonoBehaviour
         if (dead) return;
         dead = true;
 
+        transform.Find("TouchArrow").gameObject.SetActive(false);
         Cursor.visible = true;
-        GameObject.Find("AudioListener").GetComponent<AudioListener>().enabled = false;
         GameObject.Find("Camera/CameraRiser/Main Camera/VignetteEffect").GetComponent<VignetteEffectController>().Explosion(true);
 
         for (int childNum = 0; childNum < transform.Find("Parts").childCount; childNum++) transform.Find("Parts").GetChild(childNum).GetComponent<SpriteRenderer>().color = burnColor;
@@ -261,6 +221,12 @@ public class PlayerController : MonoBehaviour
         rb.AddTorque(randomTorque);
     }
 
+    public void SetIsPaused(bool paused)
+    {
+        isPaused = paused;
+        movement.IsPaused = paused;
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "Explosion" && Mathf.Abs(Vector2.Distance(other.transform.position, transform.position)) < 2f) Die();
@@ -268,7 +234,7 @@ public class PlayerController : MonoBehaviour
         // If you throw a bomb to something and just then you crash with it two explosions are generated in a very short distance.
         // That may look a little bit weird, so I have to find a way to nullify one of them. ->
 
-        if (other.gameObject.layer == 3)
+        if (other.gameObject.layer == 3 || other.gameObject.layer == 6)
         {
             GenerateExplosion();
         }

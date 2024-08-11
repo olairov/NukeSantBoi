@@ -14,14 +14,6 @@ public class TouchControllersManager : MonoBehaviour
 
         if (!isUsingPhone) controllersGO.SetActive(false);
         else EnableTouchControls();
-
-        SetBombingJoystick();
-    }
-    void SetBombingJoystick()
-    {
-        RectTransform myRectangle = transform.Find("Controllers/Bombing Joystick").GetComponent<RectTransform>();
-        myRectangle.sizeDelta = new Vector2(-Screen.width / 3, 0);
-        myRectangle.anchoredPosition += new Vector2(Screen.width / 3, 0);
     }
 
     // Update is called once per frame
@@ -40,8 +32,8 @@ public class TouchControllersManager : MonoBehaviour
         controllersGO.SetActive(true);
         isUsingPhone = true;
 
-        transform.parent.Find("Charge").GetComponent<RectTransform>().anchoredPosition = new Vector2(200, 120);
-        transform.parent.Find("PointsCounter").GetComponent<RectTransform>().anchoredPosition = new Vector2(200, -80);
-        transform.parent.Find("MorePointsContainer").GetComponent<RectTransform>().anchoredPosition = new Vector2(170, -55);
+        transform.parent.Find("Charge").GetComponent<RectTransform>().anchoredPosition = new Vector2(230, 120);
+        transform.parent.Find("PointsCounter").GetComponent<RectTransform>().anchoredPosition = new Vector2(230, -80);
+        transform.parent.Find("MorePointsContainer").GetComponent<RectTransform>().anchoredPosition = new Vector2(200, -55);
     }
 }

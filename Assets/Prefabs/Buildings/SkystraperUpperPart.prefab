@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1009167637993010271}
   - component: {fileID: 6911590869850694062}
   m_Layer: 3
-  m_Name: BrokenSprite
+  m_Name: LowerSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,7 +30,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1161062619281861290}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &6911590869850694062
 SpriteRenderer:
@@ -96,10 +96,11 @@ GameObject:
   - component: {fileID: 1161062619281861288}
   - component: {fileID: 1161062619281861289}
   - component: {fileID: 7961880922570684141}
+  - component: {fileID: -5427483254612349356}
   - component: {fileID: -5232738888510996049}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: SkystraperUpperPart
-  m_TagString: Untagged
+  m_TagString: SkystraperUpperPart
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -112,12 +113,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1161062619281861293}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.7}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1009167637993010271}
   - {fileID: 263634377072097989}
+  - {fileID: 1009167637993010271}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -220,6 +221,22 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &-5427483254612349356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1161062619281861293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf7cde42d88c4a34381cb546d7b10e5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  middlePartPrefab: {fileID: 1161062619281861293, guid: 23809c93efffeb84f921d1840f3e0ad8, type: 3}
+  completeDestroyParticlesPref: {fileID: 4847225872823265081, guid: 2c5aee4c42cd2944ba21629ee2300cc5, type: 3}
+  cutInHalfParticlesPref: {fileID: 2309843396066869276, guid: da76396cf5662744f82cbfaf8a2d3121, type: 3}
+  brokenPartSprite: {fileID: 21300000, guid: 8963d2ff8c60df14ab0bb2d37f7de980, type: 3}
 --- !u!114 &-5232738888510996049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -237,7 +254,9 @@ MonoBehaviour:
   myYpos: 0
   background: 0
   fakePassingSpeed: 0
+  ignoreCameraYmovement: 1
   appearingObject: 1
+  imSkystraperPart: 0
 --- !u!1 &8954457501652162046
 GameObject:
   m_ObjectHideFlags: 0
@@ -249,7 +268,7 @@ GameObject:
   - component: {fileID: 263634377072097989}
   - component: {fileID: 7752861802951719634}
   m_Layer: 3
-  m_Name: upperSprite
+  m_Name: UpperSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -264,11 +283,11 @@ Transform:
   m_GameObject: {fileID: 8954457501652162046}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.046, y: 15, z: 0.1}
-  m_LocalScale: {x: 1, y: -1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1161062619281861290}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7752861802951719634
 SpriteRenderer:

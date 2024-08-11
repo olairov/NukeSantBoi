@@ -78,7 +78,7 @@ public class AnyButton : MonoBehaviour
 
     void ChangePointedLerp() // Decision-making based in pointingLerp value and the pointer state in relation to the button.
     {
-        if ((!clicked && !pointed && pointingLerp < 0.5f) || (pointed && !clicked && pointingLerp < 1)) Growing();
+        if ((!clicked && !pointed && pointingLerp < 0.5f) || (pointed && !clicked && pointingLerp < 1 && !TouchControllersManager.isUsingPhone)) Growing();
 
         if (!clicked && !pointed && pointingLerp > 0.5f) Shrinking(1);
         if (clicked && pointed && pointingLerp > 0) Shrinking(5); // Increase the speed of the shrinking to create a most powerful effect.
