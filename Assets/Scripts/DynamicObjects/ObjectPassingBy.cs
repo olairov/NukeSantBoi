@@ -42,7 +42,7 @@ public class ObjectPassingBy : MonoBehaviour
         transform.position += new Vector3(-realPassingSpeed, 0, 0) * Time.deltaTime * realSpeedMultiplier * MapGenerator.playerDistanceToStandardPos;
 
         // If it is a skystraper part it can be rotated and disappear when a part of it is still visible.
-        if (transform.position.x < Camera.main.ScreenToWorldPoint(Vector3.zero).x - (imSkystraperPart ? appearingDistance * 3 : appearingDistance)) Destroy(gameObject);
+        if (transform.position.x < Camera.main.ScreenToWorldPoint(Vector3.zero).x - (imSkystraperPart || CompareTag("Explosion") ? appearingDistance * 3 : appearingDistance)) Destroy(gameObject);
     }
 
     void MovementFix()

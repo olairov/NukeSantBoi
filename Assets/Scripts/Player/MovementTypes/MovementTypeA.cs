@@ -5,7 +5,7 @@ using UnityEngine;
 public class MovementTypeA : BaseMovement
 {
     private float lastIdleRotation, lastRotationSpeed, timeSinceDeviationStarted, idleRotationBeforeStop;
-    private bool isInCenter = true, wasStoppedBefore;
+    private bool isInCenter = true, wasStoppedBefore, inUpperLimit, inLowerLimit;
 
     private Transform playerTransform;
     private Rigidbody2D playerRB;
@@ -33,24 +33,22 @@ public class MovementTypeA : BaseMovement
             // If the movement is not in any of the limits or in the very center, it adds the torque it needs.
             if (((movement > 0 && idleRotation > -movementArotationLimit) || (movement < 0 && idleRotation < movementArotationLimit)) && !isInCenter)
             {
-                playerRB.AddTorque(-movement * rotationSpeed * Time.deltaTime);
-                wasStoppedBefore = false;
+                if ((movement < 0 && inUpperLimit) || (movement > 0 && inLowerLimit))
+                {
+                    Deviation(lastRotationSpeed, idleRotationBeforeStop);
+                }
+                else
+                {
+                    playerRB.AddTorque(-movement * rotationSpeed * Time.deltaTime);
+
+                    inUpperLimit = false;
+                    inLowerLimit = false;
+                    wasStoppedBefore = false;
+                }
             }
             else // Otherwise, it stops completely and adds the deviation effect with the same rotation force it had before stopping.
             {
-                if (!wasStoppedBefore)
-                {
-                    lastRotationSpeed = playerRB.angularVelocity;
-                    playerRB.angularVelocity = 0;
-                    if (idleRotation > movementArotationLimit) playerTransform.eulerAngles = new Vector3(0, 0, movementArotationLimit - 180);
-                    if (idleRotation < -movementArotationLimit) playerTransform.eulerAngles = new Vector3(0, 0, -movementArotationLimit - 180);
-
-                    timeSinceDeviationStarted = 0;
-                    idleRotationBeforeStop = playerTransform.eulerAngles.z - 180;
-                }
-                wasStoppedBefore = true;
-
-                Deviation(lastRotationSpeed, idleRotationBeforeStop);
+                NotRotatingProcess(idleRotation);
             }
 
             lastIdleRotation = idleRotation;
@@ -61,9 +59,35 @@ public class MovementTypeA : BaseMovement
         playerTransform.position += forceToAdd;
     }
 
+    void NotRotatingProcess(float idleRotation)
+    {
+        if (!wasStoppedBefore)
+        {
+            lastRotationSpeed = playerRB.angularVelocity;
+            idleRotationBeforeStop = playerTransform.eulerAngles.z - 180;
+            timeSinceDeviationStarted = 0;
+
+            playerRB.angularVelocity = 0;
+            if (idleRotation >= movementArotationLimit)
+            {
+                playerTransform.eulerAngles = new Vector3(0, 0, movementArotationLimit - 180);
+                inUpperLimit = true;
+            }
+            if (idleRotation <= -movementArotationLimit)
+            {
+                playerTransform.eulerAngles = new Vector3(0, 0, -movementArotationLimit - 180);
+                inLowerLimit = true;
+            }
+
+            wasStoppedBefore = true;
+        }
+
+        Deviation(lastRotationSpeed, idleRotationBeforeStop);
+    }
+
     float RotateTowardsCenter(float rotation)
     {
-        float movement = 0;
+        float movement;
 
         // Detecting if the plane has already gotten to the center so that it stops.
         if ((lastIdleRotation < 0 && rotation >= 0) || (rotation <= 0 && lastIdleRotation > 0))
@@ -85,16 +109,13 @@ public class MovementTypeA : BaseMovement
         timeSinceDeviationStarted += Time.deltaTime;
         if (timeSinceDeviationStarted >= deviationWavesDuration)
         {
-            //if (isInCenter) EndlessDeviation();
+            if (isInCenter) EndlessDeviation();
             return;
         }
 
-        float deviationDurationMultiplierForSpeed = Mathf.Abs(rotationSpeedBeforeStop) / deviationDecaySmoothness;
-
         float deviationDecay = -(timeSinceDeviationStarted / deviationWavesDuration) + 1;
 
-        float rotation = Mathf.Sin(timeSinceDeviationStarted * deviationWavesSpeed) * rotationSpeedBeforeStop * Time.deltaTime * deviationDecay - 180 + rotationOffset;
-        Debug.Log(rotation + " ___ " + rotationSpeedBeforeStop + " ___ " + deviationDecay);
+        float rotation = Mathf.Sin(timeSinceDeviationStarted * deviationWavesSpeed) * rotationSpeedBeforeStop / deviationWavesSpeed * endOfMovementDeviationMultiplier * deviationDecay - 180 + rotationOffset;
 
         playerTransform.eulerAngles = new Vector3(0, 0, rotation);
     }
@@ -103,7 +124,7 @@ public class MovementTypeA : BaseMovement
     {
         timeSinceDeviationStarted += Time.deltaTime;
 
-        float rotation = 0;
+        float rotation = Mathf.Sin((timeSinceDeviationStarted - deviationWavesDuration) * (deviationWavesSpeed / 5)) * deviationWavesAmplitude - 180;
         playerTransform.eulerAngles = new Vector3(0, 0, rotation);
     }
 }

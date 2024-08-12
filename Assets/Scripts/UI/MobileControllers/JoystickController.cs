@@ -78,7 +78,10 @@ public class JoystickController : MonoBehaviour
         {
             if (Input.touchCount <= 0 || Input.touchCount <= lastTouchCount) return Vector2.zero;
 
-            if (Input.touches[Input.touchCount - 1].position.x > Screen.width / 2) return Input.touches[Input.touchCount - 1].position;
+            for (int touchIdx = Input.touchCount - 1; touchIdx >= 0; touchIdx--)
+            {
+                if (Input.touches[touchIdx].position.x > Screen.width / 2) return Input.touches[touchIdx].position;
+            }
         }
 
         return Vector2.zero;

@@ -5,7 +5,7 @@ using UnityEngine;
 public class BaseMovement : MonoBehaviour
 {
     protected float rotationSpeed, movementSpeed, deviationSpeed, downForceWhenBackwardsMagnitude, movementArotationLimit, deviationWavesSpeed,
-        deviationWavesAmplitude, deviationWavesDuration, deviationDecaySmoothness;
+        deviationWavesAmplitude, deviationWavesDuration, deviationDecaySmoothness, endOfMovementDeviationMultiplier;
 
     private bool isPaused;
     public virtual bool IsPaused
@@ -27,6 +27,7 @@ public class BaseMovement : MonoBehaviour
         deviationWavesAmplitude = playerStats.deviationWavesAmplitude;
         deviationWavesDuration = playerStats.deviationWavesDuration;
         deviationDecaySmoothness = playerStats.deviationDecaySmoothness;
+        endOfMovementDeviationMultiplier = playerStats.endOfMovementDeviationMultiplier;
     }
 
     public virtual void MovementProcess()

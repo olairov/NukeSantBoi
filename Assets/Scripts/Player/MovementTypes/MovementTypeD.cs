@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MovementTypeC : BaseMovement
+public class MovementTypeD : BaseMovement
 {
     private Transform playerTransform;
     private Rigidbody2D playerRB;
 
-    private float deviationTime, deviationRandomForce, deviationExtraForce = 1, rotationDifference, downForceWhenBackwards;
+    private float deviationTime, deviationRandomForce, deviationExtraForce = 1, rotationDifference, downForceWhenBackwards, rotationVelocityBeforeStop, idleRotationBeforeStop,
+        timeSinceDeviationStarted;
 
-    public MovementTypeC(Transform transform, Rigidbody2D rb)
+    public MovementTypeD(Transform transform, Rigidbody2D rb)
     {
         playerTransform = transform;
         playerRB = rb;
@@ -35,7 +36,17 @@ public class MovementTypeC : BaseMovement
 
             playerRB.AddTorque(-movement * multiplierInCaseOfFrontFlip * rotationSpeed * Time.deltaTime);
 
-            if (Time.timeSinceLevelLoad > 1.5f) Deviation(CorrectInputs.rawVerticalAxis != 0);
+            if (movement == 0)
+            {
+                if (CorrectInputs.justReleasedVertical)
+                {
+                    rotationVelocityBeforeStop = playerRB.angularVelocity;
+                    idleRotationBeforeStop = playerTransform.eulerAngles.z - 180;
+                    timeSinceDeviationStarted = 0;
+                }
+
+                Deviation(rotationVelocityBeforeStop, idleRotationBeforeStop);
+            }
         }
         float forceToAddFormula = Mathf.Cos(-playerTransform.eulerAngles.z / 57.3f - Mathf.PI / 2);
 
@@ -57,7 +68,31 @@ public class MovementTypeC : BaseMovement
         playerTransform.position += new Vector3(0, downForceWhenBackwards * Time.deltaTime, 0);
     }
 
-    void Deviation(bool isMoving)
+    void Deviation(float rotationSpeedBeforeStop, float rotationOffset)
+    {
+        timeSinceDeviationStarted += Time.deltaTime;
+        if (timeSinceDeviationStarted >= deviationWavesDuration)
+        {
+            EndlessDeviation(rotationOffset);
+            return;
+        }
+
+        float deviationDecay = -(timeSinceDeviationStarted / deviationWavesDuration) + 1;
+
+        float rotation = Mathf.Sin(timeSinceDeviationStarted * deviationWavesSpeed) * rotationSpeedBeforeStop / deviationWavesSpeed * endOfMovementDeviationMultiplier * deviationDecay - 180 + rotationOffset;
+
+        playerTransform.eulerAngles = new Vector3(0, 0, rotation);
+    }
+
+    void EndlessDeviation(float rotationOffset)
+    {
+        timeSinceDeviationStarted += Time.deltaTime;
+
+        float rotation = Mathf.Sin((timeSinceDeviationStarted - deviationWavesDuration) * (deviationWavesSpeed / 5)) * deviationWavesAmplitude - 180 + rotationOffset;
+        playerTransform.eulerAngles = new Vector3(0, 0, rotation);
+    }
+
+    /*void Deviation(bool isMoving)
     {
         if (deviationTime <= 0) ChangeDeviation();
         deviationTime -= Time.unscaledDeltaTime;
@@ -75,8 +110,7 @@ public class MovementTypeC : BaseMovement
         if (deviationExtraForce > 1) deviationExtraForce -= Time.deltaTime * 7;
         else deviationExtraForce = 1;
 
-        if (isMoving) playerRB.AddTorque(deviationRandomForce * deviationSpeed * deviationExtraForce * 0.05f * Time.deltaTime);
-        else playerRB.AddTorque(deviationRandomForce * deviationSpeed * deviationExtraForce * Time.deltaTime);
+        playerRB.AddTorque(deviationRandomForce * deviationSpeed * deviationExtraForce * Time.deltaTime);
     }
 
     void ChangeDeviation()
@@ -93,5 +127,5 @@ public class MovementTypeC : BaseMovement
             if (deviationRandomForce < 0) deviationRandomForce = 0.5f;
             else deviationRandomForce = -0.5f;
         }
-    }
+    }*/
 }

@@ -149,8 +149,7 @@ public class ExplosionController : MonoBehaviour
 
             other.GetComponent<Building>().Destruct(transform.position);
 
-            if (other.CompareTag("Building")) PlayDestructAudio(false);
-            else PlayDestructAudio(true);
+            PlayDestructAudio(!other.CompareTag("Building"));
         }
         else if (other.CompareTag("Enemy"))
         {
@@ -163,6 +162,7 @@ public class ExplosionController : MonoBehaviour
         if (other.CompareTag("Skystraper") || other.CompareTag("SkystraperUpperPart")) // So that the skystrapers can break multiple times.
         {
             other.GetComponent<SkystraperBreakAgain>().BreakAgain(transform.position);
+            PlayDestructAudio(true);
         }
     }
 

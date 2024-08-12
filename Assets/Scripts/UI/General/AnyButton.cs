@@ -123,7 +123,7 @@ public class AnyButton : MonoBehaviour
     {
         pointed = true;
 
-        if (!clicked) PlayPitchSound(selectSound);
+        if (!clicked && !TouchControllersManager.isUsingPhone) PlayPitchSound(selectSound);
         if (reallyClicked) clicked = true;
     }
 

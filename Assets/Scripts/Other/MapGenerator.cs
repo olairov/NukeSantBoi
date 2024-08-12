@@ -17,7 +17,7 @@ public class MapGenerator : MonoBehaviour
         detailsContainer;
 
     static public float playerDistanceToStandardPos;
-    [SerializeField] private float speedIncreaseFactor;
+    [SerializeField] private float speedIncreaseFactor, chanceItIsWideBuilding;
 
     // Times for every thing generation
     private float timeForNextBuilding, timeForNextEnemy = 3, timeForNextObstacle, timeForNextParticle, timeForNextLayer1, timeForNextLayer2,
@@ -104,14 +104,14 @@ public class MapGenerator : MonoBehaviour
         }
         else
         {
-            if (Random.value < 0.7f)
+            if (Random.value > chanceItIsWideBuilding)
             {
                 if (lastBuildingSprite == null) Instantiate(buildingPrefab, buildingsContainer);
                 else Instantiate(buildingPrefab, buildingsContainer).GetComponent<Building>().lastSprite = lastBuildingSprite;
             }
             else
             {
-                if (lastBuildingSprite == null) Instantiate(buildingPrefab, buildingsContainer);
+                if (lastBuildingSprite == null) Instantiate(wideBuildingPrefab, buildingsContainer);
                 else Instantiate(wideBuildingPrefab, buildingsContainer).GetComponent<Building>().lastSprite = lastWideBuildingSprite;
             }
         }
@@ -120,7 +120,7 @@ public class MapGenerator : MonoBehaviour
         else
         {
             firstBuildingGenerated = true;
-            timeForNextBuilding = 2.2f;
+            timeForNextBuilding = 2.8f;
             // For any other reason, the first building to be generated at the beginning appears to close to the next one. Now it doesn't.
         }
 

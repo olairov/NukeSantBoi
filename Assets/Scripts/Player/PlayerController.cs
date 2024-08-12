@@ -45,7 +45,7 @@ public class PlayerController : MonoBehaviour
 
         rb = transform.GetComponent<Rigidbody2D>();
 
-        SetMovementType(0);
+        SetMovementType(3);
         movement.SetPlayerStats();
 
         chargeScript = GameObject.Find("Canvas/Charge").GetComponent<ChargeController>();
@@ -78,7 +78,10 @@ public class PlayerController : MonoBehaviour
                 movement = new MovementTypeB(transform, rb);
                 break;
             case 2:
-                movement = new MovementTypeC(transform, rb);
+                //movement = new MovementTypeC(transform, rb);
+                break;
+            case 3:
+                movement = new MovementTypeD(transform, rb);
                 break;
             default:
                 movement = new MovementTypeA(transform, rb);
