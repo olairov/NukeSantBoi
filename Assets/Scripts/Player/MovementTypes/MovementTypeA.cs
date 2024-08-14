@@ -29,6 +29,7 @@ public class MovementTypeA : BaseMovement
                 // If no movement is being added, but it's not in the center, rotate the plane towards the center.
                 if (!isInCenter) movement = RotateTowardsCenter(idleRotation);
             }
+            lastIdleRotation = idleRotation;
 
             // If the movement is not in any of the limits or in the very center, it adds the torque it needs.
             if (((movement > 0 && idleRotation > -movementArotationLimit) || (movement < 0 && idleRotation < movementArotationLimit)) && !isInCenter)
@@ -50,8 +51,6 @@ public class MovementTypeA : BaseMovement
             {
                 NotRotatingProcess(idleRotation);
             }
-
-            lastIdleRotation = idleRotation;
         }
         float forceToAddFormula = Mathf.Cos(-playerTransform.eulerAngles.z / 57.3f - Mathf.PI / 2);
 

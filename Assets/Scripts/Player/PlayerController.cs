@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
 
     protected BaseMovement movement;
 
-    [SerializeField] private float bombThrowForce, bombReloadTime, regularBuildingPassingSpeed;
+    [SerializeField] private float bombThrowForce, bombReloadTime, regularBuildingPassingSpeed, appearInSceneSpeed;
     private float timeUntilNextBomb, Yvelocity, lastCameraYpos, leftCameraCornerXpos, targetCameraXpos;
     public float GetPlayerYvelocity
     {
@@ -45,7 +45,8 @@ public class PlayerController : MonoBehaviour
 
         rb = transform.GetComponent<Rigidbody2D>();
 
-        SetMovementType(3);
+        if (PlayerPrefs.HasKey("Level")) SetMovementType(PlayerPrefs.GetInt("Level"));
+        else SetMovementType(0);
         movement.SetPlayerStats();
 
         chargeScript = GameObject.Find("Canvas/Charge").GetComponent<ChargeController>();
@@ -78,7 +79,7 @@ public class PlayerController : MonoBehaviour
                 movement = new MovementTypeB(transform, rb);
                 break;
             case 2:
-                //movement = new MovementTypeC(transform, rb);
+                movement = new MovementTypeC(transform, rb);
                 break;
             case 3:
                 movement = new MovementTypeD(transform, rb);
@@ -129,7 +130,7 @@ public class PlayerController : MonoBehaviour
 
         // Appear from left
 
-        MapGenerator.playerDistanceToStandardPos += (1 - MapGenerator.playerDistanceToStandardPos) * Time.deltaTime;
+        MapGenerator.playerDistanceToStandardPos += (1 - MapGenerator.playerDistanceToStandardPos) * Time.deltaTime * appearInSceneSpeed;
         transform.position = new Vector3(Mathf.Lerp(leftCameraCornerXpos, targetCameraXpos, MapGenerator.playerDistanceToStandardPos), transform.position.y, transform.position.z);
     }
 

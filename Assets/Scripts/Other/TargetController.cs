@@ -38,6 +38,6 @@ public class TargetController : MonoBehaviour
         transform.position = mousePos;
 
         // If game is paused or finished, use OS's cursor.
-        if (hudScript.GetPretendsToBePaused || PlayerController.dead) transform.position = new Vector3(0, -20, 0);
+        if (hudScript.PretendsToBePaused || PlayerController.dead) transform.position = new Vector3(0, -20, 0);
     }
 }

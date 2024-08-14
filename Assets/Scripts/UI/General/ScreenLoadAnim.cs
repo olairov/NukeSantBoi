@@ -15,7 +15,7 @@ public class ScreenLoadAnim : MonoBehaviour
     static private string sceneToLoad;
 
     [SerializeField] private bool isFromMenu;
-    private bool alreadyCalledLoader, alreadyFinishedEntering, allowedToExitFromScene;
+    private bool alreadyCalledLoader, alreadyFinishedEntering, canActivateNewScene;
 
     void Start()
     {
@@ -29,12 +29,13 @@ public class ScreenLoadAnim : MonoBehaviour
         }
         transform.position = new Vector3(transform.position.x, 0, transform.position.z);
 
-        allowedToExitFromScene = true;
+        canActivateNewScene = false;
+        AnyButton.canBePressed = true;
     }
 
     private void Update()
     {
-        if (timeSinceLevelLoad < 1 && timeSinceStartOfSceneQuit >= 1 && allowedToExitFromScene) ExitFromScene(); // When the scene just started, it exits from it.
+        if (timeSinceLevelLoad < 1 && timeSinceStartOfSceneQuit >= 1 && !canActivateNewScene) ExitFromScene(); // When the scene just started, it exits from it.
 
         if (timeSinceStartOfSceneQuit < 1 && !alreadyFinishedEntering) EnterOnScene(); // When the scene is preparing to change, it enters on it.
     }
@@ -86,15 +87,18 @@ public class ScreenLoadAnim : MonoBehaviour
         transform.GetComponent<ShakeController>().Shake();
         transform.Find("RightGate/Logo").GetComponent<Animator>().SetTrigger("Glow");
 
-        yield return new WaitForSecondsRealtime(1.5f);
+        yield return new WaitForSecondsRealtime(0.5f);
+
+        if (sceneToLoad != "Exit") StartCoroutine(StartOfLoadingScene());
+
+        yield return new WaitForSecondsRealtime(1f);
 
         RestartStats();
 
         if (sceneToLoad == "Exit") Application.Quit();
         else
         {
-            StartCoroutine(StartOfLoadingScene());
-            allowedToExitFromScene = false;
+            canActivateNewScene = true;
         }
     }
 
@@ -103,11 +107,14 @@ public class ScreenLoadAnim : MonoBehaviour
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneToLoad); // Start scene loading
         asyncLoad.allowSceneActivation = false; // Prevent the scene from being activated until loaded
 
+        float timeSinceSceneStartLoading = 0;
         while (!asyncLoad.isDone)
         {
             // Maybe put a Loading Bar
 
-            if (asyncLoad.progress >= 0.9f) // The scene is almost ready
+            timeSinceSceneStartLoading += Time.deltaTime;
+
+            if ((asyncLoad.progress >= 0.9f && canActivateNewScene) || timeSinceSceneStartLoading > 2f) // The scene is almost ready
             {
                 asyncLoad.allowSceneActivation = true;  // Activate the scene
             }

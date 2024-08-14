@@ -35,7 +35,11 @@ public class OptionsSlideController : MonoBehaviour
         moreOptionsTransform.position = new Vector3(safeDistanceFromCamera, moreOptionsTransform.position.y, moreOptionsTransform.position.z);
 
         // Get the camera transform
-        if (imInGameScene) gameCameraTransform = GameObject.Find("Camera/CameraRiser/Main Camera").transform;
+        if (imInGameScene)
+        {
+            gameCameraTransform = GameObject.Find("Camera/CameraRiser/Main Camera").transform;
+            GameObject.Find("________________Canvas________________").GetComponent<HudController>().PretendsToBePaused = true;
+        }
         else if (!notOtherSceneActive) gameCameraTransform = GameObject.Find("Camera/Main Camera").transform;
         else gameCameraTransform = GameObject.Find("OptionsCamera/Main Camera").transform;
 

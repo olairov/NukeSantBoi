@@ -14,11 +14,18 @@ public class AnyButton : MonoBehaviour
 
     private Slider mySlider;
 
+    private Vector2 defaultSize = Vector2.one;
+    public Vector2 SetDefaultSize
+    {
+        set { defaultSize = value; }
+    }
+
     [SerializeField] private float resizingSpeed, amountOfSliderSoundPlaces;
     private float pointingLerp = 0.5f, lastSliderValue, timeSinceLastSliderSound;
 
     [SerializeField] private bool doesntHaveShadow, imSlider;
-    private bool pointed, clicked, reallyClicked;
+    private bool pointed, clicked, reallyClicked, cantMakeSelectedSound;
+    public static bool canBePressed = true;
 
     void Start()
     {
@@ -30,7 +37,7 @@ public class AnyButton : MonoBehaviour
             clickSound = GameObject.Find("UIsounds/ClickSound").GetComponent<AudioSource>();
             sliderSound = GameObject.Find("UIsounds/SliderSound").GetComponent<AudioSource>();
         }
-        else
+        else if (GameObject.Find("UIsoundsOptions"))
         {
             selectSound = GameObject.Find("UIsoundsOptions/SelectSound").GetComponent<AudioSource>();
             clickSound = GameObject.Find("UIsoundsOptions/ClickSound").GetComponent<AudioSource>();
@@ -49,10 +56,12 @@ public class AnyButton : MonoBehaviour
 
     void Update()
     {
+        if (!canBePressed) return;
+
         if (Input.GetButtonUp("Fire1") && !clicked && reallyClicked) reallyClicked = false;
-        if (Input.GetButtonUp("Fire1") && imSlider && clicked)
+        if (Input.GetButtonUp("Fire1") && clicked)
         {
-            pointed = false;
+            if (imSlider) pointed = false;
             ClickedUp();
         }
 
@@ -76,9 +85,14 @@ public class AnyButton : MonoBehaviour
         }
     }
 
+    private void LateUpdate()
+    {
+        cantMakeSelectedSound = false;
+    }
+
     void ChangePointedLerp() // Decision-making based in pointingLerp value and the pointer state in relation to the button.
     {
-        if ((!clicked && !pointed && pointingLerp < 0.5f) || (pointed && !clicked && pointingLerp < 1 && !TouchControllersManager.isUsingPhone)) Growing();
+        if ((!clicked && !pointed && pointingLerp < 0.5f) || (pointed && !clicked && pointingLerp < 1 && !TouchControllersManager.isUsingPhone) || (TouchControllersManager.isUsingPhone && !clicked)) Growing();
 
         if (!clicked && !pointed && pointingLerp > 0.5f) Shrinking(1);
         if (clicked && pointed && pointingLerp > 0) Shrinking(5); // Increase the speed of the shrinking to create a most powerful effect.
@@ -112,7 +126,7 @@ public class AnyButton : MonoBehaviour
 
     void ChangeChildStats()
     {
-        resizerTransform.localScale = Vector2.one * Mathf.Lerp(0.85f, 1.15f, pointingLerp);
+        resizerTransform.localScale = defaultSize * Mathf.Lerp(0.85f, 1.15f, pointingLerp);
 
         if (!doesntHaveShadow) shadowTransform.localPosition = new Vector2(Mathf.Lerp(0, -12, pointingLerp), Mathf.Lerp(0, -12, pointingLerp));
     }
@@ -123,7 +137,7 @@ public class AnyButton : MonoBehaviour
     {
         pointed = true;
 
-        if (!clicked && !TouchControllersManager.isUsingPhone) PlayPitchSound(selectSound);
+        if (!clicked && !TouchControllersManager.isUsingPhone && !cantMakeSelectedSound) PlayPitchSound(selectSound);
         if (reallyClicked) clicked = true;
     }
 
@@ -163,5 +177,11 @@ public class AnyButton : MonoBehaviour
     {
         sound.pitch = Random.Range(0.9f, 1.1f);
         sound.Play();
+    }
+
+    public void StopSelectedSound()
+    {
+        selectSound.Stop();
+        cantMakeSelectedSound = true;
     }
 }

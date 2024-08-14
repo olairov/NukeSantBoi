@@ -7,8 +7,7 @@ public class MovementTypeD : BaseMovement
     private Transform playerTransform;
     private Rigidbody2D playerRB;
 
-    private float deviationTime, deviationRandomForce, deviationExtraForce = 1, rotationDifference, downForceWhenBackwards, rotationVelocityBeforeStop, idleRotationBeforeStop,
-        timeSinceDeviationStarted;
+    private float downForceWhenBackwards, rotationVelocityBeforeStop, idleRotationBeforeStop, timeSinceDeviationStarted;
 
     public MovementTypeD(Transform transform, Rigidbody2D rb)
     {

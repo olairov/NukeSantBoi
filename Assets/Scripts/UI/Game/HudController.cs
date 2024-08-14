@@ -35,9 +35,10 @@ public class HudController : MonoBehaviour
     {
         set { isInOptions = value; }
     }
-    public bool GetPretendsToBePaused
+    public bool PretendsToBePaused
     {
         get { return pretendsToBePaused; }
+        set { pretendsToBePaused = value; }
     }
 
     private void Start()

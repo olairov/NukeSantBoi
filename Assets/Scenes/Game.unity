@@ -6957,6 +6957,7 @@ MonoBehaviour:
   bombThrowForce: 7
   bombReloadTime: 2
   regularBuildingPassingSpeed: 5
+  appearInSceneSpeed: 2
   touchMovementDirection: 0
 --- !u!61 &1045594952
 BoxCollider2D:
