@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CorrectInputs : MonoBehaviour
 {
+    private Animator downButtonAnim, upButtonAnim;
+
     [SerializeField] private float lerpSpeed;
 
     static public float verticalAxis;
@@ -11,6 +13,17 @@ public class CorrectInputs : MonoBehaviour
     static public bool justPressedVertical, justReleasedVertical;
 
     private bool upButtonMobilePressed, downButtonMobilePressed, lastFramePressed;
+
+    private void Awake()
+    {
+        UnityEngine.InputSystem.EnhancedTouch.EnhancedTouchSupport.Enable();
+    }
+
+    private void Start()
+    {
+        downButtonAnim = GameObject.Find("Canvas/TouchControllers/Controllers/Buttons/ButtonDown/Image").GetComponent<Animator>();
+        upButtonAnim = GameObject.Find("Canvas/TouchControllers/Controllers/Buttons/ButtonUp/Image").GetComponent<Animator>();
+    }
 
     void Update()
     {
@@ -63,6 +76,8 @@ public class CorrectInputs : MonoBehaviour
 
             if (lastFramePressed) justReleasedVertical = true;
         }
+
+        upButtonAnim.SetBool("Pressed", pressed);
     }
 
     public void DownButtonMobile(bool pressed)
@@ -81,5 +96,7 @@ public class CorrectInputs : MonoBehaviour
 
             if (lastFramePressed) justReleasedVertical = true;
         }
+
+        downButtonAnim.SetBool("Pressed", pressed);
     }
 }

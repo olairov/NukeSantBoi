@@ -1956,7 +1956,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxRadius: 8
-  shakeSpeed: 0
+  shakeSpeed: 50
   timeShakeLasts: 0.3
   minWaveDistance: 5
   rotationScale: 2

@@ -9,8 +9,12 @@ public class ObstacleBuildingDetector : MonoBehaviour
 
     private ObstacleScript myObstacleScript;
 
+    private bool willEscapeTheBuilding;
+
     void Start()
     {
+        willEscapeTheBuilding = Random.value > 0.7f;
+
         screenDistance = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, 0, 0)).x + 1;
         myObstacleScript = transform.parent.GetComponent<ObstacleScript>();
     }
@@ -24,7 +28,11 @@ public class ObstacleBuildingDetector : MonoBehaviour
             direction *= escapeSpeed;
 
             if (transform.position.x > screenDistance) HardEscapeBuilding(direction);
-            else myObstacleScript.DirChange(direction);
+            else
+            {
+                if (willEscapeTheBuilding) myObstacleScript.DirChange(direction);
+                else myObstacleScript.SlowDown();
+            }
         }
 
     }

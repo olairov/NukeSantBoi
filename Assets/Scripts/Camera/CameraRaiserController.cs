@@ -56,10 +56,10 @@ public class CameraRaiserController : MonoBehaviour
     private void ChangeDeathLineStats()
     {
         // lineLerp contains a value from 0 to 1 depending on the player distance to the screen top limit.
-        // 2 units of distance below it or less is 0, one unit of distance from screen top limit or more is 1.
+        // 3 units of distance below it or less is 0, two units of distance from screen top limit or more is 1.
 
-        // if the Ypos of the player was 3.5 and the Ypos of the screen top was 5:  3.5 - (5 - 1) + 1  =  -0.5 + 1  =  0.5.
-        float lineLerp = playerTransform.position.y - (Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y - 1) + 1;
+        // if the Ypos of the player was 2.5 and the Ypos of the screen top was 5:  2.5 - (5 - 2) + 1  =  -0.5 + 1  =  0.5.
+        float lineLerp = playerTransform.position.y - (Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y - 2) + 1;
         lineLerp = Mathf.Clamp01(lineLerp);
 
         deadLineTransform.localScale = new Vector3(deadLineTransform.localScale.x, Mathf.Lerp(1f, 2f, lineLerp), deadLineTransform.localScale.z);

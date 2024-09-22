@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour
 
     private ChargeController chargeScript;
 
+    private Animator losingSpeedAnimator;
+
     private AudioSource bombThrowSound;
 
     private SpriteRenderer arrowSprite;
@@ -21,7 +23,7 @@ public class PlayerController : MonoBehaviour
 
     protected BaseMovement movement;
 
-    [SerializeField] private float bombThrowForce, bombReloadTime, regularBuildingPassingSpeed, appearInSceneSpeed;
+    [SerializeField] private float bombReloadTime, regularBuildingPassingSpeed, appearInSceneSpeed;
     private float timeUntilNextBomb, Yvelocity, lastCameraYpos, leftCameraCornerXpos, targetCameraXpos;
     public float GetPlayerYvelocity
     {
@@ -46,7 +48,7 @@ public class PlayerController : MonoBehaviour
         rb = transform.GetComponent<Rigidbody2D>();
 
         if (PlayerPrefs.HasKey("Level")) SetMovementType(PlayerPrefs.GetInt("Level"));
-        else SetMovementType(0);
+        else SetMovementType(1);
         movement.SetPlayerStats();
 
         chargeScript = GameObject.Find("Canvas/Charge").GetComponent<ChargeController>();
@@ -59,6 +61,7 @@ public class PlayerController : MonoBehaviour
 
         nonPhysicalElementsContainer = GameObject.Find("NotPhysicElementsContainer").transform;
 
+        losingSpeedAnimator = GameObject.Find("Canvas/Warning/LosingSpeedWarning").GetComponent<Animator>();
         bombThrowSound = transform.Find("Sounds/BombThrow").GetComponent<AudioSource>();
         arrowSprite = transform.Find("TouchArrow").GetComponent<SpriteRenderer>();
         chargedArrowColor = arrowSprite.color;
@@ -69,29 +72,34 @@ public class PlayerController : MonoBehaviour
         targetCameraXpos = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width / 5, 0)).x;
     }
 
-    public void SetMovementType(int movementType)
+    public void SetMovementType(int level)
     {
         if (dead) return;
 
-        switch (movementType)
+        switch (level)
         {
-            case 1:
+            case 2:
                 movement = new MovementTypeB(transform, rb);
                 break;
-            case 2:
+            case 3:
                 movement = new MovementTypeC(transform, rb);
                 break;
-            case 3:
+            case 4:
                 movement = new MovementTypeD(transform, rb);
                 break;
             default:
                 movement = new MovementTypeA(transform, rb);
                 break;
         }
+
+        GameObject.Find("________________Canvas________________").GetComponent<HudController>().GiveActualLevel = level;
     }
 
     void Update()
     {
+        // Enable this and set BombReloadTime to 0 if you're bored.
+        //DropBomb(targetTransform.position - transform.position);
+
         float lastYpos = transform.position.y;
         if (!dead)
         {
@@ -156,14 +164,10 @@ public class PlayerController : MonoBehaviour
 
         PlayDropBombSound();
 
-        Vector2 bombStartVelocity = direction.normalized * bombThrowForce + new Vector2(0, Yvelocity);
+        float myRotationIndicator = Mathf.Cos((transform.eulerAngles.z - 180) / 57.3f) + 0.25f; // This is so that the bomb doesn't try going forward when launched while looping.
+        if (myRotationIndicator > 1) myRotationIndicator = 1;
+        Instantiate(bombPrefab, transform.position, Quaternion.identity, bombContainer).GetComponent<BombController>().SetDirection(direction.normalized, new Vector2(0, Yvelocity), myRotationIndicator);
 
-        float speedAdder = (Mathf.Cos(transform.eulerAngles.z / 57.3f) + 0.6f) * 0.625f;
-
-        bombStartVelocity -= new Vector2(speedAdder * 7f * ObjectPassingBy.realSpeedMultiplier, 0);
-
-        Instantiate(bombPrefab, transform.position, Quaternion.identity, bombContainer).GetComponent<Rigidbody2D>().velocity = bombStartVelocity * (ObjectPassingBy.realSpeedMultiplier / 1.5f);
-        
         timeUntilNextBomb = bombReloadTime / ObjectPassingBy.realSpeedMultiplier;
 
         chargeScript.DropBomb(timeUntilNextBomb);
@@ -198,14 +202,21 @@ public class PlayerController : MonoBehaviour
         Instantiate(explosionPrefab, transform.position, Quaternion.identity, null);
     }
 
+    public void LosingSpeedWarning(bool enabled)
+    {
+        losingSpeedAnimator.SetBool("Enabled", enabled);
+    }
+
     void Die()
     {
         if (dead) return;
         dead = true;
 
+        LosingSpeedWarning(false);
+
         transform.Find("TouchArrow").gameObject.SetActive(false);
         Cursor.visible = true;
-        GameObject.Find("Camera/CameraRiser/Main Camera/VignetteEffect").GetComponent<VignetteEffectController>().Explosion(true);
+        GameObject.Find("Canvas/VignetteEffect").GetComponent<VignetteEffectController>().Explosion(true);
 
         for (int childNum = 0; childNum < transform.Find("Parts").childCount; childNum++) transform.Find("Parts").GetChild(childNum).GetComponent<SpriteRenderer>().color = burnColor;
 
@@ -216,6 +227,7 @@ public class PlayerController : MonoBehaviour
     {
         rb.gravityScale = 2;
         rb.angularDrag = 0;
+        rb.angularVelocity = 0;
 
         rb.AddForce(new Vector2(Random.Range(-3f, 5f), Random.Range(10f, 15f)), ForceMode2D.Impulse);
 

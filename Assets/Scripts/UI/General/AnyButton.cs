@@ -24,8 +24,12 @@ public class AnyButton : MonoBehaviour
     private float pointingLerp = 0.5f, lastSliderValue, timeSinceLastSliderSound;
 
     [SerializeField] private bool doesntHaveShadow, imSlider;
-    private bool pointed, clicked, reallyClicked, cantMakeSelectedSound;
+    private bool pointed, clicked, reallyClicked, cantMakeSelectedSound, ableToGrowWhenInPhoneDevice;
     public static bool canBePressed = true;
+    public bool AbleToGrowWhenInPhoneDevice
+    {
+        set { ableToGrowWhenInPhoneDevice = value; }
+    }
 
     void Start()
     {
@@ -83,10 +87,7 @@ public class AnyButton : MonoBehaviour
             }
             else timeSinceLastSliderSound += Time.unscaledDeltaTime;
         }
-    }
 
-    private void LateUpdate()
-    {
         cantMakeSelectedSound = false;
     }
 
@@ -104,7 +105,7 @@ public class AnyButton : MonoBehaviour
     {
         pointingLerp += Time.unscaledDeltaTime * resizingSpeed;
 
-        if (!pointed || TouchControllersManager.isUsingPhone)
+        if (!pointed || (TouchControllersManager.isUsingPhone && !ableToGrowWhenInPhoneDevice))
         {
             if (pointingLerp > 0.5f) pointingLerp = 0.5f;
         }
@@ -137,7 +138,7 @@ public class AnyButton : MonoBehaviour
     {
         pointed = true;
 
-        if (!clicked && !TouchControllersManager.isUsingPhone && !cantMakeSelectedSound) PlayPitchSound(selectSound);
+        if (!clicked && !TouchControllersManager.isUsingPhone && !cantMakeSelectedSound && !selectSound.isPlaying && !ableToGrowWhenInPhoneDevice) PlayPitchSound(selectSound);
         if (reallyClicked) clicked = true;
     }
 
@@ -154,7 +155,7 @@ public class AnyButton : MonoBehaviour
         clicked = true;
         reallyClicked = true;
 
-        if (!imSlider) myShake.Shake();
+        if (!imSlider && pointed) myShake.Shake();
         PlayPitchSound(clickSound);
     }
 
@@ -181,7 +182,6 @@ public class AnyButton : MonoBehaviour
 
     public void StopSelectedSound()
     {
-        selectSound.Stop();
         cantMakeSelectedSound = true;
     }
 }

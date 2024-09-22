@@ -17,6 +17,8 @@ public class MenuButton : MonoBehaviour
         inMenuScene = GameObject.Find("Canvas");
 
         if (inMenuScene) screenLoadScript = GameObject.Find("Canvas/ScreenLoadUnloadMenu").GetComponent<ScreenLoadAnim>();
+
+        if (name == "SurveyButton" && (!PlayerPrefs.HasKey("GamesPlayed") || PlayerPrefs.GetInt("GamesPlayed") < 10)) gameObject.SetActive(false);
     }
 
     private void Update()
@@ -65,5 +67,10 @@ public class MenuButton : MonoBehaviour
         timeForEnabled = 0.1f;
         if (SceneManager.sceneCount > 1) SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(1));
         SceneManager.LoadScene("LevelSelection", LoadSceneMode.Additive);
+    }
+
+    public void QuizPressed()
+    {
+        Application.OpenURL("https://docs.google.com/forms/d/e/1FAIpQLScLkIE7z1QZ3Eamu1pyRzbTftLfLW580QghEMYpYtIbu9KDVA/viewform?usp=sf_link");
     }
 }

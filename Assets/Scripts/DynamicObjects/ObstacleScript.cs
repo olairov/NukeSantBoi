@@ -13,7 +13,7 @@ public class ObstacleScript : MonoBehaviour
 
     private Vector2 actualDirection;
 
-    [SerializeField] private float speed, rotSpeed, pushForce, speedMax;
+    [SerializeField] private float speed, rotSpeed, pushForce, speedMax, slowDownSpeed;
     private float randRotDelay;
 
     private bool dead, imDuplicated;
@@ -28,9 +28,6 @@ public class ObstacleScript : MonoBehaviour
         obstaclesContainer = GameObject.Find("ObstaclesContainer").transform;
 
         ChoseStats();
-
-        randRotDelay = Random.Range(0f, 3f);
-        transform.position = new Vector3(transform.position.x, Random.Range(Camera.main.ScreenToWorldPoint(Vector3.zero).y + 4, Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y - 1), transform.position.z);
     }
 
     void Update()
@@ -72,6 +69,9 @@ public class ObstacleScript : MonoBehaviour
             Vector3 otherPos = new Vector3(transform.position.x, transform.position.y < 0 ? transform.position.y + 5 : transform.position.y - 5, transform.position.z);
             Instantiate(obstaclePrefab, otherPos, Quaternion.identity, obstaclesContainer).GetComponent<ObstacleScript>().SetImDuplicated = true;
         }
+
+        randRotDelay = Random.Range(0f, 3f);
+        transform.position = new Vector3(transform.position.x, Random.Range(Camera.main.ScreenToWorldPoint(Vector3.zero).y + 4, Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y - 4), transform.position.z);
     }
 
     public void Die()
@@ -86,16 +86,21 @@ public class ObstacleScript : MonoBehaviour
 
         rb.AddTorque(Random.Range(80f, 240f));
         if (Random.value > 0.5f) rb.angularVelocity *= -1;
-        rb.AddForce(new Vector2(Random.Range(-2, 3), 5), ForceMode2D.Impulse);
+        rb.AddForce(new Vector2(Random.Range(3, 7), 6), ForceMode2D.Impulse);
 
-        transform.GetComponent<SpriteRenderer>().color = burnColor;
+        GetComponent<SpriteRenderer>().color = burnColor;
         transform.GetChild(0).GetComponent<SpriteRenderer>().color = burnColor;
-        transform.GetComponent<Collider2D>().enabled = false;
-        transform.GetComponent<ObjectPassingBy>().enabled = false;
+        GetComponent<Collider2D>().enabled = false;
+        GetComponent<ObjectPassingBy>().moveInFixedUpdate = true;
     }
 
     public void PushAway(Vector2 direction, float distance)
     {
         rb.AddForce(direction * pushForce / distance, ForceMode2D.Impulse);
+    }
+
+    public void SlowDown()
+    {
+        if (!dead) rb.velocity *= 1 - Time.deltaTime * slowDownSpeed;
     }
 }

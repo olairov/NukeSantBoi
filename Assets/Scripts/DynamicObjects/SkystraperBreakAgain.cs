@@ -10,33 +10,25 @@ public class SkystraperBreakAgain : MonoBehaviour
     [SerializeField] private GameObject middlePartPrefab, completeDestroyParticlesPref, cutInHalfParticlesPref;
     [SerializeField] private Sprite brokenPartSprite;
 
-    private Transform particlesContainer;
-
-    private bool alreadyBroken, oneFramePassedSinceBreakAgainCall, imOriginalPart;
-    public bool SetAlreadyBroken
+    private Transform particlesContainer, originalExplosionTransform;
+    public Transform OriginalExplosionTransform
     {
-        set { alreadyBroken = value; }
+        set { originalExplosionTransform = value; }
     }
+
+    private bool imOriginalPart;
 
     private void Start()
     {
         imOriginalPart = CompareTag("Skystraper");
         particlesContainer = GameObject.Find("ParticlesContainer").transform;
-
-        if (name.Contains("SkystraperMiddlePart")) alreadyBroken = true;
     }
 
-    public void BreakAgain(Vector2 explosionPos)
+    public void BreakAgain(Transform explosionTransform)
     {
-        if (!oneFramePassedSinceBreakAgainCall)
-        {
-            // This is needed to ensure this is not executed the first time the building is broken.
-            oneFramePassedSinceBreakAgainCall = true;
-            return;
-        }
-        else if (!alreadyBroken) return;
+        explosionTransform.GetComponent<ExplosionController>().CantBreakSkystraperAgain = true;
 
-        Vector2 breakPos = GetBreakPos(explosionPos);
+        Vector2 breakPos = GetBreakPos(explosionTransform.position);
         BreakingProcess(breakPos);
     }
 
@@ -44,6 +36,8 @@ public class SkystraperBreakAgain : MonoBehaviour
     {
         float myRotation = transform.eulerAngles.z * Mathf.Deg2Rad;
         float explosionDistanceToCenter = Vector2.Distance(transform.position, explosionPos);
+        // If the building part has turned around too much, the explosion position isn't calculated well.
+        if (transform.eulerAngles.z > 90 && transform.eulerAngles.z < 270) explosionDistanceToCenter *= -1;
 
         // If the explosion is located under the center of the building part, explsionDistance has to be negative for the maths to work out.
         if (transform.position.y > explosionPos.y) explosionDistanceToCenter = -explosionDistanceToCenter;
@@ -72,43 +66,78 @@ public class SkystraperBreakAgain : MonoBehaviour
         {
             if (tooCloseToLowerEdge && tooCloseToUpperEdge)
             {
-                DestroyLittleBuildingPiece(gameObject ,breakPos);
+                DestroyLittleBuildingPiece(gameObject, breakPos);
             }
 
-            if (!imOriginalPart) GetComponent<Rigidbody2D>().velocity = Vector2.zero; // Prepare the building to add it force upwards.
             if (tooCloseToLowerEdge) // In this case the calculations have to be done comparing the breakingPos to the lower edge.
             {
                 Vector2 direction = breakPos - lowerEdge;
-                DeleteSmallBuildingPart(direction + direction.normalized * 1.5f, false); // Direction increased for a bigger part destroyed.
-                /* Particles */ Instantiate(completeDestroyParticlesPref, breakPos - direction.normalized, Quaternion.identity, particlesContainer);
+                // Prevent the building part from EXPANDING towards the explosionPos in case it is further away than one of the edges.
+                if (transform.eulerAngles.z <= 90 && breakPos.y < lowerEdge.y || transform.eulerAngles.z > 90 && breakPos.y > lowerEdge.y) direction = -direction.normalized;
 
-                // This impulses the building part away from the explosion. All these multiplier's why are explained in the CutInHalf function.
-                float multiplierForHeight = Vector2.Distance(breakPos, upperEdge) / (Vector2.Distance(lowerEdge, upperEdge));
-                if (!imOriginalPart) GetComponent<Rigidbody2D>().AddForce(Vector3.up * 7 * (myRotation > 90 ? -1 : 1) * multiplierForHeight, ForceMode2D.Impulse);
+                if (Vector2.Distance(breakPos, lowerEdge) < 1) direction = ((Vector2)transform.position - lowerEdge).normalized;
+
+                DeleteSmallBuildingPart(direction + direction.normalized, false); // Direction increased for a bigger part destroyed.
+
+                // Particles:
+                Instantiate(completeDestroyParticlesPref, lowerEdge + direction / 2, Quaternion.identity, particlesContainer).transform.eulerAngles = transform.eulerAngles;
+
+                if (!imOriginalPart)
+                {
+                    if (transform.eulerAngles.z <= 90)
+                    {
+                        GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+                        GetComponent<Rigidbody2D>().AddForce(Vector2.up * 7, ForceMode2D.Impulse);
+                    }
+                    else
+                    {
+                        GetComponent<Rigidbody2D>().AddForce(Vector2.down * 3, ForceMode2D.Impulse);
+                    }
+                }
             }
-            else // In this other case the calculations have to be done comparing the breakingPos to the upper edge.
+
+            else if (tooCloseToUpperEdge) // In this other case the calculations have to be done comparing the breakingPos to the upper edge.
             {
                 Vector2 direction = breakPos - upperEdge;
-                DeleteSmallBuildingPart(direction + direction.normalized * 1.5f, true); // Direction increased for a bigger part destroyed.
-                /* Particles */ Instantiate(completeDestroyParticlesPref, breakPos - direction.normalized, Quaternion.identity, particlesContainer);
+                if (imOriginalPart) direction *= -1; // Why? Wh-why the fuck? I don't know. One day the original part stopped working propely, I did this, now it works. Someone punish me.
+                // Prevent the building part from EXPANDING towards the explosionPos in case it is further away than one of the edges.
+                if (transform.eulerAngles.z <= 90 && breakPos.y > upperEdge.y || transform.eulerAngles.z > 90 && breakPos.y < upperEdge.y) direction = -direction.normalized;
 
-                // This impulses the building part away from the explosion. All these multiplier's why are explained in the CutInHalf function.
-                float multiplierForHeight = Vector2.Distance(breakPos, lowerEdge) / (Vector2.Distance(lowerEdge, upperEdge));
-                if (!imOriginalPart) GetComponent<Rigidbody2D>().AddForce(Vector3.down * 7 * (myRotation > 90 ? -1 : 1) * multiplierForHeight, ForceMode2D.Impulse);
+                if (Vector2.Distance(breakPos, upperEdge) < 1) direction = ((Vector2)transform.position - upperEdge).normalized;
+
+                DeleteSmallBuildingPart(direction + direction.normalized, true); // Direction increased for a bigger part destroyed.
+                
+                // Particles
+                Instantiate(completeDestroyParticlesPref, upperEdge + direction / 2, Quaternion.identity, particlesContainer).transform.eulerAngles = transform.eulerAngles;
+
+                if (!imOriginalPart)
+                {
+                    if (transform.eulerAngles.z <= 90)
+                    {
+                        GetComponent<Rigidbody2D>().AddForce(Vector2.down * 3, ForceMode2D.Impulse);
+                    }
+                    else
+                    {
+                        GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+                        GetComponent<Rigidbody2D>().AddForce(Vector2.up * 7, ForceMode2D.Impulse);
+                    }
+                }
             }
         }
+
         else // If the explosion is at a good distance from both edges, the building part can be splitted in half.
         {
             CutInHalf(breakPos, lowerEdge - breakPos, upperEdge - breakPos);
-            /* Particles */ Instantiate(cutInHalfParticlesPref, new Vector3(breakPos.x, breakPos.y, -2), Quaternion.identity, particlesContainer);
+            /* Particles */ Instantiate(cutInHalfParticlesPref, new Vector3(breakPos.x, breakPos.y, -2), Quaternion.identity, particlesContainer).transform.eulerAngles = transform.eulerAngles;
         }
     }
 
     void DestroyLittleBuildingPiece(GameObject buildingPieceToDestroy, Vector2 breakPos)
     {
         // In this remotely possible case, the building piece would be too little that it just needs to be completely annihilated.
-        /* Particles */
-        Instantiate(completeDestroyParticlesPref, breakPos, Quaternion.identity, particlesContainer);
+        // Particles:
+        Instantiate(completeDestroyParticlesPref, breakPos, Quaternion.identity, particlesContainer).transform.eulerAngles = transform.eulerAngles;
+
         Debug.Log("That building didn't deserve it.");
         Destroy(buildingPieceToDestroy);
         return;
@@ -143,49 +172,55 @@ public class SkystraperBreakAgain : MonoBehaviour
         float upperPartHeight = dirToUpperEdge.magnitude;
 
         // If the building is upside down, the lower part is up, and has to be thrown upwards.
-        float forceAddMultiplier = transform.eulerAngles.z > 90 ? -1 : 1;
+        float forceAddRotationMultiplier = transform.eulerAngles.z > 90 ? -1 : 1;
         // Depending on the height of the building it has to be given more or less force so that it always looks the same.
-        float upperPartMultiplierForHeight = upperPartHeight / (upperPartHeight + lowerPartHeight);
+        float upperPartMultiplierForHeight = (30 - upperPartHeight) / 60; // 30 is the default upper part's size, and then 90 because otherwise it gets too fast.
 
         Transform newPartTransform = Instantiate(middlePartPrefab, cutPos, Quaternion.identity, transform.parent).transform;
+        newPartTransform.eulerAngles = transform.eulerAngles;
         Rigidbody2D newPartRB = newPartTransform.GetComponent<Rigidbody2D>();
 
         if (imOriginalPart) // The original part's GameObject structure is different from the other pieces and has no RB.
         {
             // Resizing and positioning the existing part
             ResizePart(transform, upperPartHeight - 1, true); // I always put a -1 so that the two building parts don't overlap.
-            transform.position = cutPos + dirToLowerEdge / 2 + dirToLowerEdge.normalized / 2;
+            transform.position = cutPos + dirToLowerEdge / 2 + dirToLowerEdge.normalized / 2; // "+ dirToUpperEdge.normalized / 2" is to account for the -1.
 
             // Creating and positioning the new part
             CreateNewPart(newPartTransform, upperPartHeight - 1);
             newPartTransform.position += new Vector3(dirToUpperEdge.x / 2, dirToUpperEdge.y / 2, 1);
-            newPartTransform.eulerAngles = transform.eulerAngles;
 
             // Adding RB forces to the new part to give space for the player to go through
             newPartRB.AddTorque(600 * upperPartMultiplierForHeight);
-            newPartRB.AddForce(Vector3.up * 7 * forceAddMultiplier * upperPartMultiplierForHeight, ForceMode2D.Impulse);
+            newPartRB.AddForce(Vector2.up * 7, ForceMode2D.Impulse);
         }
         else
         {
             // Resizing and positioning the existing part
-            ResizePart(transform, lowerPartHeight - 1, false);
-            transform.position = cutPos + dirToUpperEdge / 2 + dirToUpperEdge.normalized / 2;
-
-            // Creating and positioning the new part
-            CreateNewPart(newPartTransform, lowerPartHeight - 1);
-            newPartTransform.position += new Vector3(dirToLowerEdge.x / 2, dirToLowerEdge.y / 2, 1);
-            newPartTransform.eulerAngles = transform.eulerAngles;
-
-            float lowerPartMultiplierForHeight = lowerPartHeight / (upperPartHeight + lowerPartHeight); // Same as upperPartMultiplierForHeight
+            ResizePart(transform, lowerPartHeight - 1, false); // -1 is to leave a little space in the first frame when it is splitted.
+            transform.position = cutPos + dirToUpperEdge / 2 + dirToUpperEdge.normalized / 2; // "+ dirToUpperEdge.normalized / 2" is to account for the -1.
 
             Rigidbody2D rb = GetComponent<Rigidbody2D>();
 
-            // Adding RB forces to the new part and the existing one to give space for the player to go through.
-            newPartRB.AddTorque(-600 * lowerPartMultiplierForHeight);
-            newPartRB.AddForce(Vector3.down * 7 * forceAddMultiplier * lowerPartMultiplierForHeight, ForceMode2D.Impulse);
+            // Creating and positioning the new part (just the same we did with the existing part but inverted)
+            if (transform.name.Contains("Middle")) // For some reason, if the middle part instantiates ANOTHER middle part, it isn't created properly, sizes don't fit.
+            {
+                DestroyLittleBuildingPiece(newPartTransform.gameObject, transform.position + new Vector3(dirToLowerEdge.x / 2, dirToLowerEdge.y / 2, 1));
+            }
+            else
+            {
+                CreateNewPart(newPartTransform, lowerPartHeight - 1);
+                newPartTransform.position += new Vector3(dirToLowerEdge.x / 2, dirToLowerEdge.y / 2, 1);
+
+                float lowerPartMultiplierForHeight = (30 - lowerPartHeight) / 60; // Same as upperPartMultiplierForHeight
+                newPartRB.AddTorque(-600 * lowerPartMultiplierForHeight);
+                newPartRB.velocity = rb.velocity;
+            }
+
+            // Adding RB forces to give space for the player to go through.
             rb.velocity = Vector2.zero;
             rb.AddTorque(600 * upperPartMultiplierForHeight);
-            rb.AddForce(Vector3.up * 7 * forceAddMultiplier * upperPartMultiplierForHeight, ForceMode2D.Impulse);
+            rb.AddForce(Vector2.up * 7 * forceAddRotationMultiplier, ForceMode2D.Impulse);
         }
     }
 
@@ -199,7 +234,7 @@ public class SkystraperBreakAgain : MonoBehaviour
         Vector2 newSize = new Vector2(colliderSize.x, colliderSize.y - sizeSubstracter);
         // If this was the example, colliderSize.y is 5, and sizeSubstracter is 2, leaving a heigth of 3
 
-        if (newSize.y < 3) DestroyLittleBuildingPiece(partTransform.gameObject ,partTransform.position);
+        if (newSize.y < 3) DestroyLittleBuildingPiece(partTransform.gameObject, partTransform.position);
 
         if (isOriginalPart) // The original part's GameObject structure is different from the other pieces.
         {

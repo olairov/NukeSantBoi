@@ -18,7 +18,12 @@ public class ExplosionController : MonoBehaviour
 
     private int pointsToAdd, comboNum;
 
-    private bool alreadyEnabledHitbox, alreadyAddedPoints, collidedWithPlayer, alreadySentVignetteEffectAnim;
+    private bool alreadyEnabledHitbox, alreadyAddedPoints, collidedWithPlayer, alreadySentVignetteEffectAnim, cantBreakSkystraperAgain;
+    public bool CantBreakSkystraperAgain
+    {
+        // In case this is the same explosion that broke the original skystraper, it cannot also destroy the new parts.
+        set { cantBreakSkystraperAgain = value; }
+    }
 
     void Start()
     {
@@ -70,7 +75,7 @@ public class ExplosionController : MonoBehaviour
 
         if (comboNum > 0 && !alreadySentVignetteEffectAnim)
         {
-            GameObject.Find("Camera/CameraRiser/Main Camera/VignetteEffect").GetComponent<VignetteEffectController>().Explosion(collidedWithPlayer);
+            GameObject.Find("Canvas/VignetteEffect").GetComponent<VignetteEffectController>().Explosion(collidedWithPlayer);
             alreadySentVignetteEffectAnim = true;
         }
 
@@ -147,7 +152,7 @@ public class ExplosionController : MonoBehaviour
                 comboNum++;
             }
 
-            other.GetComponent<Building>().Destruct(transform.position);
+            other.GetComponent<Building>().Destruct(transform);
 
             PlayDestructAudio(!other.CompareTag("Building"));
         }
@@ -159,9 +164,9 @@ public class ExplosionController : MonoBehaviour
             comboNum++;
         }
 
-        if (other.CompareTag("Skystraper") || other.CompareTag("SkystraperUpperPart")) // So that the skystrapers can break multiple times.
+        if ((other.CompareTag("Skystraper") || other.CompareTag("SkystraperUpperPart")) && !cantBreakSkystraperAgain) // So that the skystrapers can break multiple times.
         {
-            other.GetComponent<SkystraperBreakAgain>().BreakAgain(transform.position);
+            other.GetComponent<SkystraperBreakAgain>().BreakAgain(transform);
             PlayDestructAudio(true);
         }
     }

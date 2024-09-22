@@ -38,7 +38,7 @@ public class OptionsSlideController : MonoBehaviour
         if (imInGameScene)
         {
             gameCameraTransform = GameObject.Find("Camera/CameraRiser/Main Camera").transform;
-            GameObject.Find("________________Canvas________________").GetComponent<HudController>().PretendsToBePaused = true;
+            if (!PlayerController.dead) GameObject.Find("________________Canvas________________").GetComponent<HudController>().PretendsToBePaused = true;
         }
         else if (!notOtherSceneActive) gameCameraTransform = GameObject.Find("Camera/Main Camera").transform;
         else gameCameraTransform = GameObject.Find("OptionsCamera/Main Camera").transform;

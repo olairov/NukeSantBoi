@@ -63,4 +63,14 @@ public class PauseButton : MonoBehaviour
         if (SceneManager.sceneCount > 1) SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(1));
         SceneManager.LoadScene("Shop", LoadSceneMode.Additive);
     }
+
+    public void QuizPressed()
+    {
+        Application.OpenURL("https://docs.google.com/forms/d/e/1FAIpQLScLkIE7z1QZ3Eamu1pyRzbTftLfLW580QghEMYpYtIbu9KDVA/viewform?usp=sf_link");
+    }
+
+    public void QuizOutPressed()
+    {
+        transform.parent.parent.GetComponent<Animator>().SetBool("MenuIn", false);
+    }
 }

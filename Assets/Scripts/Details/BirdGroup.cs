@@ -29,11 +29,13 @@ public class BirdGroup : MonoBehaviour
         {
             Transform childTransform = transform.GetChild(idx);
 
+            // Allow the possibiliy of having a bird group with less members randomly erasing the last ones.
             if ((childTransform.name.Contains("4") || childTransform.name.Contains("7")) && Random.value > 0.6f)
             {
                 childTransform.GetComponent<SpriteRenderer>().enabled = false;
             }
 
+            // Making each bird seem individual
             childTransform.localScale = Vector3.one * Random.Range(0.18f, 0.3f);
             childTransform.GetComponent<Animator>().speed = Random.Range(0.7f, 1.3f);
 

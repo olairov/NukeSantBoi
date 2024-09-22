@@ -34,8 +34,11 @@ public class TargetController : MonoBehaviour
 
     void UpdatePos()
     {
-        Vector2 mousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        transform.position = mousePos;
+        if (Input.mousePosition.magnitude < 999999)
+        {
+            Vector2 mousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            transform.position = mousePos;
+        }
 
         // If game is paused or finished, use OS's cursor.
         if (hudScript.PretendsToBePaused || PlayerController.dead) transform.position = new Vector3(0, -20, 0);

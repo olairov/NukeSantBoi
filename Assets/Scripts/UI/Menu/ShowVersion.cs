@@ -7,6 +7,6 @@ public class ShowVersion : MonoBehaviour
 {
     void Start()
     {
-        GetComponent<TMP_Text>().text = UnityEditor.PlayerSettings.bundleVersion;
+        GetComponent<TMP_Text>().text = "v" + Application.version;
     }
 }

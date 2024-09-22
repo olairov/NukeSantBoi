@@ -27,11 +27,13 @@ public class PlayerBoostController : MonoBehaviour
         lightTransform.eulerAngles = Vector3.zero;
 
         if (PlayerController.dead && !imEnemyPlane) transform.gameObject.SetActive(false);
+
+        PushTrailBackwards();
     }
 
     void FixedUpdate()
     {
-        if (Time.deltaTime >= 0.02f) PushTrailBackwards();
+        //if (Time.deltaTime >= 0.02f) PushTrailBackwards();
     }
 
     private void PushTrailBackwards()

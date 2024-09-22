@@ -7,12 +7,16 @@ public class MovementTypeD : BaseMovement
     private Transform playerTransform;
     private Rigidbody2D playerRB;
 
+    private PlayerController playerScript;
+
     private float downForceWhenBackwards, rotationVelocityBeforeStop, idleRotationBeforeStop, timeSinceDeviationStarted;
 
     public MovementTypeD(Transform transform, Rigidbody2D rb)
     {
         playerTransform = transform;
         playerRB = rb;
+
+        playerScript = transform.GetComponent<PlayerController>();
     }
 
     public override void MovementProcess()
@@ -59,12 +63,17 @@ public class MovementTypeD : BaseMovement
     {
         float additionDownForceWhenBackwards = Mathf.Cos((playerTransform.eulerAngles.z - 180) / 57.3f) * 0.8f - 0.2f;
         // I divide the rotation between 57.3 (180 / pi) so that the amplitude of the wave is 360 units, instead of 2pi units, to representate it in degrees.
-        
-        if (additionDownForceWhenBackwards > 0) additionDownForceWhenBackwards *= 3;
+
+        bool lastDownForceIsTooBig = downForceWhenBackwards < -4;
+
+        if (additionDownForceWhenBackwards > 0) additionDownForceWhenBackwards *= loopDownForceFadingSpeed;
         downForceWhenBackwards += additionDownForceWhenBackwards * downForceWhenBackwardsMagnitude * Time.deltaTime;
         if (downForceWhenBackwards > 0) downForceWhenBackwards = 0;
 
         playerTransform.position += new Vector3(0, downForceWhenBackwards * Time.deltaTime, 0);
+
+        if (downForceWhenBackwards < -4 && !lastDownForceIsTooBig) playerScript.LosingSpeedWarning(true);
+        else if (downForceWhenBackwards >= -4 && lastDownForceIsTooBig) playerScript.LosingSpeedWarning(false);
     }
 
     void Deviation(float rotationSpeedBeforeStop, float rotationOffset)
@@ -90,41 +99,4 @@ public class MovementTypeD : BaseMovement
         float rotation = Mathf.Sin((timeSinceDeviationStarted - deviationWavesDuration) * (deviationWavesSpeed / 5)) * deviationWavesAmplitude - 180 + rotationOffset;
         playerTransform.eulerAngles = new Vector3(0, 0, rotation);
     }
-
-    /*void Deviation(bool isMoving)
-    {
-        if (deviationTime <= 0) ChangeDeviation();
-        deviationTime -= Time.unscaledDeltaTime;
-
-        if (CorrectInputs.justPressedVertical)
-        {
-            rotationDifference = playerTransform.eulerAngles.z;
-        }
-        if (CorrectInputs.justReleasedVertical)
-        {
-            rotationDifference = Mathf.Abs((playerTransform.eulerAngles.z - rotationDifference) / 100);
-            deviationExtraForce = 15 * rotationDifference;
-            if (deviationExtraForce > 8) deviationExtraForce = 8;
-        }
-        if (deviationExtraForce > 1) deviationExtraForce -= Time.deltaTime * 7;
-        else deviationExtraForce = 1;
-
-        playerRB.AddTorque(deviationRandomForce * deviationSpeed * deviationExtraForce * Time.deltaTime);
-    }
-
-    void ChangeDeviation()
-    {
-        if (deviationExtraForce == 1)
-        {
-            deviationTime = Random.Range(0.1f, 0.3f);
-            deviationRandomForce = Random.Range(-1f, 1f);
-        }
-        else
-        {
-            deviationTime = 0.18f;
-
-            if (deviationRandomForce < 0) deviationRandomForce = 0.5f;
-            else deviationRandomForce = -0.5f;
-        }
-    }*/
 }

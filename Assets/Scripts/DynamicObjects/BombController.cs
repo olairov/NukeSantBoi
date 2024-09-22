@@ -8,6 +8,8 @@ public class BombController : MonoBehaviour
 
     private Rigidbody2D rb;
 
+    [SerializeField] private float bombThrowSpeed;
+
     private bool alreadyExploded; // I'm not sure this variable is needed, but sometimes, two explosions are generated. It's just in case Destroy() is not instant.
 
     void Start()
@@ -24,6 +26,14 @@ public class BombController : MonoBehaviour
         if (transform.position.y < Camera.main.ScreenToWorldPoint(new Vector3(0, 0, 0)).y - 0.5f) Explode();
 
         UpdateRotation();
+    }
+
+    public void SetDirection(Vector2 normalDir, Vector2 yAdder, float playerRotiationIndicator)
+    {
+        float speedMultiplier = ObjectPassingBy.realSpeedMultiplier / 2f + 0.5f;
+        GetComponent<Rigidbody2D>().velocity = normalDir * speedMultiplier * bombThrowSpeed + yAdder;
+
+        GetComponent<ObjectPassingBy>().OriginalMovement = playerRotiationIndicator * 5;
     }
 
     void UpdateRotation()

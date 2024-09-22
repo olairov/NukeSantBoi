@@ -16,9 +16,13 @@ public class HudController : MonoBehaviour
 
     private Camera cameraComponent;
 
-    private int points;
+    private int points, actualLevel;
+    public int GiveActualLevel
+    {
+        set { actualLevel = value; }
+    }
 
-    private float deadPanelOutProgress = -1;
+    private float deadPanelOutProgress = -1, lastDeadPanelYPos, lastTimeScale;
     public float actualTimescale = 1;
 
     private bool isPaused, pretendsToBePaused, changingScene, isInOptions;
@@ -45,7 +49,7 @@ public class HudController : MonoBehaviour
     {
         cameraTransform = GameObject.Find("Camera").transform;
         pauseMenu = GameObject.Find("Canvas/pauseMenu").transform;
-        deadMenu = GameObject.Find("Canvas/deadMenu").transform;
+        deadMenu = GameObject.Find("Canvas/deadMenu/BothMenusContainer/deadMenu").transform;
         morePointsContainer = GameObject.Find("Canvas/MorePointsContainer").transform;
 
         menuInSound = GameObject.Find("UIsounds/MenuInSound").GetComponent<AudioSource>();
@@ -131,7 +135,8 @@ public class HudController : MonoBehaviour
             isPaused = false;
         }
 
-        if (actualTimescale != 1) Time.timeScale = actualTimescale;
+        if (lastTimeScale != 1) Time.timeScale = actualTimescale;
+        lastTimeScale = actualTimescale;
     }
 
     void CameraPauseAdjust()
@@ -160,14 +165,22 @@ public class HudController : MonoBehaviour
         if (deadPanelOutProgress < 1) deadPanelOutProgress += Time.deltaTime * (1 - deadPanelOutProgress) * 8;
         else if (deadPanelOutProgress > 1) deadPanelOutProgress = 1;
 
-        deadMenu.localPosition = new Vector3(0, Mathf.Lerp(-550, 0, deadPanelOutProgress), 0);
+        deadMenu.parent.parent.localPosition += new Vector3(0, Mathf.Lerp(-550, 0, deadPanelOutProgress) - lastDeadPanelYPos, 0);
+        lastDeadPanelYPos = deadMenu.parent.parent.localPosition.y;
     }
 
     public void DeadPanelOut()
     {
         deadPanelOutProgress = 0;
         menuInSound.Play();
+        if (!PlayerPrefs.HasKey("GamesPlayed")) PlayerPrefs.SetInt("GamesPlayed", 1);
+        else
+        {
+            PlayerPrefs.SetInt("GamesPlayed", PlayerPrefs.GetInt("GamesPlayed") + 1);
+            if (PlayerPrefs.GetInt("GamesPlayed") == 10) deadMenu.parent.GetComponent<QuizMenuAppear>().QuizMenuStartAnim();
+        }
 
+        lastDeadPanelYPos = deadMenu.parent.parent.localPosition.y;
         DeadPanelStats();
     }
 
@@ -176,6 +189,13 @@ public class HudController : MonoBehaviour
         deadMenu.Find("Score").GetComponent<TMP_Text>().text = points.ToString();
 
         if (!PlayerPrefs.HasKey("Highscore")) PlayerPrefs.SetInt("Highscore", 0);
+        if (!PlayerPrefs.HasKey("HighscoreLevel" + actualLevel)) PlayerPrefs.SetInt("HighscoreLevel" + actualLevel, 0);
+        if (!PlayerPrefs.HasKey("TotalPointsLevel" + actualLevel)) PlayerPrefs.SetInt("TotalPointsLevel" + actualLevel, 0);
+        if (!PlayerPrefs.HasKey("TotalGamesLevel" + actualLevel)) PlayerPrefs.SetInt("TotalGamesLevel" + actualLevel, 0);
+
+        PlayerPrefs.SetInt("TotalPointsLevel" + actualLevel, PlayerPrefs.GetInt("TotalPointsLevel" + actualLevel) + points);
+        PlayerPrefs.SetInt("TotalGamesLevel" + actualLevel, PlayerPrefs.GetInt("TotalGamesLevel" + actualLevel) + 1);
+
         if (points > PlayerPrefs.GetInt("Highscore"))
         {
             PlayerPrefs.SetInt("Highscore", points);
@@ -187,6 +207,11 @@ public class HudController : MonoBehaviour
             deadMenu.Find("Highscore").GetComponent<TMP_Text>().text = PlayerPrefs.GetInt("Highscore").ToString();
             deadMenu.Find("NewHighscore").gameObject.SetActive(false);
         }
+
+        if (PlayerPrefs.GetInt("HighscoreLevel" + actualLevel) < points)
+        {
+            PlayerPrefs.SetInt("HighscoreLevel" + actualLevel, points);
+        }
     }
 
     IEnumerator MakeMenuShake()
@@ -195,7 +220,7 @@ public class HudController : MonoBehaviour
         deadMenu.Find("NewHighscore").GetComponent<AudioSource>().Play();
 
         yield return new WaitForSeconds(0.06f);
-        deadMenu.GetComponent<ShakeController>().Shake();
+        deadMenu.parent.parent.GetComponent<ShakeController>().Shake();
     }
 
     private void SendVariableInfo()

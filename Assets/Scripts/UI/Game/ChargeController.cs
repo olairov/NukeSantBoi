@@ -6,6 +6,7 @@ public class ChargeController : MonoBehaviour
 {
     private ShakeController shakeScript;
     private Animator playerPowerFieldAnim;
+    private AudioSource rechargeSound;
 
     private List<GameObject> cells = new List<GameObject>();
 
@@ -20,6 +21,7 @@ public class ChargeController : MonoBehaviour
     {
         shakeScript = transform.GetChild(0).GetComponent<ShakeController>();
         playerPowerFieldAnim = GameObject.Find("Player/LightCircle").GetComponent<Animator>();
+        rechargeSound = GetComponent<AudioSource>();
 
         for (int idx = 0; idx < 5; idx++)
         {
@@ -41,6 +43,9 @@ public class ChargeController : MonoBehaviour
         {
             timeUntilNextBomb = 0;
             playerPowerFieldAnim.SetTrigger("Recharge");
+
+            rechargeSound.pitch = Random.Range(0.92f, 1.07f);
+            rechargeSound.Play();
         }
 
         int numberOfCellsEnabled = (int)(5 - timeUntilNextBomb / (defaultTimeUntilNextBomb / ObjectPassingBy.realSpeedMultiplier) * 5) - 1;

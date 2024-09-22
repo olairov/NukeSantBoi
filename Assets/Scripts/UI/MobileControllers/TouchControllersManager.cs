@@ -32,8 +32,15 @@ public class TouchControllersManager : MonoBehaviour
         controllersGO.SetActive(true);
         isUsingPhone = true;
 
-        transform.parent.Find("Charge").GetComponent<RectTransform>().anchoredPosition = new Vector2(230, 120);
-        transform.parent.Find("PointsCounter").GetComponent<RectTransform>().anchoredPosition = new Vector2(230, -80);
-        transform.parent.Find("MorePointsContainer").GetComponent<RectTransform>().anchoredPosition = new Vector2(200, -55);
+        MoveUISingleElement(transform.parent.Find("Charge").GetComponent<RectTransform>(), 0.18f, 0);
+        MoveUISingleElement(transform.parent.Find("PointsCounter").GetComponent<RectTransform>(), 0.18f, 0);
+        MoveUISingleElement(transform.parent.Find("MorePointsContainer").GetComponent<RectTransform>(), 0.18f, -40f);
+    }
+
+    void MoveUISingleElement(RectTransform element, float anchorX, float anchoredXpos)
+    {
+        element.anchorMin = new Vector2(anchorX, element.anchorMin.y);
+        element.anchorMax = new Vector2(anchorX, element.anchorMax.y);
+        element.anchoredPosition = new Vector2(anchoredXpos, element.anchoredPosition.y);
     }
 }

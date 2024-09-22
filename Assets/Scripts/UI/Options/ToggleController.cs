@@ -7,8 +7,7 @@ public class ToggleController : MonoBehaviour
 {
     private Image insideTickImage;
 
-    private bool toggleEnabled;
-    private bool toggledInitially;
+    private bool toggleEnabled, toggledInitially;
 
     [SerializeField] private int myAction = 0;
 

@@ -17,7 +17,11 @@ public class MapGenerator : MonoBehaviour
         detailsContainer;
 
     static public float playerDistanceToStandardPos;
-    [SerializeField] private float speedIncreaseFactor, chanceItIsWideBuilding;
+    [SerializeField] private float speedIncreaseFactor, chanceItIsWideBuilding, loopSpeedMultiplier;
+    public float LoopSpeedMultiplier
+    {
+        get { return loopSpeedMultiplier; }
+    }
 
     // Times for every thing generation
     private float timeForNextBuilding, timeForNextEnemy = 3, timeForNextObstacle, timeForNextParticle, timeForNextLayer1, timeForNextLayer2,
@@ -51,12 +55,12 @@ public class MapGenerator : MonoBehaviour
     void Update()
     {
         if (Time.deltaTime <= 0) return;
-        
+
         if (!PlayerController.dead)
         {
             ObjectPassingBy.realSpeedMultiplier += Time.deltaTime * speedIncreaseFactor;
 
-            float speedMultiplierFactor = (Mathf.Cos((playerTransform.eulerAngles.z - 180) / 57.3f) * 1.2f + 0.5f); // For Loops.
+            float speedMultiplierFactor = (Mathf.Cos((playerTransform.eulerAngles.z - 180) / 57.3f) + 0.25f) * loopSpeedMultiplier; // For Loops.
             if (speedMultiplierFactor > 1) speedMultiplierFactor = 1;
 
             ObjectPassingBy.speedMultiplier = ObjectPassingBy.realSpeedMultiplier * speedMultiplierFactor;
@@ -84,15 +88,15 @@ public class MapGenerator : MonoBehaviour
 
     void GenerateBuildings()
     {
-        timeForNextBuilding -= Time.unscaledDeltaTime * Time.timeScale * ObjectPassingBy.speedMultiplier;
+        timeForNextBuilding -= Time.deltaTime * ObjectPassingBy.speedMultiplier;
         if (timeForNextBuilding > 0) return;
-
+        
         if (!firstGamesBuildingGenerated)
         {
             firstGamesBuildingGenerated = true;
             firstBuildingGenerated = true;
-            timeForNextBuilding = 2;
-            return; // For some reason, the first building of the first game overlaps with another one, so bye bye.
+            timeForNextBuilding = 1;
+            return; // For some reason, the first building of the first game overlaps with another one, so i had to do this against my will.
         }
 
         if (Random.value * ObjectPassingBy.realSpeedMultiplier < 0.15f && buildingsFromSkystraper > 3 * ObjectPassingBy.realSpeedMultiplier)
@@ -115,15 +119,16 @@ public class MapGenerator : MonoBehaviour
                 else Instantiate(wideBuildingPrefab, buildingsContainer).GetComponent<Building>().lastSprite = lastWideBuildingSprite;
             }
         }
-
+        
         if (firstBuildingGenerated) timeForNextBuilding = Random.Range(1.6f, 2.2f);
         else
         {
             firstBuildingGenerated = true;
             timeForNextBuilding = 2.8f;
-            // For any other reason, the first building to be generated at the beginning appears to close to the next one. Now it doesn't.
+            // For any other reason, the first building to be generated at the beginning appears too close to the next one. Now it doesn't.
         }
 
+        timeForNextBuilding = Random.Range(1.6f, 2.2f);
         buildingsFromSkystraper++;
     }
 

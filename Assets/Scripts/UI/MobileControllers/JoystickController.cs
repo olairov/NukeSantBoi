@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class JoystickController : MonoBehaviour
 {
-    private RectTransform backgroundTransform, handleTransform, myTransform;
+    private RectTransform backgroundTransform, handleTransform;
     private Transform cameraTransform;
 
     public Vector2 direction;
-    private Vector2 backgroundOriginPos, touchPos, originalHandlePos;
+    private Vector2 backgroundOriginPos, touchPos;
 
     [SerializeField] private float distanceToMoveBackground;
 
@@ -27,12 +27,10 @@ public class JoystickController : MonoBehaviour
 
     void Start()
     {
-        myTransform = GetComponent<RectTransform>();
         backgroundTransform = transform.GetChild(0).GetComponent<RectTransform>();
         handleTransform = backgroundTransform.GetChild(0).GetComponent<RectTransform>();
         cameraTransform = GameObject.Find("Camera/CameraRiser/Main Camera").transform;
 
-        originalHandlePos = handleTransform.position;
         backgroundOriginPos = backgroundTransform.anchoredPosition;
     }
 
@@ -41,53 +39,36 @@ public class JoystickController : MonoBehaviour
         touchingJoystick = GetInputInformation(isPaused);
         BasicJoystickPositioning(touchingJoystick, Camera.main.ScreenToWorldPoint(touchPos), lastFrameTouched);
 
-        lastTouchCount = Input.touchCount;
+        lastTouchCount = UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches.Count;
         lastFrameTouched = touchingJoystick;
     }
 
-    // Getting Basic Input Info --->
+    // Getting the Position of the touch (if it enters in the joystick area) and if it is being touched or not --->
 
     bool GetInputInformation(bool isPaused)
     {
         if (isPaused || !canTouchJoystick) return false;
 
-        if (touchingJoystick)
-        {
-            touchPos = GetTouchPosition(false);
-        }
-        else
-        {
-            touchPos = GetTouchPosition(true);
-        }
+        touchPos = GetTouchPosition();
 
         return touchPos != Vector2.zero;
     }
 
-    Vector2 GetTouchPosition(bool firstTouch)
+    Vector2 GetTouchPosition()
     {
-        if (!firstTouch)
-        {
-            if (Input.touchCount <= 0) return Vector2.zero;
+        int touchCount = UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches.Count;
+        if (touchCount <= 0) return Vector2.zero;
 
-            for (int touchIdx = Input.touchCount - 1; touchIdx >= 0; touchIdx--)
-            {
-                if (Input.touches[touchIdx].position.x > Screen.width / 2) return Input.touches[touchIdx].position;
-            }
-        }
-        else
+        for (int touchIdx = touchCount - 1; touchIdx >= 0; touchIdx--)
         {
-            if (Input.touchCount <= 0 || Input.touchCount <= lastTouchCount) return Vector2.zero;
-
-            for (int touchIdx = Input.touchCount - 1; touchIdx >= 0; touchIdx--)
-            {
-                if (Input.touches[touchIdx].position.x > Screen.width / 2) return Input.touches[touchIdx].position;
-            }
+            if (UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches[touchIdx].screenPosition.x > Screen.width / 2)
+                return UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches[touchIdx].screenPosition;
         }
 
         return Vector2.zero;
     }
 
-    // <--- Getting Basic Input Info
+    // <--- Getting the Position of the touch (if it enters in the joystick area) and if it is being touched or not
 
     // Managing Joystick Movement & Position depending on the touch position and whether it's pressed or not --->
 

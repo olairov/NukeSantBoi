@@ -139,5 +139,6 @@ public class EnemyPlaneController : MonoBehaviour
         transform.GetComponent<Collider2D>().enabled = false;
         transform.GetComponent<ObjectPassingBy>().enabled = false;
         transform.Find("Boost").gameObject.SetActive(false);
+        transform.Find("Lights").gameObject.SetActive(false);
     }
 }

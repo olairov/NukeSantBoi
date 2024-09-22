@@ -140,19 +140,36 @@ public class Building : MonoBehaviour
             }
         }
 
-        if (isWide) mapGeneratorScript.lastWideBuildingSprite = mySpriteRenderer.sprite;
+        if (isWide)
+        {
+            mapGeneratorScript.lastWideBuildingSprite = mySpriteRenderer.sprite;
+
+            if (mySpriteRenderer.sprite == buildingSprite2) // In this case, the upper part of the sprite isn't something with what you would collide, so the collider is moved
+            {
+                BoxCollider2D myColider = GetComponent<BoxCollider2D>();
+
+                myColider.offset = new Vector2(0, -0.5f);
+                myColider.size = new Vector2(6, 7);
+            }
+        }
         else mapGeneratorScript.lastBuildingSprite = mySpriteRenderer.sprite;
     }
 
-    public void Destruct(Vector2 otherPos)
+    public void Destruct(Transform otherTransform)
     {
+        Vector2 otherPos = otherTransform.position;
+
         EnableParticles(otherPos);
 
         if (dead) return;
         dead = true;
 
         Transform upperPartTransform = null;
-        if (iStrapSky) upperPartTransform = SkystraperFallStats(otherPos.y);
+        if (iStrapSky)
+        {
+            otherTransform.GetComponent<ExplosionController>().CantBreakSkystraperAgain = true;
+            upperPartTransform = SkystraperFallStats(otherPos.y);
+        }
 
         StartCoroutine(Flash(upperPartTransform));
         if (!iStrapSky) StartCoroutine(SetGap(otherPos));
@@ -184,19 +201,23 @@ public class Building : MonoBehaviour
         if (iStrapSky? true : Random.value > 0.5f) rotationSpeed *= -1;
     }
 
-    Transform SkystraperFallStats(float otherY)
+    Transform SkystraperFallStats(float otherYPos)
     {
         float cameraYposOffsetFix = transform.position.y - myYdefaultPos;
-        transform.position = new Vector3(transform.position.x, otherY - 26f - cameraYposOffsetFix, transform.position.z);
+        transform.position = new Vector3(transform.position.x, otherYPos - 26f - cameraYposOffsetFix, transform.position.z);
 
         Transform upperPartTransform = Instantiate(skystraperUpperPart, transform.parent).transform;
-        upperPartTransform.position = new Vector3(transform.position.x, otherY + 16f - cameraYposOffsetFix, transform.position.z);
+        upperPartTransform.position = new Vector3(transform.position.x, otherYPos + 16f - cameraYposOffsetFix, transform.position.z);
         upperPartTransform.GetComponent<Rigidbody2D>().AddForce(Vector3.up * 7, ForceMode2D.Impulse);
         upperPartTransform.GetComponent<Rigidbody2D>().AddTorque(Random.Range(200, 300));
         if (Random.value > 0.5f) upperPartTransform.GetComponent<Rigidbody2D>().angularVelocity *= -1;
 
-        Instantiate(skyStraperPieces, new Vector3(transform.position.x, otherY - cameraYposOffsetFix, -7), Quaternion.identity, particlesContainer);
-
+        Instantiate(skyStraperPieces, new Vector3(transform.position.x, otherYPos - cameraYposOffsetFix, -7), Quaternion.identity, particlesContainer);
+        /*
+        // Make both upper and lower part's skystraper script know it has already been broken.
+        GetComponent<SkystraperBreakAgain>().OriginalExplosionTransform = otherTransform;
+        upperPartTransform.GetComponent<SkystraperBreakAgain>().OriginalExplosionTransform = otherTransform;
+        */
         return upperPartTransform;
     }
 
@@ -249,11 +270,6 @@ public class Building : MonoBehaviour
             upperPartSpriteRenderer.color = flashColor;
             transform.Find("UpperSprite").GetComponent<SpriteRenderer>().color = flashColor;
             upperPartTransform.Find("LowerSprite").GetComponent<SpriteRenderer>().color = flashColor;
-
-            // Make both upper and lower part's skystraper script know it has already been broken.
-
-            GetComponent<SkystraperBreakAgain>().SetAlreadyBroken = true;
-            upperPartTransform.GetComponent<SkystraperBreakAgain>().SetAlreadyBroken = true;
         }
 
         mySpriteRenderer.color = flashColor;

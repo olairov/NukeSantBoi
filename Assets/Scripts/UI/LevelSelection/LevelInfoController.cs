@@ -11,6 +11,7 @@ public class LevelInfoController : MonoBehaviour
     AudioSource clickedSound;
 
     AnyButton myButtonScript;
+    private LevelButtonResizer myLevelResizerScript;
 
     bool infoEnabled;
 
@@ -20,11 +21,17 @@ public class LevelInfoController : MonoBehaviour
         infoPlaceTransform = transform.parent.GetChild(0).Find("Image/infoPlace").transform;
         clickedSound = GameObject.Find("UIsounds/SliderSound").GetComponent<AudioSource>();
         myButtonScript = transform.parent.GetChild(0).GetComponent<AnyButton>();
+        myLevelResizerScript = transform.parent.GetComponent<LevelButtonResizer>();
     }
 
     private void Update()
     {
         transform.position = infoPlaceTransform.position;
+        if (LevelButtonResizer.exittingScene)
+        {
+            myInfoAnimator.SetBool("enabled", false);
+            myInfoAnimator.speed = 2; // Do the animation faster so that the text doesn't look squeezed becouse of the instant button's shrinking.
+        }
     }
 
     public void InfoPressed()
@@ -32,6 +39,8 @@ public class LevelInfoController : MonoBehaviour
         infoEnabled = !infoEnabled;
 
         myInfoAnimator.SetBool("enabled", infoEnabled);
+        myLevelResizerScript.InfoPressed = infoEnabled;
+        myButtonScript.AbleToGrowWhenInPhoneDevice = infoEnabled;
 
         clickedSound.Play();
     }
@@ -41,12 +50,13 @@ public class LevelInfoController : MonoBehaviour
         if (!TouchControllersManager.isUsingPhone)
         {
             infoPlaceTransform.localScale = Vector2.one * 1.2f;
-            myButtonScript.Pointed();
         }
+        myButtonScript.Pointed();
     }
 
     public void InfoDisselected()
     {
         infoPlaceTransform.localScale = Vector2.one;
+        myButtonScript.StopSelectedSound();
     }
 }
