@@ -5,19 +5,16 @@ using TMPro;
 
 public class LoopChecker : MonoBehaviour
 {
-    [SerializeField] private GameObject pointsPrefab;
-
     private HudController hudScript;
 
     private Rigidbody2D rb;
 
-    private Transform pointsContainer;
+    private float lastRot;
 
-    private float realZrot;
+    private bool turnedAround, turnedTowardsDown;
 
     void Start()
     {
-        pointsContainer = GameObject.Find("NotPhysicElementsContainer").transform;
         hudScript = GameObject.Find("________________Canvas________________").GetComponent<HudController>();
         rb = GetComponent<Rigidbody2D>();
     }
@@ -26,28 +23,40 @@ public class LoopChecker : MonoBehaviour
     {
         if (PlayerController.dead) return;
 
-        realZrot += rb.angularVelocity * Time.deltaTime;
-
         CheckLoop();
     }
 
     void CheckLoop()
     {
-        if (realZrot > 340)
+        float rotationDifference = lastRot - transform.eulerAngles.z;
+
+        if (Mathf.Abs(rotationDifference) > 180)
         {
-            realZrot -= 360;
-            AddPointsWhenLoop();
+            turnedAround = !turnedAround;
+
+            if (rotationDifference > 180) turnedTowardsDown = true;
+            else if (rotationDifference < -180) turnedTowardsDown = false;
         }
-        if (realZrot < -310)
+
+        if (turnedAround)
         {
-            realZrot += 360;
-            AddPointsWhenLoop();
+            if (transform.eulerAngles.z > 150 && turnedTowardsDown)
+            {
+                AddPointsWhenLoop();
+                turnedAround = false;
+            }
+            if (transform.eulerAngles.z < 210 && !turnedTowardsDown)
+            {
+                AddPointsWhenLoop();
+                turnedAround = false;
+            }
         }
+
+        lastRot = transform.eulerAngles.z;
     }
 
     void AddPointsWhenLoop()
     {
-        Instantiate(pointsPrefab, transform.position + new Vector3(0, 1, -1), Quaternion.identity, pointsContainer).GetComponentInChildren<TMP_Text>().text = "+ 2";
-        hudScript.ChangePointsValue(2);
+        hudScript.ChangePointsValue(2, transform.position + new Vector3(0, 1, 0), 1);
     }
 }

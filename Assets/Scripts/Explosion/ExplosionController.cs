@@ -5,8 +5,7 @@ using TMPro;
 
 public class ExplosionController : MonoBehaviour
 {
-    [SerializeField] private GameObject pointsPrefab;
-    private Transform pointsContainer, playerTramsform, obstaclesContainer, buildingsContainer;
+    private Transform playerTramsform, obstaclesContainer, buildingsContainer;
 
     private SpriteRenderer mySprite;
 
@@ -33,7 +32,6 @@ public class ExplosionController : MonoBehaviour
         }
         else
         {
-            pointsContainer = GameObject.Find("NotPhysicElementsContainer").transform;
             if (GameObject.Find("Player")) playerTramsform = GameObject.Find("Player").transform;
             obstaclesContainer = GameObject.Find("ObstaclesContainer").transform;
             buildingsContainer = GameObject.Find("BuildingsContainer").transform;
@@ -86,15 +84,7 @@ public class ExplosionController : MonoBehaviour
     {
         if (!PlayerController.dead && pointsToAdd != 0)
         {
-            if (comboNum > 1)
-            {
-                TMP_Text comboText = Instantiate(pointsPrefab, transform.position + new Vector3(2, 2.5f, -10), Quaternion.identity, pointsContainer).GetComponentInChildren<TMP_Text>();
-                comboText.fontSize /= 2;
-                comboText.text = "COMBO x" + comboNum;
-            }
-            Instantiate(pointsPrefab, transform.position + new Vector3(2, 1, -10), Quaternion.identity, pointsContainer).GetComponentInChildren<TMP_Text>().text = "+" + (pointsToAdd + (comboNum - 1));
-
-            hudScript.ChangePointsValue(pointsToAdd + (comboNum - 1));
+            hudScript.ChangePointsValue(pointsToAdd + (comboNum - 1), transform.position + new Vector3(2, 1, 0), comboNum);
         }
 
         alreadyAddedPoints = true;

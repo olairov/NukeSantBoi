@@ -20,20 +20,16 @@ public class PointsSumAnimController : MonoBehaviour
         set { pointsIsum = value; }
     }
 
-    private float timeIstart;
-
     void Start()
     {
         pointsCounter = GameObject.Find("Canvas/PointsCounter").GetComponent<TMP_Text>();
         coinSound = GetComponent<AudioSource>();
         transform.GetChild(1).GetComponent<TMP_Text>().text = "+" + pointsIsum;
-
-        timeIstart = Time.time;
     }
 
     public void ChangePointsValue()
     {
-        StartCoroutine(SlowlyAddPoints());
+        //StartCoroutine(SlowlyAddPoints());
     }
 
     private IEnumerator SlowlyAddPoints()

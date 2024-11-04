@@ -9,7 +9,7 @@ public class EnemyPlaneController : MonoBehaviour
     [SerializeField] private float moveSpeed, rotFactor, playerRotationSensitivity, pushForce;
     public float actualRotationSpeed;
     private float maxXdistance, rotationWhenDutyFinished, stabilizerLerp, rotationToAddWhenClose, XdistanceWhenEnteredCloseRange, timeAfterDutyFinished = 1,
-                  rotSpeedWhenFinished, residualRotation, dyingXpos, playerXpos;
+                  rotSpeedWhenFinished, residualRotation, dyingXpos, appearingXpos, playerXpos, boostSoundVolume;
 
     public bool dead, dutyFinished, enteredCloseRange;
 
@@ -33,6 +33,10 @@ public class EnemyPlaneController : MonoBehaviour
         playerXpos = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width / 5, 0)).x;
         maxXdistance = transform.position.x - playerXpos;
         transform.position = new Vector3(transform.position.x, Random.Range(Camera.main.ScreenToWorldPoint(Vector3.zero).y, Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y), transform.position.z);
+
+        boostSoundVolume = boostSoundOptionsModifier.gameObject.GetComponent<AudioSource>().volume;
+        appearingXpos = transform.position.x;
+        Debug.Log(boostSoundVolume);
     }
 
     void ChoseColor()
@@ -51,7 +55,8 @@ public class EnemyPlaneController : MonoBehaviour
 
         if (transform.position.y < Camera.main.ScreenToWorldPoint(Vector3.zero).y - 5 || transform.position.y > Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y + 5) Destroy(gameObject);
 
-        if (transform.position.x < playerXpos && InGameSound.threeDsound) BoostSoundDecay();
+        if (transform.position.x > playerXpos && !InGameSound.threeDsound) BoostSoundAppear();
+        if (transform.position.x < playerXpos) BoostSoundDecay();
     }
 
     void RotateAndMove()
@@ -112,11 +117,21 @@ public class EnemyPlaneController : MonoBehaviour
         // Clamped so that it doesn't rotate too much. Residual rotation is added multiplied by stabilizerLerp inversed, so that residualRotation has less effect with time.
     }
 
+    void BoostSoundAppear() // Make the Boost Sound disappear smoothly, instead of a hard cut when the plane disappears once out of camera.
+    {
+        float appearingProgress = ((transform.position.x - playerXpos) / (playerXpos - appearingXpos) + 1) * boostSoundVolume;
+        // Gives the index of remoteness from the player since the plane appears (from 1 to 0). 1 is the exact X player position, 0 is the enemy's appearing
+        // X position. Then it's multiplied by the boost sound volume so that the volume doesn't start increasing until 1 regardless the default volume.
+
+        boostSoundOptionsModifier.SetRealVolume = appearingProgress;
+        // Then, the boost sound volume is set to the decay progress (from 0.25 to 0) progressively, so that the sound disappears smoothly.
+    }
+
     void BoostSoundDecay() // Make the Boost Sound disappear smoothly, instead of a hard cut when the plane disappears once out of camera.
     {
-        float decayProgress = ((-transform.position.x + playerXpos) / (dyingXpos - playerXpos) + 1) / 4;
+        float decayProgress = ((playerXpos - transform.position.x) / (dyingXpos - playerXpos) + 1) * boostSoundVolume;
         // Gives the index of remoteness from the player once it has passed by the enemy plane (from 1 to 0). 1 is the exact X player position, 0 is the enemy's disappearing
-        // X position (defined by ObjectPassingBy). Then it is divided by 4 Because the MAX sound volume of the boost is 0.25.
+        // X position (defined by ObjectPassingBy). Then it's multiplied by the boost sound volume so that the volume doesn't start decreasing from 1 regardless the default volume.
 
         boostSoundOptionsModifier.SetRealVolume = decayProgress;
         // Then, the boost sound volume is set to the decay progress (from 0.25 to 0) progressively, so that the sound disappears smoothly.

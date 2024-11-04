@@ -8,11 +8,13 @@ public class HudController : MonoBehaviour
     private PlayerController playerScript;
     private JoystickController bombingJoystickScript;
 
-    private AudioSource menuInSound, menuOutSound;
+    private AudioSource menuInSound, menuOutSound, coinSound;
 
-    [SerializeField] private GameObject pointsSumPrefab;
+    private TMP_Text pointsCounter;
 
-    private Transform cameraTransform, pauseMenu, deadMenu, morePointsContainer;
+    [SerializeField] private GameObject pointsSumPrefab, pointsPrefab;
+
+    private Transform cameraTransform, pauseMenu, deadMenu, morePointsContainer, pointsContainer;
 
     private Camera cameraComponent;
 
@@ -22,6 +24,7 @@ public class HudController : MonoBehaviour
         set { actualLevel = value; }
     }
 
+    [SerializeField] private float everyPointAddInterval;
     private float deadPanelOutProgress = -1, lastDeadPanelYPos, lastTimeScale;
     public float actualTimescale = 1;
 
@@ -51,9 +54,13 @@ public class HudController : MonoBehaviour
         pauseMenu = GameObject.Find("Canvas/pauseMenu").transform;
         deadMenu = GameObject.Find("Canvas/deadMenu/BothMenusContainer/deadMenu").transform;
         morePointsContainer = GameObject.Find("Canvas/MorePointsContainer").transform;
+        pointsContainer = GameObject.Find("NotPhysicElementsContainer").transform;
 
         menuInSound = GameObject.Find("UIsounds/MenuInSound").GetComponent<AudioSource>();
         menuOutSound = GameObject.Find("UIsounds/MenuOutSound").GetComponent<AudioSource>();
+        coinSound = GameObject.Find("UIsounds/CoinSound").GetComponent<AudioSource>();
+
+        pointsCounter = GameObject.Find("Canvas/PointsCounter").GetComponent<TMP_Text>();
 
         pauseMenu.Find("Highscore").GetComponent<TMP_Text>().text = PlayerPrefs.GetInt("Highscore").ToString();
         playerScript = GameObject.Find("Player").GetComponent<PlayerController>();
@@ -82,13 +89,45 @@ public class HudController : MonoBehaviour
         SendVariableInfo();
     }
 
-    public void ChangePointsValue(int sumPoints)
+    public void ChangePointsValue(int sumPoints, Vector3 pointsPos, int combo) // Combo >= 1
     {
         points += sumPoints;
+        pointsPos = new Vector3(pointsPos.x, pointsPos.y, -15);
 
-        PointsSumAnimController newPointsSum = Instantiate(pointsSumPrefab, morePointsContainer).GetComponent<PointsSumAnimController>();
-        newPointsSum.SetPoints = points;
-        newPointsSum.SetPointsIsum = sumPoints;
+        if (combo > 1)
+        {
+            TMP_Text comboText = Instantiate(pointsPrefab, pointsPos + new Vector3(0, 1.5f), Quaternion.identity, pointsContainer).GetComponentInChildren<TMP_Text>();
+            comboText.fontSize /= 2;
+            comboText.text = "COMBO x" + combo;
+        }
+        Instantiate(pointsPrefab, pointsPos, Quaternion.identity, pointsContainer).GetComponentInChildren<TMP_Text>().text = "+ " + sumPoints;
+
+        StartCoroutine(SlowlyAddPoints(sumPoints));
+    }
+
+    private IEnumerator SlowlyAddPoints(int pointsIsum)
+    {
+        GameObject pointsSumAnimationObj = Instantiate(pointsSumPrefab, morePointsContainer);
+        pointsSumAnimationObj.transform.GetChild(1).GetComponent<TMP_Text>().text = "+" + pointsIsum;
+
+        yield return new WaitForSeconds(0.53f); // --> Time it takes for the animation to reach the ending point
+
+        for (int idx = 1; idx <= pointsIsum; idx++)
+        {
+            pointsCounter.text = (points - pointsIsum + idx).ToString(); // As "points" is not changed progressively, I have to substract the points THIS explosion sums
+            // from the total points I have, this way it's like summing 0 points to the previous score. Then add "idx", which DOES change progressively, to have
+            // A nice scale of +1s from the previous score to the actual one.
+
+            coinSound.Stop();
+            coinSound.pitch = Random.Range(0.9f, 1.05f);
+            coinSound.Play();
+
+            yield return new WaitForSeconds(everyPointAddInterval);
+        }
+
+        yield return new WaitForSeconds(1);
+
+        Destroy(pointsSumAnimationObj);
     }
 
     public void PauseManager()
