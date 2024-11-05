@@ -36,7 +36,6 @@ public class EnemyPlaneController : MonoBehaviour
 
         boostSoundVolume = boostSoundOptionsModifier.gameObject.GetComponent<AudioSource>().volume;
         appearingXpos = transform.position.x;
-        Debug.Log(boostSoundVolume);
     }
 
     void ChoseColor()

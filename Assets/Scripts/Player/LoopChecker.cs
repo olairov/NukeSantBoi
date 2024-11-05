@@ -7,26 +7,25 @@ public class LoopChecker : MonoBehaviour
 {
     private HudController hudScript;
 
-    private Rigidbody2D rb;
+    private float lastRot, timeSinceLoopDone = 1;
 
-    private float lastRot;
-
-    private bool turnedAround, turnedTowardsDown;
+    private bool turnedAround, loopIsBackwards, canResetTimeSinceLoopDone = true;
 
     void Start()
     {
         hudScript = GameObject.Find("________________Canvas________________").GetComponent<HudController>();
-        rb = GetComponent<Rigidbody2D>();
     }
 
     void Update()
     {
         if (PlayerController.dead) return;
 
-        CheckLoop();
+        CheckRotation();
+
+        if (timeSinceLoopDone < 1) timeSinceLoopDone += Time.deltaTime;
     }
 
-    void CheckLoop()
+    void CheckRotation()
     {
         float rotationDifference = lastRot - transform.eulerAngles.z;
 
@@ -34,29 +33,50 @@ public class LoopChecker : MonoBehaviour
         {
             turnedAround = !turnedAround;
 
-            if (rotationDifference > 180) turnedTowardsDown = true;
-            else if (rotationDifference < -180) turnedTowardsDown = false;
+            loopIsBackwards = rotationDifference > 180;
         }
 
-        if (turnedAround)
-        {
-            if (transform.eulerAngles.z > 150 && turnedTowardsDown)
-            {
-                AddPointsWhenLoop();
-                turnedAround = false;
-            }
-            if (transform.eulerAngles.z < 210 && !turnedTowardsDown)
-            {
-                AddPointsWhenLoop();
-                turnedAround = false;
-            }
-        }
+        if (turnedAround) LoopDetection(loopIsBackwards);
 
         lastRot = transform.eulerAngles.z;
     }
 
-    void AddPointsWhenLoop()
+    void LoopDetection(bool loopingBackwards)
     {
-        hudScript.ChangePointsValue(2, transform.position + new Vector3(0, 1, 0), 1);
+        if (transform.eulerAngles.z > 90 && loopingBackwards)
+        {
+            if (canResetTimeSinceLoopDone) ResetTimeSinceLoop();
+
+            if (transform.eulerAngles.z > 160 && timeSinceLoopDone >= 0.7f) LoopDoneWithoutScoringPoints();
+        }
+
+        if (transform.eulerAngles.z < 270 && !loopingBackwards)
+        {
+            if (canResetTimeSinceLoopDone) ResetTimeSinceLoop();
+
+            if (transform.eulerAngles.z < 200 && timeSinceLoopDone >= 0.7f) LoopDoneWithoutScoringPoints();
+        }
+    }
+
+    void ResetTimeSinceLoop()
+    {
+        timeSinceLoopDone = 0;
+        canResetTimeSinceLoopDone = false;
+    }
+
+    public bool PointsScored()
+    {
+        bool result = timeSinceLoopDone < 1f && turnedAround;
+        if (result) turnedAround = false;
+
+        return result; // If true, the previously scored points will be DOUBLED thanks to the loop
+    }
+
+    void LoopDoneWithoutScoringPoints()
+    {
+        turnedAround = false;
+        canResetTimeSinceLoopDone = true;
+
+        hudScript.ChangePointsValue(2, transform.position + new Vector3(0.5f, 1, 0), 1, 1);
     }
 }

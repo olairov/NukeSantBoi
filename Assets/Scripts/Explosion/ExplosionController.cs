@@ -84,7 +84,7 @@ public class ExplosionController : MonoBehaviour
     {
         if (!PlayerController.dead && pointsToAdd != 0)
         {
-            hudScript.ChangePointsValue(pointsToAdd + (comboNum - 1), transform.position + new Vector3(2, 1, 0), comboNum);
+            hudScript.ChangePointsValue(pointsToAdd + (comboNum - 1), transform.position + new Vector3(2, 1, 0), comboNum, 0);
         }
 
         alreadyAddedPoints = true;

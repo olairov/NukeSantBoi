@@ -7,6 +7,7 @@ public class HudController : MonoBehaviour
 {
     private PlayerController playerScript;
     private JoystickController bombingJoystickScript;
+    private LoopChecker LoopCheckerScript;
 
     private AudioSource menuInSound, menuOutSound, coinSound;
 
@@ -65,6 +66,7 @@ public class HudController : MonoBehaviour
         pauseMenu.Find("Highscore").GetComponent<TMP_Text>().text = PlayerPrefs.GetInt("Highscore").ToString();
         playerScript = GameObject.Find("Player").GetComponent<PlayerController>();
         bombingJoystickScript = GameObject.Find("Canvas/TouchControllers/Controllers/Bombing Joystick").GetComponent<JoystickController>();
+        LoopCheckerScript = GameObject.Find("Player").GetComponent<LoopChecker>();
 
         cameraComponent = cameraTransform.GetComponentInChildren<Camera>();
 
@@ -89,20 +91,57 @@ public class HudController : MonoBehaviour
         SendVariableInfo();
     }
 
-    public void ChangePointsValue(int sumPoints, Vector3 pointsPos, int combo) // Combo >= 1
+    public void ChangePointsValue(int sumPoints, Vector3 pointsPos, int combo, int type) // Combo >= 1;   Type -->  0 = Default attack, 1 = Single Loop, 2 = Combo Loop
     {
+        if (type != 1 && LoopCheckerScript.PointsScored()) // First, detect if player is looping to DOUBLE the score in that case.
+        {
+            sumPoints *= 2;
+            type = 2;
+        }
+
         points += sumPoints;
         pointsPos = new Vector3(pointsPos.x, pointsPos.y, -15);
 
-        if (combo > 1)
-        {
-            TMP_Text comboText = Instantiate(pointsPrefab, pointsPos + new Vector3(0, 1.5f), Quaternion.identity, pointsContainer).GetComponentInChildren<TMP_Text>();
-            comboText.fontSize /= 2;
-            comboText.text = "COMBO x" + combo;
-        }
+        if (combo > 1) ShowComboText(combo, pointsPos);
+        if (type != 0) ShowAdditionalTextOnScore(type, combo > 1, pointsPos);
+
         Instantiate(pointsPrefab, pointsPos, Quaternion.identity, pointsContainer).GetComponentInChildren<TMP_Text>().text = "+ " + sumPoints;
 
         StartCoroutine(SlowlyAddPoints(sumPoints));
+    }
+
+    void ShowComboText(int comboNum, Vector3 pointsPosition)
+    {
+        TMP_Text comboText = Instantiate(pointsPrefab, pointsPosition + new Vector3(0, 1.3f), Quaternion.identity, pointsContainer).GetComponentInChildren<TMP_Text>();
+        comboText.fontSize /= 2;
+        comboText.text = "COMBO x" + comboNum;
+    }
+
+    void ShowAdditionalTextOnScore(int caseNumber, bool comboTextAppears, Vector3 pointsPosition)
+    {
+        string textToShow;
+        float textSizeMultiplier;
+
+        switch (caseNumber)
+        {
+            case 1:
+                textToShow = "Loop";
+                textSizeMultiplier = 0.5f;
+                break;
+            case 2:
+                textToShow = "LOOP! x2";
+                textSizeMultiplier = 0.7f;
+                break;
+            default:
+                Debug.LogWarning("Point addition case number " + caseNumber + ", (which you entered) does not exist, stupid monkey. These are the possible ones: 0 = Default attack, 1 = Single Loop, 2 = Combo Loop");
+                // If you're wondering how you got here, go to where the "caseNumber" variable (coming from the "type" variable in the "ChangePointsValue" function)
+                // value is originally entered and replace it with a valid one (the Log Warning explains which ones are valid).
+                return;
+        }
+
+        TMP_Text additionalText = Instantiate(pointsPrefab, pointsPosition + new Vector3(0, comboTextAppears ? 2.5f : 1.2f), Quaternion.identity, pointsContainer).GetComponentInChildren<TMP_Text>();
+        additionalText.text = textToShow;
+        additionalText.fontSize *= textSizeMultiplier;
     }
 
     private IEnumerator SlowlyAddPoints(int pointsIsum)
