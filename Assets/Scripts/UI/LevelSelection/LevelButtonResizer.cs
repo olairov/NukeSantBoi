@@ -14,8 +14,8 @@ public class LevelButtonResizer : MonoBehaviour
 
     private static Image actualClickedButtonImage;
 
-    [SerializeField] private float growingSpeed, leftLimitAnchor, rightLimitAnchor;
-    private float growingLerp, originalMinAnchor, originalMaxAnchor;
+    [SerializeField] private float growingSpeed;
+    private float growingLerp, xPosWhenInfoPressed, originalXSize;
 
     public static bool anyInfoPressedAlready, anyInfoPressed, exittingScene;
     private bool infoPressed, levelButtonIsSelected;
@@ -32,6 +32,8 @@ public class LevelButtonResizer : MonoBehaviour
                 actualClickedButtonImage = myButtonClickerImage;
                 levelButtonIsSelected = myLevelButtonScript.transform.localScale.x > 1;
                 myLevelButtonScript.SetScale(1f);
+
+                xPosWhenInfoPressed = myRectTransform.anchoredPosition.x;
             }
             else
             {
@@ -58,13 +60,14 @@ public class LevelButtonResizer : MonoBehaviour
         myButtonClickerImage = transform.GetChild(0).Find("Clicker").GetComponent<Image>();
         myInfoButtonImage = transform.Find("InfoClicker").GetComponent<Image>();
 
-        originalMaxAnchor = myRectTransform.anchorMax.x;
-        originalMinAnchor = myRectTransform.anchorMin.x;
+        originalXSize = myRectTransform.sizeDelta.x;
 
         actualClickedButtonImage = null;
         anyInfoPressedAlready = false;
         anyInfoPressed = false;
         exittingScene = false;
+
+        Debug.Log(Screen.width);
     }
 
     void Update()
@@ -80,7 +83,7 @@ public class LevelButtonResizer : MonoBehaviour
             growingLerp += Time.deltaTime * growingSpeed;
             ChangeSize(Mathf.Clamp01(growingLerp));
         }
-        if (!infoPressed && growingLerp > 0 || exittingScene)
+        if (!infoPressed && growingLerp > 0 || exittingScene && infoPressed)
         {
             growingLerp -= Time.deltaTime * growingSpeed;
             ChangeSize(Mathf.Clamp01(growingLerp));
@@ -113,9 +116,7 @@ public class LevelButtonResizer : MonoBehaviour
 
     void ChangeSize(float lerp)
     {
-        myRectTransform.anchorMin = new Vector2(Mathf.Lerp(originalMinAnchor, leftLimitAnchor, lerp), myRectTransform.anchorMin.y);
-        myRectTransform.anchorMax = new Vector2(Mathf.Lerp(originalMaxAnchor, rightLimitAnchor, lerp), myRectTransform.anchorMax.y);
-
-        myRectTransform.sizeDelta = Vector2.one;
+        myRectTransform.sizeDelta = new Vector2(Mathf.Lerp(originalXSize, Screen.width * 0.8f, lerp), myRectTransform.sizeDelta.y);
+        myRectTransform.anchoredPosition = new Vector2(Mathf.Lerp(xPosWhenInfoPressed, Screen.width / 2, lerp), 0);
     }
 }
