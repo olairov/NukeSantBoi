@@ -16,6 +16,10 @@ public class LevelButtonResizer : MonoBehaviour
 
     [SerializeField] private float growingSpeed;
     private float growingLerp, xPosWhenInfoPressed, originalXSize;
+    public bool IsShrinking
+    {
+        get { return growingLerp > 0; }
+    }
 
     public static bool anyInfoPressedAlready, anyInfoPressed, exittingScene;
     private bool infoPressed, levelButtonIsSelected;
@@ -33,7 +37,7 @@ public class LevelButtonResizer : MonoBehaviour
                 levelButtonIsSelected = myLevelButtonScript.transform.localScale.x > 1;
                 myLevelButtonScript.SetScale(1f);
 
-                xPosWhenInfoPressed = myRectTransform.anchoredPosition.x;
+                xPosWhenInfoPressed = myRectTransform.position.x;
             }
             else
             {
@@ -66,8 +70,6 @@ public class LevelButtonResizer : MonoBehaviour
         anyInfoPressedAlready = false;
         anyInfoPressed = false;
         exittingScene = false;
-
-        Debug.Log(Screen.width);
     }
 
     void Update()
@@ -116,7 +118,7 @@ public class LevelButtonResizer : MonoBehaviour
 
     void ChangeSize(float lerp)
     {
-        myRectTransform.sizeDelta = new Vector2(Mathf.Lerp(originalXSize, Screen.width * 0.8f, lerp), myRectTransform.sizeDelta.y);
-        myRectTransform.anchoredPosition = new Vector2(Mathf.Lerp(xPosWhenInfoPressed, Screen.width / 2, lerp), 0);
+        myRectTransform.sizeDelta = new Vector2(Mathf.Lerp(originalXSize, 900, lerp), myRectTransform.sizeDelta.y);
+        myRectTransform.position = new Vector2(Mathf.Lerp(xPosWhenInfoPressed, 0 / 2, lerp), 0);
     }
 }

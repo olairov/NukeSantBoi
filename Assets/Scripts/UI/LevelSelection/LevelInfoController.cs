@@ -11,7 +11,7 @@ public class LevelInfoController : MonoBehaviour
     AudioSource clickedSound;
 
     AnyButton myButtonScript;
-    private LevelButtonResizer myLevelResizerScript;
+    LevelButtonResizer myLevelResizerScript;
 
     bool infoEnabled;
 
@@ -51,12 +51,14 @@ public class LevelInfoController : MonoBehaviour
         {
             infoPlaceTransform.localScale = Vector2.one * 1.2f;
         }
-        myButtonScript.Pointed();
+        if (!(myLevelResizerScript.IsShrinking && !infoEnabled)) myButtonScript.SetPointed = true;
     }
 
     public void InfoDisselected()
     {
         infoPlaceTransform.localScale = Vector2.one;
         myButtonScript.StopSelectedSound();
+
+        myButtonScript.SetPointed = false;
     }
 }

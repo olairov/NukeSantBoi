@@ -30,6 +30,10 @@ public class AnyButton : MonoBehaviour
     {
         set { ableToGrowWhenInPhoneDevice = value; }
     }
+    public bool SetPointed
+    {
+        set { pointed = value; }
+    }
 
     void Start()
     {
