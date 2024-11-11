@@ -972,6 +972,7 @@ MonoBehaviour:
   amountOfSliderSoundPlaces: 0
   doesntHaveShadow: 0
   imSlider: 0
+  pointedSizeIsAbsolute: 0
 --- !u!114 &133209291
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1752,6 +1753,7 @@ MonoBehaviour:
   amountOfSliderSoundPlaces: 0
   doesntHaveShadow: 0
   imSlider: 0
+  pointedSizeIsAbsolute: 1
 --- !u!114 &221994025
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2456,6 +2458,7 @@ MonoBehaviour:
   amountOfSliderSoundPlaces: 0
   doesntHaveShadow: 0
   imSlider: 0
+  pointedSizeIsAbsolute: 1
 --- !u!114 &281899833
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15492,6 +15495,7 @@ MonoBehaviour:
   amountOfSliderSoundPlaces: 0
   doesntHaveShadow: 0
   imSlider: 0
+  pointedSizeIsAbsolute: 1
 --- !u!1 &1688297636
 GameObject:
   m_ObjectHideFlags: 0
@@ -16249,6 +16253,7 @@ MonoBehaviour:
   amountOfSliderSoundPlaces: 0
   doesntHaveShadow: 0
   imSlider: 0
+  pointedSizeIsAbsolute: 0
 --- !u!114 &1719498152
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18688,6 +18693,7 @@ MonoBehaviour:
   amountOfSliderSoundPlaces: 0
   doesntHaveShadow: 0
   imSlider: 0
+  pointedSizeIsAbsolute: 1
 --- !u!114 &1973949604
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19637,6 +19643,7 @@ MonoBehaviour:
   amountOfSliderSoundPlaces: 0
   doesntHaveShadow: 0
   imSlider: 0
+  pointedSizeIsAbsolute: 0
 --- !u!114 &2106308939
 MonoBehaviour:
   m_ObjectHideFlags: 0

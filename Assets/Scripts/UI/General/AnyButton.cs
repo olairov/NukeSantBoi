@@ -21,7 +21,8 @@ public class AnyButton : MonoBehaviour
     }
 
     [SerializeField] private float resizingSpeed, amountOfSliderSoundPlaces;
-    private float pointingLerp = 0.5f, lastSliderValue, timeSinceLastSliderSound;
+    private float pointingLerp, clickedLerp = 1, lastSliderValue, timeSinceLastSliderSound;
+    // PointigLerp is 0 when not pointed, ClickedLerp is 1 when not clicked.
 
     [SerializeField] private bool doesntHaveShadow, imSlider;
     private bool pointed, clicked, reallyClicked, cantMakeSelectedSound, ableToGrowWhenInPhoneDevice;
@@ -76,70 +77,79 @@ public class AnyButton : MonoBehaviour
         ChangePointedLerp();
         ChangeChildStats();
 
-        if (imSlider)
-        {
-            if (timeSinceLastSliderSound > 0.07f)
-            {
-                if (GetCastedSliderValue() != lastSliderValue)
-                {
-                    sliderSound.pitch = mySlider.value / 2 + 0.75f;
-                    sliderSound.Play();
-
-                    timeSinceLastSliderSound = 0;
-                    lastSliderValue = GetCastedSliderValue();
-                }
-            }
-            else timeSinceLastSliderSound += Time.unscaledDeltaTime;
-        }
+        if (imSlider) ManageSliderSound();
 
         cantMakeSelectedSound = false;
     }
 
-    void ChangePointedLerp() // Decision-making based in pointingLerp value and the pointer state in relation to the button.
+    void ManageSliderSound()
     {
-        if ((!clicked && !pointed && pointingLerp < 0.5f) || (pointed && !clicked && pointingLerp < 1 && !TouchControllersManager.isUsingPhone) || (TouchControllersManager.isUsingPhone && !clicked)) Growing();
+        if (timeSinceLastSliderSound > 0.07f)
+        {
+            if (GetCastedSliderValue() != lastSliderValue)
+            {
+                sliderSound.pitch = mySlider.value / 2 + 0.75f;
+                sliderSound.Play();
 
-        if (!clicked && !pointed && pointingLerp > 0.5f) Shrinking(1);
-        if (clicked && pointed && pointingLerp > 0) Shrinking(5); // Increase the speed of the shrinking to create a most powerful effect.
+                timeSinceLastSliderSound = 0;
+                lastSliderValue = GetCastedSliderValue();
+            }
+        }
+        else timeSinceLastSliderSound += Time.unscaledDeltaTime;
+    }
+
+    void ChangePointedLerp() // Decision-making based in pointingLerp / clickedLerp value and the pointer state in relation to the button.
+    {
+        if (!clicked) clickedLerp = 1;
+
+        if (!clicked && !pointed)
+        {
+            if (clickedLerp < 1) clickedLerp = Growing(clickedLerp);
+            else if (pointingLerp > 0) pointingLerp = Shrinking(pointingLerp, 1);
+        }
+
+        if (pointed)
+        {
+            if (!clicked && pointingLerp < 1) pointingLerp = Growing(pointingLerp);
+            else if (clicked && clickedLerp > 0) clickedLerp = pointingLerp = Shrinking(clickedLerp, 5);
+        }
     }
 
     // Lerping Size --->
 
-    private void Growing()
+    private float Growing(float valueToGrow)
     {
-        pointingLerp += Time.unscaledDeltaTime * resizingSpeed;
+        valueToGrow += Time.unscaledDeltaTime * resizingSpeed;
 
-        if (!pointed || (TouchControllersManager.isUsingPhone && !ableToGrowWhenInPhoneDevice))
-        {
-            if (pointingLerp > 0.5f) pointingLerp = 0.5f;
-        }
-        else if (pointingLerp > 1) pointingLerp = 1;
+        if (valueToGrow > 1) valueToGrow = 1;
+
+        return valueToGrow;
     }
 
-    private void Shrinking(float multiplier)
+    private float Shrinking(float valueToShrink, float multiplier)
     {
-        pointingLerp -= Time.unscaledDeltaTime * resizingSpeed * multiplier;
+        valueToShrink -= Time.unscaledDeltaTime * resizingSpeed * multiplier;
 
-        if (clicked)
-        {
-            if (pointingLerp < 0) pointingLerp = 0;
-        }
-        else if (pointingLerp < 0.5f) pointingLerp = 0.5f;
+        if (valueToShrink < 0) valueToShrink = 0;
+
+        return valueToShrink;
     }
 
     // <--- Lerping Size
 
     void ChangeChildStats()
     {
-        resizerTransform.localScale = defaultSize * Mathf.Lerp(0.85f, 1.15f, pointingLerp);
+        resizerTransform.localScale = Vector2.Lerp(defaultSize, defaultSize * 1.15f, pointingLerp);
+        if (clickedLerp < 1) resizerTransform.localScale = Vector2.Lerp(defaultSize * 0.85f, defaultSize * 1.15f, clickedLerp);
 
-        if (!doesntHaveShadow) shadowTransform.localPosition = new Vector2(Mathf.Lerp(0, -12, pointingLerp), Mathf.Lerp(0, -12, pointingLerp));
+        if (!doesntHaveShadow) shadowTransform.localPosition = new Vector2(Mathf.Lerp(-6, -12, pointingLerp), Mathf.Lerp(-6, -12, pointingLerp));
     }
 
     // Simple Mouse Actions --->
 
     public void Pointed()
     {
+        if (TouchControllersManager.isUsingPhone && !ableToGrowWhenInPhoneDevice) return;
         pointed = true;
 
         if (!clicked && !TouchControllersManager.isUsingPhone && !cantMakeSelectedSound && !selectSound.isPlaying && !ableToGrowWhenInPhoneDevice) PlayPitchSound(selectSound);
