@@ -298,7 +298,7 @@ public class HudController : MonoBehaviour
         deadMenu.Find("NewHighscore").GetComponent<AudioSource>().Play();
 
         yield return new WaitForSeconds(0.06f);
-        deadMenu.parent.parent.GetComponent<ShakeController>().Shake();
+        deadMenu.parent.parent.GetComponent<ShakeController>().Shake(1);
     }
 
     private void SendVariableInfo()

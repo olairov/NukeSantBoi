@@ -17,7 +17,7 @@ public class QuizMenuAppear : MonoBehaviour
 
     public void Collision()
     {
-        GameObject.Find("Camera/CameraRiser/Main Camera").GetComponent<ShakeController>().Shake();
+        GameObject.Find("Camera/CameraRiser/Main Camera").GetComponent<ShakeController>().Shake(1);
         GetComponent<AudioSource>().Play();
     }
 }

@@ -61,6 +61,6 @@ public class ChargeController : MonoBehaviour
     {
         timeUntilNextBomb = givenTimeForNextBomb;
 
-        shakeScript.Shake();
+        shakeScript.Shake(1);
     }
 }

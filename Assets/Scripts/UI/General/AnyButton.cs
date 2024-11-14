@@ -169,7 +169,7 @@ public class AnyButton : MonoBehaviour
         clicked = true;
         reallyClicked = true;
 
-        if (!imSlider && pointed) myShake.Shake();
+        if (!imSlider && pointed) myShake.Shake(1);
         PlayPitchSound(clickSound);
     }
 
@@ -177,6 +177,8 @@ public class AnyButton : MonoBehaviour
     {
         clicked = false;
         reallyClicked = false;
+
+        if (!imSlider && pointed) myShake.Shake(0.5f);
     }
 
     // <--- Simple Mouse Actions

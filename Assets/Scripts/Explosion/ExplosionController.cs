@@ -47,7 +47,7 @@ public class ExplosionController : MonoBehaviour
 
             screenshakeValue = PlayerPrefs.GetFloat("ScreenshakeValue");
 
-            Camera.main.GetComponent<ShakeController>().Shake();
+            Camera.main.GetComponent<ShakeController>().Shake(1);
 
             GameObject.Find("__________________Map___________________").GetComponent<MapGenerator>().ExplosionGenerated();
 

@@ -84,7 +84,7 @@ public class ScreenLoadAnim : MonoBehaviour
     IEnumerator EffectsAndLoadScene()
     {
         transform.GetComponent<AudioSource>().Play();
-        transform.GetComponent<ShakeController>().Shake();
+        transform.GetComponent<ShakeController>().Shake(1);
         transform.Find("RightGate/Logo").GetComponent<Animator>().SetTrigger("Glow");
 
         yield return new WaitForSecondsRealtime(0.5f);

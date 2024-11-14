@@ -30,7 +30,7 @@ public class OptionsButton : MonoBehaviour
         if (PlayerPrefs.HasKey("ScreenshakeValue")) cameraShakeScript.SetDefinitiveMaxRadius(PlayerPrefs.GetFloat("ScreenshakeValue"));
         else cameraShakeScript.SetDefinitiveMaxRadius(0.5f);
 
-        cameraShakeScript.Shake();
+        cameraShakeScript.Shake(1);
     }
 
     public void MoreOptionsButton(bool goToGameOptions)

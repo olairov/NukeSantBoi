@@ -8,7 +8,7 @@ public class ShakeController : MonoBehaviour
 
     // Xdisplacement is only used for objects whose X default position is not x;
     [SerializeField] private float maxRadius, shakeSpeed, timeShakeLasts, minWaveDistance, rotationScale, xDisplacement;
-    private float strengthMultiplier, shakeMoveProgress, shakeTimeLeft, definitiveMaxRadius, yVariableDisplacement;
+    private float strengthMultiplier, shakeMoveProgress, shakeTimeLeft, multipliedMaxRadius, definitiveMaxRadius, definitiveTimeShakeLasts, yVariableDisplacement;
     public float SetYdisplacement
     {
         set { yVariableDisplacement = value; }
@@ -29,7 +29,7 @@ public class ShakeController : MonoBehaviour
             else SetDefinitiveMaxRadius(0.5f);
         }
 
-        if (shakeInStart) Shake();
+        if (shakeInStart) Shake(1);
     }
 
     void Update()
@@ -37,20 +37,23 @@ public class ShakeController : MonoBehaviour
         EveryFrameShakeProcess();
     }
 
-    public void Shake() // Called from the outside to start the shake process.
+    public void Shake(float multiplier) // Called from the outside to start the shake process.
     {
         if (Time.timeSinceLevelLoad < 0.3f && !shakeInStart) return; // For some mysterious reason, sometimes a screenshake is generated in the beginning of the game.
+
+        definitiveMaxRadius = multipliedMaxRadius * multiplier;
+        definitiveTimeShakeLasts = timeShakeLasts * multiplier;
 
         lastRound = false;
         finishedShake = false;
 
         CreateWave(false);
-        shakeTimeLeft = timeShakeLasts;
+        shakeTimeLeft = definitiveTimeShakeLasts;
     }
 
     private void EveryFrameShakeProcess()
     {
-        if (definitiveMaxRadius <= 0) return;
+        if (multipliedMaxRadius <= 0) return;
 
         if (!finishedShake) UpdatePos();
         else
@@ -97,7 +100,7 @@ public class ShakeController : MonoBehaviour
 
     private void CreateWave(bool isLast)
     {
-        if (shakeTimeLeft > 0 && !infiniteShake) strengthMultiplier = shakeTimeLeft / timeShakeLasts;
+        if (shakeTimeLeft > 0 && !infiniteShake) strengthMultiplier = shakeTimeLeft / definitiveTimeShakeLasts;
         else strengthMultiplier = 1;
 
         waveStartPos = transform.localPosition - new Vector3(0, yVariableDisplacement);
@@ -121,6 +124,6 @@ public class ShakeController : MonoBehaviour
 
     public void SetDefinitiveMaxRadius(float multiplier)
     {
-        definitiveMaxRadius = maxRadius * multiplier;
+        multipliedMaxRadius = maxRadius * multiplier;
     }
 }
