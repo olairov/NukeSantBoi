@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class LevelButton : MonoBehaviour
 {
@@ -11,6 +12,9 @@ public class LevelButton : MonoBehaviour
     private GameObject selectedBorder;
 
     private LevelButtonResizer myLevelButtonResizerScript;
+    private AnyButton myAnyButtonScript;
+
+    private float originSize = 1, targetSize = 1, sizeLerpProgress = 1;
 
     [SerializeField] private int level;
 
@@ -26,17 +30,32 @@ public class LevelButton : MonoBehaviour
 
     private void Start()
     {
+        transform.Find("Image/NumberSpace/Number").GetComponent<TMP_Text>().text = level.ToString();
+
         myImage = GetComponent<RectTransform>();
         selectedBorder = transform.Find("Image/SelectedBorder").gameObject;
         myLevelButtonResizerScript = transform.parent.GetComponent<LevelButtonResizer>();
+        myAnyButtonScript = GetComponent<AnyButton>();
 
         if (!PlayerPrefs.HasKey("Level")) PlayerPrefs.SetInt("Level", 1);
 
         selectedBorder.SetActive(false);
-        if (PlayerPrefs.GetInt("Level") == level)
+        if (PlayerPrefs.GetInt("Level") == level) // If the saved level from befor is the level of this button, it sets itself as selcted.
         {
             SetAsSelected();
         }
+    }
+
+    private void Update()
+    {
+        if (sizeLerpProgress < 1) SizeLerp();
+    }
+
+    void SizeLerp()
+    {
+        sizeLerpProgress += Time.unscaledDeltaTime * 5;
+        sizeLerpProgress = Mathf.Clamp01(sizeLerpProgress);
+        myAnyButtonScript.SetDefaultSize = Vector2.one * Mathf.Lerp(originSize, targetSize, sizeLerpProgress);
     }
 
     public void Clicked()
@@ -46,7 +65,7 @@ public class LevelButton : MonoBehaviour
 
         PlayerPrefs.SetInt("Level", level);
 
-        lastLevelButtonPressedImage.localScale = Vector2.one;
+        lastLevelButtonPressedImage.GetComponent<LevelButton>().SetScale(1);
         lastSelectedBorder.SetActive(false);
 
         SetAsSelected();
@@ -54,9 +73,11 @@ public class LevelButton : MonoBehaviour
 
     void SetAsSelected()
     {
+        if (lastLevelButtonPressedImage != null) lastLevelButtonPressedImage.parent.GetComponent<LevelButtonResizer>().LevelButtonIsSelected = false;
         lastLevelButtonPressedImage = myImage;
+
         if (!myLevelButtonResizerScript.InfoPressed) SetScale(1.1f);
-        else myLevelButtonResizerScript.LevelButtonIsSelected = true;
+        myLevelButtonResizerScript.LevelButtonIsSelected = true;
 
         lastSelectedBorder = selectedBorder;
         selectedBorder.SetActive(true);
@@ -64,6 +85,8 @@ public class LevelButton : MonoBehaviour
 
     public void SetScale(float scale)
     {
-        myImage.localScale = new Vector2(scale, scale);
+        originSize = targetSize; // The original size is the last TargetSize that was assigned.
+        targetSize = scale;
+        sizeLerpProgress = 0;
     }
 }

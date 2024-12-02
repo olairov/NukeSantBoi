@@ -15,8 +15,8 @@ public class LevelButtonResizer : MonoBehaviour
     private static Image actualClickedButtonImage;
 
     [SerializeField] private float growingSpeed;
-    private float growingLerp, xPosWhenInfoPressed, originalXSize;
-    public bool IsShrinking
+    private float growingLerp, xOriginalPos, originalXSize;
+    public bool IsGrown
     {
         get { return growingLerp > 0; }
     }
@@ -34,10 +34,8 @@ public class LevelButtonResizer : MonoBehaviour
             if (infoPressed)
             {
                 actualClickedButtonImage = myButtonClickerImage;
-                levelButtonIsSelected = myLevelButtonScript.transform.localScale.x > 1;
-                myLevelButtonScript.SetScale(1f);
-
-                xPosWhenInfoPressed = myRectTransform.position.x;
+                //levelButtonIsSelected = myLevelButtonScript.transform.localScale.x > 1;
+                if (levelButtonIsSelected) myLevelButtonScript.SetScale(1f);
             }
             else
             {
@@ -65,6 +63,7 @@ public class LevelButtonResizer : MonoBehaviour
         myInfoButtonImage = transform.Find("InfoClicker").GetComponent<Image>();
 
         originalXSize = myRectTransform.sizeDelta.x;
+        xOriginalPos = myRectTransform.position.x;
 
         actualClickedButtonImage = null;
         anyInfoPressedAlready = false;
@@ -118,7 +117,7 @@ public class LevelButtonResizer : MonoBehaviour
 
     void ChangeSize(float lerp)
     {
-        myRectTransform.sizeDelta = new Vector2(Mathf.Lerp(originalXSize, 900, lerp), myRectTransform.sizeDelta.y);
-        myRectTransform.position = new Vector2(Mathf.Lerp(xPosWhenInfoPressed, 0 / 2, lerp), 0);
+        myRectTransform.sizeDelta = new Vector2(Mathf.Lerp(originalXSize, 850, lerp), myRectTransform.sizeDelta.y);
+        myRectTransform.position = new Vector2(Mathf.Lerp(xOriginalPos, 0 / 2, lerp), 0);
     }
 }

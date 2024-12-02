@@ -40,7 +40,8 @@ public class LevelInfoController : MonoBehaviour
 
         myInfoAnimator.SetBool("enabled", infoEnabled);
         myLevelResizerScript.InfoPressed = infoEnabled;
-        myButtonScript.AbleToGrowWhenInPhoneDevice = infoEnabled;
+        // When in phone, AnyButton isn't allowed to grow because there's no pointer. But since here it's part of the animation, I allow it to grow:
+        myButtonScript.AbleToGrowWhenInPhoneDevice = infoEnabled; 
 
         clickedSound.Play();
     }
@@ -51,7 +52,8 @@ public class LevelInfoController : MonoBehaviour
         {
             infoPlaceTransform.localScale = Vector2.one * 1.2f;
         }
-        if (!(myLevelResizerScript.IsShrinking && !infoEnabled)) myButtonScript.SetPointed = true;
+
+        if (!(myLevelResizerScript.IsGrown && !infoEnabled)) myButtonScript.SetPointed = true;
     }
 
     public void InfoDisselected()
