@@ -108,11 +108,8 @@ public class AnyButton : MonoBehaviour
             else if (pointingLerp > 0) pointingLerp = Shrinking(pointingLerp, 1);
         }
 
-        if (pointed)
-        {
-            if (!clicked && pointingLerp < 1) pointingLerp = Growing(pointingLerp);
-            else if (clicked && clickedLerp > 0) clickedLerp = pointingLerp = Shrinking(clickedLerp, 5);
-        }
+        if (pointed && !clicked && pointingLerp < 1) pointingLerp = Growing(pointingLerp);
+        else if ((pointed || TouchControllersManager.isUsingPhone) && (clicked && clickedLerp > 0)) clickedLerp = pointingLerp = Shrinking(clickedLerp, 5);
     }
 
     // Lerping Size --->
@@ -140,7 +137,7 @@ public class AnyButton : MonoBehaviour
     void ChangeChildStats()
     {
         resizerTransform.localScale = Vector2.Lerp(defaultSize, defaultSize * 1.15f, pointingLerp);
-        if (clickedLerp < 1) resizerTransform.localScale = Vector2.Lerp(defaultSize * 0.85f, defaultSize * 1.15f, clickedLerp);
+        if (clickedLerp < 1) resizerTransform.localScale = Vector2.Lerp(defaultSize * 0.85f, defaultSize * (TouchControllersManager.isUsingPhone ? 1 : 1.15f), clickedLerp);
 
         if (!doesntHaveShadow) shadowTransform.localPosition = new Vector2(Mathf.Lerp(-6, -12, pointingLerp), Mathf.Lerp(-6, -12, pointingLerp));
     }
@@ -169,7 +166,7 @@ public class AnyButton : MonoBehaviour
         clicked = true;
         reallyClicked = true;
 
-        if (!imSlider && pointed) myShake.Shake(1);
+        if (!imSlider && (pointed || TouchControllersManager.isUsingPhone)) myShake.Shake(1);
         PlayPitchSound(clickSound);
     }
 
@@ -178,7 +175,7 @@ public class AnyButton : MonoBehaviour
         clicked = false;
         reallyClicked = false;
 
-        if (!imSlider && pointed) myShake.Shake(0.5f);
+        if (!imSlider && (pointed || TouchControllersManager.isUsingPhone)) myShake.Shake(0.5f);
     }
 
     // <--- Simple Mouse Actions
