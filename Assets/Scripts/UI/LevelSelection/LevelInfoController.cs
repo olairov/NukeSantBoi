@@ -53,7 +53,7 @@ public class LevelInfoController : MonoBehaviour
             infoPlaceTransform.localScale = Vector2.one * 1.2f;
         }
 
-        if (!(myLevelResizerScript.IsGrown && !infoEnabled)) myButtonScript.SetPointed = true;
+        if (!(myLevelResizerScript.IsGrown && !infoEnabled) && !TouchControllersManager.isUsingPhone) myButtonScript.SetPointed = true;
     }
 
     public void InfoDisselected()
