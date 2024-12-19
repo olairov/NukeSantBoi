@@ -15,7 +15,7 @@ public class LevelButtonResizer : MonoBehaviour
     private static Image actualClickedButtonImage;
 
     [SerializeField] private float growingSpeed;
-    private float growingLerp, xOriginalPos, originalXSize;
+    private float growingLerp, xOriginalPos, originalXSize, infoSelectedSize;
     public bool IsGrown
     {
         get { return growingLerp > 0; }
@@ -64,6 +64,8 @@ public class LevelButtonResizer : MonoBehaviour
 
         originalXSize = myRectTransform.sizeDelta.x;
         xOriginalPos = myRectTransform.position.x;
+        infoSelectedSize = Camera.main.WorldToScreenPoint(transform.parent.Find("Reference").GetComponent<RectTransform>().anchoredPosition).x;
+        Debug.Log(infoSelectedSize);
 
         actualClickedButtonImage = null;
         anyInfoPressedAlready = false;
@@ -117,7 +119,7 @@ public class LevelButtonResizer : MonoBehaviour
 
     void ChangeSize(float lerp)
     {
-        myRectTransform.sizeDelta = new Vector2(Mathf.Lerp(originalXSize, 850, lerp), myRectTransform.sizeDelta.y);
+        myRectTransform.sizeDelta = new Vector2(Mathf.Lerp(originalXSize, infoSelectedSize, lerp), myRectTransform.sizeDelta.y);
         myRectTransform.position = new Vector2(Mathf.Lerp(xOriginalPos, 0 / 2, lerp), 0);
     }
 }
