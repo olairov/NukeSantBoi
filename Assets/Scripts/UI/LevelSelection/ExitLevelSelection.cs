@@ -7,11 +7,24 @@ public class ExitLevelSelection : MonoBehaviour
 {
     bool lastAnyInfoPressedState;
 
+    float timeInScene = 0;
+
     private void Update()
     {
-        if (Input.GetButtonDown("Pause") && !lastAnyInfoPressedState && !LevelButtonResizer.anyInfoPressed) GetComponent<Animator>().SetTrigger("exit");
+        timeInScene += Time.unscaledDeltaTime;
+        if (Input.GetButtonDown("Pause") && !lastAnyInfoPressedState && !LevelButtonResizer.anyInfoPressed && timeInScene > 0.4f) StartExittingScene();
 
         lastAnyInfoPressedState = LevelButtonResizer.anyInfoPressed; // Wait one frame so that the LevelButtonResizer has time to set anyInfoPressed to false
+    }
+
+    public void StartExittingScene()
+    {
+        GetComponent<Animator>().SetTrigger("exit");
+
+        for (int idx = 0; idx < transform.Find("Levels").childCount - 1; idx++)
+        {
+            transform.Find("Levels").GetChild(idx).GetComponent<LevelButtonResizer>().ExitScene();
+        }
     }
 
     public void Exit()

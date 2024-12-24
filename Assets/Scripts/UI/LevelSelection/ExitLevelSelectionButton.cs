@@ -6,7 +6,7 @@ public class ExitLevelSelectionButton : MonoBehaviour
 {
     public void Exit()
     {
-        transform.parent.GetComponent<Animator>().SetTrigger("exit");
+        transform.parent.GetComponent<ExitLevelSelection>().StartExittingScene();
         LevelButtonResizer.exittingScene = true;
     }
 }

@@ -16,7 +16,7 @@ public class LevelButton : MonoBehaviour
 
     private float originSize = 1, targetSize = 1, sizeLerpProgress = 1;
 
-    [SerializeField] private int level;
+    public int level;
 
     private bool clickedDown, pointed;
     public bool ClickedDown

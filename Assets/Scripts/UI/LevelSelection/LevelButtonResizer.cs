@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class LevelButtonResizer : MonoBehaviour
 {
+    private static float firstLevelPos = 227, distanceBetweenLevels = 248.7f, timeBetweenLevelsEnteringScene = 0.08f, timeBeforeStartAppearing = 0.1f;
+
     private RectTransform myRectTransform;
     private AnyButton myButtonScript;
     private LevelButton myLevelButtonScript;
@@ -15,14 +17,14 @@ public class LevelButtonResizer : MonoBehaviour
     private static Image actualClickedButtonImage;
 
     [SerializeField] private float growingSpeed;
-    private float growingLerp, xOriginalPos, originalXSize, infoSelectedSize;
+    private float growingLerp, xOriginalPos, originalXSize, infoSelectedSize, myLevelNum;
     public bool IsGrown
     {
         get { return growingLerp > 0; }
     }
 
     public static bool anyInfoPressedAlready, anyInfoPressed, exittingScene;
-    private bool infoPressed, levelButtonIsSelected;
+    private bool infoPressed, levelButtonIsSelected, buttonEnabled;
     public bool InfoPressed
     {
         set
@@ -62,15 +64,23 @@ public class LevelButtonResizer : MonoBehaviour
         myButtonClickerImage = transform.GetChild(0).Find("Clicker").GetComponent<Image>();
         myInfoButtonImage = transform.Find("InfoClicker").GetComponent<Image>();
 
+        // Set position dinamically
+        myLevelNum = transform.GetChild(0).GetComponent<LevelButton>().level;
+        myRectTransform.anchoredPosition = new Vector2(firstLevelPos + distanceBetweenLevels * (myLevelNum - 1), 0);
+
         originalXSize = myRectTransform.sizeDelta.x;
         xOriginalPos = myRectTransform.position.x;
-        infoSelectedSize = Camera.main.WorldToScreenPoint(transform.parent.Find("Reference").GetComponent<RectTransform>().anchoredPosition).x;
-        Debug.Log(infoSelectedSize);
+        infoSelectedSize = transform.parent.GetComponent<RectTransform>().rect.width * 0.7f / transform.parent.GetComponent<ButtonsScreenScroller>().size;
+        Debug.Log(transform.parent.GetComponent<ButtonsScreenScroller>().size);
 
         actualClickedButtonImage = null;
         anyInfoPressedAlready = false;
         anyInfoPressed = false;
         exittingScene = false;
+        buttonEnabled = false;
+
+        // Make levels enter the scene one by one
+        StartCoroutine(EnterExitScene(timeBeforeStartAppearing + timeBetweenLevelsEnteringScene * (myLevelNum - 1), true));
     }
 
     void Update()
@@ -90,6 +100,7 @@ public class LevelButtonResizer : MonoBehaviour
         {
             growingLerp -= Time.deltaTime * growingSpeed;
             ChangeSize(Mathf.Clamp01(growingLerp));
+            Debug.Log("Neggus=");
         }
 
         if (infoPressed) // Make sure that while info is being shown, it stays in big.
@@ -117,9 +128,31 @@ public class LevelButtonResizer : MonoBehaviour
         else myImageCanvas.sortingOrder = 3; // In the beginning, the buttons have to pass behind the border, so their layer has to be normal.
     }
 
+    private void LateUpdate()
+    {
+        if (!buttonEnabled) // If the button hasn't yet been started the entering animation, it has to be hidden.
+        {
+            myRectTransform.anchoredPosition = new Vector2(myRectTransform.anchoredPosition.x, -1000);
+        }
+    }
+
     void ChangeSize(float lerp)
     {
         myRectTransform.sizeDelta = new Vector2(Mathf.Lerp(originalXSize, infoSelectedSize, lerp), myRectTransform.sizeDelta.y);
-        myRectTransform.position = new Vector2(Mathf.Lerp(xOriginalPos, 0 / 2, lerp), 0);
+        myRectTransform.position = new Vector2(Mathf.Lerp(xOriginalPos, 0, lerp), 0);
+    }
+
+    IEnumerator EnterExitScene(float timeToWait, bool entering)
+    {
+        yield return new WaitForSeconds(timeToWait);
+        
+        buttonEnabled = true;
+        if (entering) GetComponent<Animator>().Play("LevelEnter");
+        else GetComponent<Animator>().Play("LevelExit");
+    }
+
+    public void ExitScene()
+    {
+        StartCoroutine(EnterExitScene(timeBetweenLevelsEnteringScene * (myLevelNum - 1), false));
     }
 }

@@ -5,10 +5,12 @@ using TMPro;
 
 public class LevelHighscoreSetter : MonoBehaviour
 {
-    [SerializeField] private int myLevel, infoToShow;
+    [SerializeField] private int infoToShow;
+    private int myLevel;
 
     void Start()
     {
+        myLevel = transform.parent.parent.parent.parent.GetComponentInParent<LevelButton>().level; // Unfortunately, this is not a joke.
         ShowHighscore();
     }
 
