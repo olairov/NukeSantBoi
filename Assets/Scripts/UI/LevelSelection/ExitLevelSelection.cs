@@ -21,10 +21,13 @@ public class ExitLevelSelection : MonoBehaviour
     {
         GetComponent<Animator>().SetTrigger("exit");
 
-        for (int idx = 0; idx < transform.Find("Levels").childCount - 1; idx++)
+        for (int idx = 0; idx < transform.Find("Levels").childCount; idx++)
         {
             transform.Find("Levels").GetChild(idx).GetComponent<LevelButtonResizer>().ExitScene();
         }
+
+        transform.Find("LeftButton").GetComponent<ScrollingButton>().ExitScene();
+        transform.Find("RightButton").GetComponent<ScrollingButton>().ExitScene();
     }
 
     public void Exit()

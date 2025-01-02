@@ -4,24 +4,31 @@ using UnityEngine;
 
 public class LevelInfoController : MonoBehaviour
 {
-    Transform infoPlaceTransform;
+    Transform infoPlaceTransform, infoSelectedTransform;
 
-    Animator myInfoAnimator;
+    Animator myInfoAnimator, infoSelectedAnimator;
 
     AudioSource clickedSound;
 
     AnyButton myButtonScript;
     LevelButtonResizer myLevelResizerScript;
+    ScrollerController scrollerScript;
 
+    public bool infoClikedDown;
     bool infoEnabled;
 
     void Start()
     {
-        myInfoAnimator = transform.parent.GetChild(0).Find("Image/InfoFill").GetComponent<Animator>();
-        infoPlaceTransform = transform.parent.GetChild(0).Find("Image/infoPlace").transform;
+        infoPlaceTransform = transform.parent.Find("LevelButton/Image/infoPlace").transform;
+        infoSelectedTransform = GameObject.Find("CanvasLevelSelection/MainScreen/infoGlow").transform;
+
+        myInfoAnimator = transform.parent.Find("LevelButton/Image/InfoFill").GetComponent<Animator>();
+        infoSelectedAnimator = infoSelectedTransform.GetComponent<Animator>();
+
         clickedSound = GameObject.Find("UIsounds/SliderSound").GetComponent<AudioSource>();
-        myButtonScript = transform.parent.GetChild(0).GetComponent<AnyButton>();
+        myButtonScript = transform.parent.Find("LevelButton").GetComponent<AnyButton>();
         myLevelResizerScript = transform.parent.GetComponent<LevelButtonResizer>();
+        scrollerScript = GameObject.Find("CanvasLevelSelection/MainScreen/Scroller").GetComponent<ScrollerController>();
     }
 
     private void Update()
@@ -41,7 +48,10 @@ public class LevelInfoController : MonoBehaviour
         myInfoAnimator.SetBool("enabled", infoEnabled);
         myLevelResizerScript.InfoPressed = infoEnabled;
         // When in phone, AnyButton isn't allowed to grow because there's no pointer. But since here it's part of the animation, I allow it to grow:
-        myButtonScript.AbleToGrowWhenInPhoneDevice = infoEnabled; 
+        myButtonScript.AbleToGrowWhenInPhoneDevice = infoEnabled;
+
+        infoSelectedTransform.position = new Vector3(transform.position.x, transform.position.y, infoSelectedTransform.position.z);
+        infoSelectedAnimator.SetTrigger("selected");
 
         clickedSound.Play();
     }
@@ -62,5 +72,23 @@ public class LevelInfoController : MonoBehaviour
         myButtonScript.StopSelectedSound();
 
         myButtonScript.SetPointed = false;
+    }
+
+    // Just for detect scrolling
+
+    public void ClickedDown()
+    {
+        scrollerScript.PointerDown();
+        infoClikedDown = true;
+    }
+
+    public void ClickedUp()
+    {
+        scrollerScript.PointerUp();
+        if (infoClikedDown)
+        {
+            InfoPressed();
+            infoClikedDown = false;
+        }
     }
 }

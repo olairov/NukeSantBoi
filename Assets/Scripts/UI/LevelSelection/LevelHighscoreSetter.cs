@@ -10,7 +10,8 @@ public class LevelHighscoreSetter : MonoBehaviour
 
     void Start()
     {
-        myLevel = transform.parent.parent.parent.parent.GetComponentInParent<LevelButton>().level; // Unfortunately, this is not a joke.
+        myLevel = FindParentWithComponent<LevelButton>().level; // Unfortunately, this is not a joke.
+       
         ShowHighscore();
     }
 
@@ -19,5 +20,23 @@ public class LevelHighscoreSetter : MonoBehaviour
         if (PlayerPrefs.HasKey("HighscoreLevel" + myLevel) && infoToShow == 0) GetComponent<TMP_Text>().text = PlayerPrefs.GetInt("HighscoreLevel" + myLevel).ToString();
         if (PlayerPrefs.HasKey("TotalPointsLevel" + myLevel) && infoToShow == 1) GetComponent<TMP_Text>().text = PlayerPrefs.GetInt("TotalPointsLevel" + myLevel).ToString();
         if (PlayerPrefs.HasKey("TotalGamesLevel" + myLevel) && infoToShow == 2) GetComponent<TMP_Text>().text = PlayerPrefs.GetInt("TotalGamesLevel" + myLevel).ToString();
+    }
+
+    T FindParentWithComponent<T>() where T : Component
+    {
+        Transform current = transform.parent;
+
+        while (current != null)
+        {
+            T component = current.GetComponent<T>();
+            if (component != null)
+            {
+                return component;
+            }
+            current = current.parent;
+        }
+
+        Debug.LogWarning("No desired component in any parent found!");
+        return null;
     }
 }

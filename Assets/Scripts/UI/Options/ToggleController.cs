@@ -28,8 +28,8 @@ public class ToggleController : MonoBehaviour
         {
             toggleEnabled = true;
             toggledInitially = true;
-            transform.GetComponent<Toggle>().isOn = true;
             insideTickImage.enabled = true;
+            GetComponent<Toggle>().isOn = true;
         }
     }
 
@@ -42,8 +42,8 @@ public class ToggleController : MonoBehaviour
         {
             toggleEnabled = true;
             toggledInitially = true;
-            transform.GetComponent<Toggle>().isOn = true;
             insideTickImage.enabled = true;
+            GetComponent<Toggle>().isOn = true;
         }
     }
 

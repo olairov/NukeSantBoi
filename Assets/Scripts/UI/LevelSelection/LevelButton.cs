@@ -13,19 +13,22 @@ public class LevelButton : MonoBehaviour
 
     private LevelButtonResizer myLevelButtonResizerScript;
     private AnyButton myAnyButtonScript;
+    private ScrollerController scrollerScript;
 
     private float originSize = 1, targetSize = 1, sizeLerpProgress = 1;
 
     public int level;
 
     private bool clickedDown, pointed;
-    public bool ClickedDown
-    {
-        set { clickedDown = value; }
-    }
+    
     public bool IsPointed
     {
         set { pointed = value; }
+    }
+
+    private void Awake()
+    {
+        level = transform.parent.GetSiblingIndex() + 1;
     }
 
     private void Start()
@@ -36,6 +39,7 @@ public class LevelButton : MonoBehaviour
         selectedBorder = transform.Find("Image/SelectedBorder").gameObject;
         myLevelButtonResizerScript = transform.parent.GetComponent<LevelButtonResizer>();
         myAnyButtonScript = GetComponent<AnyButton>();
+        scrollerScript = GameObject.Find("CanvasLevelSelection/MainScreen/Scroller").GetComponent<ScrollerController>();
 
         if (!PlayerPrefs.HasKey("Level")) PlayerPrefs.SetInt("Level", 1);
 
@@ -58,11 +62,19 @@ public class LevelButton : MonoBehaviour
         myAnyButtonScript.SetDefaultSize = Vector2.one * Mathf.Lerp(originSize, targetSize, sizeLerpProgress);
     }
 
+    public void ClickedDown(bool value)
+    {
+        clickedDown = value;
+        if (clickedDown) scrollerScript.PointerDown();
+    }
+
     public void Clicked()
     {
+        scrollerScript.PointerUp();
+
         if (!clickedDown || !pointed) return;
         clickedDown = false;
-
+        
         PlayerPrefs.SetInt("Level", level);
 
         lastLevelButtonPressedImage.GetComponent<LevelButton>().SetScale(1);

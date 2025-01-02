@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class LevelButtonResizer : MonoBehaviour
 {
-    private static float firstLevelPos = 227, distanceBetweenLevels = 248.7f, timeBetweenLevelsEnteringScene = 0.08f, timeBeforeStartAppearing = 0.1f;
+    private static float timeBetweenLevelsEnteringScene = 0.08f, timeBeforeStartAppearing = 0.1f;
 
     private RectTransform myRectTransform;
     private AnyButton myButtonScript;
@@ -17,7 +17,7 @@ public class LevelButtonResizer : MonoBehaviour
     private static Image actualClickedButtonImage;
 
     [SerializeField] private float growingSpeed;
-    private float growingLerp, xOriginalPos, originalXSize, infoSelectedSize, myLevelNum;
+    private float growingLerp, xOriginalPos, originalXSize, infoSelectedSize, myLevelNum, levelsPosWhenInfoPressed;
     public bool IsGrown
     {
         get { return growingLerp > 0; }
@@ -36,8 +36,9 @@ public class LevelButtonResizer : MonoBehaviour
             if (infoPressed)
             {
                 actualClickedButtonImage = myButtonClickerImage;
-                //levelButtonIsSelected = myLevelButtonScript.transform.localScale.x > 1;
                 if (levelButtonIsSelected) myLevelButtonScript.SetScale(1f);
+                xOriginalPos = transform.position.x;
+                levelsPosWhenInfoPressed = transform.parent.position.x;
             }
             else
             {
@@ -63,15 +64,9 @@ public class LevelButtonResizer : MonoBehaviour
         myImageCanvas = transform.GetChild(0).GetChild(0).GetComponent<Canvas>();
         myButtonClickerImage = transform.GetChild(0).Find("Clicker").GetComponent<Image>();
         myInfoButtonImage = transform.Find("InfoClicker").GetComponent<Image>();
-
-        // Set position dinamically
-        myLevelNum = transform.GetChild(0).GetComponent<LevelButton>().level;
-        myRectTransform.anchoredPosition = new Vector2(firstLevelPos + distanceBetweenLevels * (myLevelNum - 1), 0);
-
+        
         originalXSize = myRectTransform.sizeDelta.x;
-        xOriginalPos = myRectTransform.position.x;
         infoSelectedSize = transform.parent.GetComponent<RectTransform>().rect.width * 0.7f / transform.parent.GetComponent<ButtonsScreenScroller>().size;
-        Debug.Log(transform.parent.GetComponent<ButtonsScreenScroller>().size);
 
         actualClickedButtonImage = null;
         anyInfoPressedAlready = false;
@@ -100,7 +95,6 @@ public class LevelButtonResizer : MonoBehaviour
         {
             growingLerp -= Time.deltaTime * growingSpeed;
             ChangeSize(Mathf.Clamp01(growingLerp));
-            Debug.Log("Neggus=");
         }
 
         if (infoPressed) // Make sure that while info is being shown, it stays in big.
@@ -139,7 +133,7 @@ public class LevelButtonResizer : MonoBehaviour
     void ChangeSize(float lerp)
     {
         myRectTransform.sizeDelta = new Vector2(Mathf.Lerp(originalXSize, infoSelectedSize, lerp), myRectTransform.sizeDelta.y);
-        myRectTransform.position = new Vector2(Mathf.Lerp(xOriginalPos, 0, lerp), 0);
+        transform.position = new Vector2(Mathf.Lerp(xOriginalPos + (transform.parent.position.x - levelsPosWhenInfoPressed), 0, lerp), 0);
     }
 
     IEnumerator EnterExitScene(float timeToWait, bool entering)
