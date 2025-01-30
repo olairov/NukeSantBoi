@@ -30,6 +30,7 @@ public class MenuButton : MonoBehaviour
     {
         if (timeForEnabled > 0 || !inMenuScene) return;
 
+        GameObject.Find("CanvasLevelSelection/MainScreen/Levels").GetComponent<ButtonsScreenScroller>().SetScrollInitialPosition();
         timeForEnabled = 1f;
         screenLoadScript.LoadScene("Game", "Menu");
     }

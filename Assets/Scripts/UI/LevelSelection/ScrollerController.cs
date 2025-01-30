@@ -8,36 +8,42 @@ public class ScrollerController : MonoBehaviour
     private Transform levelsTransform;
 
     [SerializeField] private float speedLoss, timeBounceLasts;
-    private float xTouchStartPos, lastFrameXTouchPos, momentum, leftEdgePosition, rightEdgePosition,
+    private float xTouchStartPos, lastFrameXTouchPos, lastLastFrameXTouchPos, momentum, leftEdgePosition, rightEdgePosition,
         startBouncePos, timeSinceBounceStart, scrollingHarshness;
     public float Momentum
     {
         set { momentum = value; bouncing = false; }
     }
 
-    private bool scrollingPressed, lvlButtonCanBeClicked = true, surpassingLeftEdge, surpassingRightEdge, bouncing, usingButtons;
+    private bool scrollingPressed, lvlButtonCanBeClicked = true, surpassingLeftEdge, surpassingRightEdge, bouncing, usingButtons, exittingScene;
     public bool UsingButtons
     {
         set { usingButtons = value; }
     }
+    public bool ExittingScene
+    {
+        set { exittingScene = value; }
+    }
 
-    private UnityEngine.InputSystem.EnhancedTouch.Touch actualTouch;
+    private int actualTouchID = -1;
 
     void Start()
     {
         levelsTransform = GameObject.Find("CanvasLevelSelection/MainScreen/Levels").transform;
 
-        leftEdgePosition = levelsTransform.position.x; // The position LevelsTransform has to be to be considered surpassing the left edge (the one by default)
+        // The position LevelsTransform has to be to be considered surpassing the left / right edge
+        leftEdgePosition = ButtonsScreenScroller.leftEdgePosition;
         rightEdgePosition = ButtonsScreenScroller.rightEdgePosition;
     }
 
     void LateUpdate()
     {
+
         surpassingLeftEdge = levelsTransform.position.x > leftEdgePosition;
 
         surpassingRightEdge = levelsTransform.position.x < rightEdgePosition;
 
-        if (usingButtons) return;
+        if (usingButtons || exittingScene) return;
 
         if (surpassingLeftEdge != surpassingRightEdge) OutOfBoundsProcess();
         Move();
@@ -48,6 +54,7 @@ public class ScrollerController : MonoBehaviour
         if (scrollingPressed && momentum == 0)
         {
             ScrollingProcess(xTouchStartPos, GetTouchPos(), lastFrameXTouchPos);
+            lastLastFrameXTouchPos = lastFrameXTouchPos;
             lastFrameXTouchPos = GetTouchPos();
         }
         else
@@ -61,6 +68,9 @@ public class ScrollerController : MonoBehaviour
     void OutOfBoundsProcess()
     {
         if (momentum == 0 && !scrollingPressed) BounceBackToEdge();
+
+        // In case the touch continues when surpassing an edge, the speed of the scroll will decrement more the further away you are from the limit.
+        // If the player starts scrolling away from the edge, the speed of the scroll will be as usual.
 
         if (surpassingLeftEdge)
         {
@@ -78,21 +88,26 @@ public class ScrollerController : MonoBehaviour
     public void PointerDown()
     {
         if (LevelButtonResizer.anyInfoPressed) return;
-
         scrollingPressed = true;
         bouncing = false;
         momentum = 0;
-        lastFrameXTouchPos = GetTouchPos();
 
         if (TouchControllersManager.isUsingPhone)
         {
-            actualTouch = UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches[UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches.Count - 1];
-            xTouchStartPos = Camera.main.ScreenToWorldPoint(actualTouch.screenPosition).x;
+            foreach (Touch touch in Input.touches)
+            {
+                if (touch.phase == TouchPhase.Began) actualTouchID = touch.fingerId;
+            }
+
+            xTouchStartPos = Camera.main.ScreenToWorldPoint(new Vector3(GetTouchPos(), 0, 0)).x;
         }
         else
         {
             xTouchStartPos = Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
         }
+
+        lastFrameXTouchPos = GetTouchPos();
+        lastLastFrameXTouchPos = lastFrameXTouchPos;
     }
 
     public void PointerUp()
@@ -101,11 +116,16 @@ public class ScrollerController : MonoBehaviour
 
         if (!scrollingPressed) return;
         scrollingPressed = false;
-        momentum = (GetTouchPos() - lastFrameXTouchPos) * (1 - scrollingHarshness) / Time.deltaTime;
+
+        // For some reason I absolutely ignore, when in phone, lastFrameXTouchPos is equal to GetTouchPos(), but not in PC. The weird conditional fixes that.
+        momentum = (GetTouchPos() - (TouchControllersManager.isUsingPhone ? lastLastFrameXTouchPos : lastFrameXTouchPos)) * (1 - scrollingHarshness) / Time.deltaTime;
+        actualTouchID = -1;
     }
 
     private void ScrollingProcess(float xOriginalTouchPos, float xActualTouchPos, float xLastTouchPos)
     {
+        Debug.Log("THIS touch: " + xActualTouchPos + ",   LAST touch: " + xLastTouchPos);
+
         float displacement = (xActualTouchPos - xLastTouchPos) * (1 - scrollingHarshness);
 
         levelsTransform.position += new Vector3(displacement, 0, 0);
@@ -147,6 +167,16 @@ public class ScrollerController : MonoBehaviour
 
     private float GetTouchPos()
     {
-        return TouchControllersManager.isUsingPhone ? Camera.main.ScreenToWorldPoint(actualTouch.screenPosition).x : Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
+        if (TouchControllersManager.isUsingPhone)
+        {
+            foreach (Touch touch in Input.touches)
+            {
+                if (touch.fingerId == actualTouchID) return Camera.main.ScreenToWorldPoint(touch.position).x;
+            }
+
+            Debug.LogWarning("No touch found with ID " + actualTouchID);
+            return 0; // In case the Foreach doesn't find any matching touch (It shouldn't happen).
+        }
+        else return Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
     }
 }

@@ -32,7 +32,7 @@ public class ScrollingButton : MonoBehaviour
         }
         else myAnimator.Play("ButtonIn");
 
-        leftEdgePosition = levelsTransform.position.x;
+        leftEdgePosition = ButtonsScreenScroller.leftEdgePosition;
         rightEdgePosition = ButtonsScreenScroller.rightEdgePosition;
     }
 
@@ -91,6 +91,8 @@ public class ScrollingButton : MonoBehaviour
 
     public void Clicked(bool value)
     {
+        if (LevelButtonResizer.anyInfoPressed) return;
+
         pressed = value;
         scrollerScript.UsingButtons = value;
 
@@ -104,6 +106,7 @@ public class ScrollingButton : MonoBehaviour
     public void ExitScene()
     {
         if (!IsOutOfBounds()) myAnimator.Play("ButtonOut");
+        myCanvasGroup.blocksRaycasts = false;
     }
 
     bool IsOutOfBounds ()

@@ -28,6 +28,9 @@ public class ExitLevelSelection : MonoBehaviour
 
         transform.Find("LeftButton").GetComponent<ScrollingButton>().ExitScene();
         transform.Find("RightButton").GetComponent<ScrollingButton>().ExitScene();
+
+        transform.Find("Levels").GetComponent<ButtonsScreenScroller>().SetScrollInitialPosition();
+        transform.Find("Scroller").GetComponent<ScrollerController>().ExittingScene = true;
     }
 
     public void Exit()

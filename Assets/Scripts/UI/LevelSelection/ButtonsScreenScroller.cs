@@ -8,7 +8,8 @@ public class ButtonsScreenScroller : MonoBehaviour
     private RectTransform myRectTransform;
 
     [SerializeField] float firstLevelPos, distanceBetweenLevels;
-    static public float rightEdgePosition; // Done this way because multiple other scripts need this value, and it's hard to calculate on each script.
+    // Done this way because multiple other scripts need those values, and they're hard to calculate on each script.
+    static public float leftEdgePosition, rightEdgePosition;
     public float size;
 
     void Awake() // Done in the awake because other objects' start need to know the size or origin position of this object.
@@ -31,7 +32,11 @@ public class ButtonsScreenScroller : MonoBehaviour
 
         SetLevelsPositions();
 
+        leftEdgePosition = transform.position.x;
         rightEdgePosition = GetRightEdgePosition();
+
+        if (PlayerPrefs.HasKey("LevelSelectionScrollInitialPosition")) 
+            transform.position = new Vector3(PlayerPrefs.GetFloat("LevelSelectionScrollInitialPosition"), transform.position.y, transform.position.z);
     }
 
     float ChangeXSize(float proportion)
@@ -73,5 +78,10 @@ public class ButtonsScreenScroller : MonoBehaviour
         float screenWidthInWorldUnits = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x * 2; // The ZERO point is always in the middle.
         
         return transform.position.x - (levelsLength - screenWidthInWorldUnits);
+    }
+
+    public void SetScrollInitialPosition()
+    {
+        PlayerPrefs.SetFloat("LevelSelectionScrollInitialPosition", transform.position.x);
     }
 }

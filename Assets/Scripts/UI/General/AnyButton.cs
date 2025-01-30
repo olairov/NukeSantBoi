@@ -175,7 +175,7 @@ public class AnyButton : MonoBehaviour
         clicked = false;
         reallyClicked = false;
 
-        if (!imSlider && (pointed || TouchControllersManager.isUsingPhone)) myShake.Shake(0.5f);
+        if (!imSlider && (pointed || TouchControllersManager.isUsingPhone) && myShake != null) myShake.Shake(0.5f);
     }
 
     // <--- Simple Mouse Actions
