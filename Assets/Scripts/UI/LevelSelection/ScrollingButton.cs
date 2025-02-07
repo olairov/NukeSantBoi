@@ -111,6 +111,7 @@ public class ScrollingButton : MonoBehaviour
 
     bool IsOutOfBounds ()
     {
-        return direction > 0 && levelsTransform.position.x >= leftEdgePosition - 0.1f || direction < 0 && levelsTransform.position.x <= rightEdgePosition + 0.1f;
+        return direction > 0 && levelsTransform.position.x >= leftEdgePosition - 0.1f
+            || direction < 0 && levelsTransform.position.x <= rightEdgePosition + 0.1f;
     }
 }

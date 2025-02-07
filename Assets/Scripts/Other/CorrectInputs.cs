@@ -16,7 +16,7 @@ public class CorrectInputs : MonoBehaviour
 
     private void Awake()
     {
-        UnityEngine.InputSystem.EnhancedTouch.EnhancedTouchSupport.Enable();
+        //UnityEngine.InputSystem.EnhancedTouch.EnhancedTouchSupport.Enable();
     }
 
     private void Start()

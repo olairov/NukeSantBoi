@@ -38,7 +38,6 @@ public class ScrollerController : MonoBehaviour
 
     void LateUpdate()
     {
-
         surpassingLeftEdge = levelsTransform.position.x > leftEdgePosition;
 
         surpassingRightEdge = levelsTransform.position.x < rightEdgePosition;
@@ -67,7 +66,11 @@ public class ScrollerController : MonoBehaviour
 
     void OutOfBoundsProcess()
     {
-        if (momentum == 0 && !scrollingPressed) BounceBackToEdge();
+        if (!scrollingPressed)
+        {
+            if (momentum == 0) BounceBackToEdge();
+            return;
+        }
 
         // In case the touch continues when surpassing an edge, the speed of the scroll will decrement more the further away you are from the limit.
         // If the player starts scrolling away from the edge, the speed of the scroll will be as usual.
@@ -99,7 +102,7 @@ public class ScrollerController : MonoBehaviour
                 if (touch.phase == TouchPhase.Began) actualTouchID = touch.fingerId;
             }
 
-            xTouchStartPos = Camera.main.ScreenToWorldPoint(new Vector3(GetTouchPos(), 0, 0)).x;
+            xTouchStartPos = GetTouchPos();
         }
         else
         {
@@ -124,8 +127,6 @@ public class ScrollerController : MonoBehaviour
 
     private void ScrollingProcess(float xOriginalTouchPos, float xActualTouchPos, float xLastTouchPos)
     {
-        Debug.Log("THIS touch: " + xActualTouchPos + ",   LAST touch: " + xLastTouchPos);
-
         float displacement = (xActualTouchPos - xLastTouchPos) * (1 - scrollingHarshness);
 
         levelsTransform.position += new Vector3(displacement, 0, 0);

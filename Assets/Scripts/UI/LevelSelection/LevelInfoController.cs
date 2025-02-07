@@ -72,6 +72,7 @@ public class LevelInfoController : MonoBehaviour
         myButtonScript.StopSelectedSound();
 
         myButtonScript.SetPointed = false;
+        infoClikedDown = false;
     }
 
     // Just for detect scrolling
