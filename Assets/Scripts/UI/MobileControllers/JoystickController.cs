@@ -12,8 +12,6 @@ public class JoystickController : MonoBehaviour
 
     [SerializeField] private float distanceToMoveBackground;
 
-    private int lastTouchCount;
-
     public bool touchingJoystick;
     private bool lastFrameTouched, isPaused, canTouchJoystick;
     public bool SetIsPaused
@@ -39,7 +37,6 @@ public class JoystickController : MonoBehaviour
         touchingJoystick = GetInputInformation(isPaused);
         BasicJoystickPositioning(touchingJoystick, Camera.main.ScreenToWorldPoint(touchPos), lastFrameTouched);
 
-        //lastTouchCount = UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches.Count;
         lastFrameTouched = touchingJoystick;
     }
 
@@ -56,13 +53,13 @@ public class JoystickController : MonoBehaviour
 
     Vector2 GetTouchPosition()
     {
-        int touchCount = 0; // UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches.Count;
+        int touchCount = Input.touchCount; // UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches.Count;
         if (touchCount <= 0) return Vector2.zero;
 
         for (int touchIdx = touchCount - 1; touchIdx >= 0; touchIdx--)
         {
-            //if (UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches[touchIdx].screenPosition.x > Screen.width / 2)
-            //    return UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches[touchIdx].screenPosition;
+            if (Input.touches[touchIdx].position.x > Screen.width / 2)
+                return Input.touches[touchIdx].position;
         }
 
         return Vector2.zero;

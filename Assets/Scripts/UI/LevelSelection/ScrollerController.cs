@@ -44,6 +44,7 @@ public class ScrollerController : MonoBehaviour
 
         if (usingButtons || exittingScene) return;
 
+        if (surpassingLeftEdge && surpassingRightEdge) return;
         if (surpassingLeftEdge != surpassingRightEdge) OutOfBoundsProcess();
         Move();
     }

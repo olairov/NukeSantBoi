@@ -13,7 +13,7 @@ public class HudController : MonoBehaviour
 
     private TMP_Text pointsCounter;
 
-    [SerializeField] private GameObject pointsSumPrefab, pointsPrefab;
+    [SerializeField] private GameObject pointsSumPrefab, pointsPrefab, epicComboLight;
 
     private Transform cameraTransform, pauseMenu, deadMenu, morePointsContainer, pointsContainer;
 
@@ -106,6 +106,7 @@ public class HudController : MonoBehaviour
         if (type != 0) ShowAdditionalTextOnScore(type, combo > 1, pointsPos);
 
         Instantiate(pointsPrefab, pointsPos, Quaternion.identity, pointsContainer).GetComponentInChildren<TMP_Text>().text = "+ " + sumPoints;
+        if (type == 2) Instantiate(epicComboLight, pointsPos, Quaternion.identity, pointsContainer);
 
         StartCoroutine(SlowlyAddPoints(sumPoints));
     }
