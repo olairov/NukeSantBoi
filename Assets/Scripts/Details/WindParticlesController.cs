@@ -4,38 +4,27 @@ using UnityEngine;
 
 public class WindParticlesController : MonoBehaviour
 {
-    private Transform windLineParticlesTransform;
-    private ParticleSystem windLineParticles;
+    [SerializeField] GameObject wind1pref, wind2pref, wind3pref, wind4pref;
 
-    private float cameraX0inUnits;
-
-    void Start()
-    {
-        windLineParticlesTransform = transform.Find("WindParticles");
-        windLineParticles = windLineParticlesTransform.GetComponent<ParticleSystem>();
-
-        windLineParticlesTransform.position = new Vector3(Camera.main.ScreenToWorldPoint(Vector3.one * Screen.width).x + 3, 0, -30);
-
-        cameraX0inUnits = Camera.main.ScreenToWorldPoint(Vector3.zero).x - 4;
-    }
-
+    private float timeForNextParticle;
+    
     void Update()
     {
-        DeleteRemainingParticles();
+        GenerateWindParticles();
     }
 
-    void DeleteRemainingParticles()
+    void GenerateWindParticles()
     {
-        ParticleSystem.Particle[] particles = new ParticleSystem.Particle[windLineParticles.particleCount];
-        windLineParticles.GetParticles(particles);
+        timeForNextParticle -= Time.deltaTime * ObjectPassingBy.speedMultiplier;
+        if (timeForNextParticle > 0) return;
 
-        for (int particle = 0; particle < windLineParticles.particleCount; particle++)
-        {
-            if (particles[particle].position.x < cameraX0inUnits)
-            {
-                particles[particle].remainingLifetime = 0.0f;
-                Debug.Log(particles[particle].position);
-            }
-        }
+        float randValue = Random.value;
+
+        if (randValue > 0.75f) Instantiate(wind1pref, transform);
+        else if (randValue > 0.5f) Instantiate(wind2pref, transform);
+        else if (randValue > 0.25f) Instantiate(wind3pref, transform);
+        else Instantiate(wind4pref, transform);
+
+        timeForNextParticle = Random.Range(0.4f, 0.6f);
     }
 }

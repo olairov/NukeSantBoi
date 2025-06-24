@@ -10,10 +10,10 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private GameObject buildingPrefab, wideBuildingPrefab, enemyPrefab, skystraperPrefab, obstaclePrefab, frontBirdPrefab, bushPrefab;
 
     //Other Prefabs:
-    [SerializeField] private GameObject wind1pref, wind2pref, wind3pref, wind4pref, warningPrefab, birdGroupPrefab, singleBirdPrefab, cranePrefab;
+    [SerializeField] private GameObject warningPrefab, birdGroupPrefab, singleBirdPrefab, cranePrefab;
     [SerializeField] private GameObject enemyWarning;
 
-    private Transform playerTransform ,buildingsContainer, enemiesContainer, obstaclesContainer, backgroundContainer, warningsContainerCanvas, particlesContainer,
+    private Transform playerTransform ,buildingsContainer, enemiesContainer, obstaclesContainer, backgroundContainer, warningsContainerCanvas,
         detailsContainer;
 
     static public float playerDistanceToStandardPos;
@@ -24,7 +24,7 @@ public class MapGenerator : MonoBehaviour
     }
 
     // Times for every thing generation
-    private float timeForNextBuilding, timeForNextEnemy = 3, timeForNextObstacle, timeForNextParticle, timeForNextLayer1, timeForNextLayer2,
+    private float timeForNextBuilding, timeForNextEnemy = 3, timeForNextObstacle, timeForNextLayer1, timeForNextLayer2,
         timeForNextLayer3, timeForNextBirdGroup = 3, timeForSingleBird = 1, timeForNextCrane = 8, timeForNextFrontBird, timeForNextBush = 1;
 
     private int buildingsFromSkystraper, explosionsGenerated;
@@ -40,7 +40,6 @@ public class MapGenerator : MonoBehaviour
         obstaclesContainer = GameObject.Find("ObstaclesContainer").transform;
         backgroundContainer = GameObject.Find("BackgroundContainer").transform;
         warningsContainerCanvas = GameObject.Find("Canvas/Warning").transform;
-        particlesContainer = GameObject.Find("ParticlesContainer").transform;
         detailsContainer = GameObject.Find("DetailsContainer").transform;
 
         FirstGeneration();
@@ -69,7 +68,6 @@ public class MapGenerator : MonoBehaviour
 
         GenerateBuildings();
         GenerateObstacles();
-        GenerateWindParticles();
         GenerateBirdGroups();
         GenerateSingleBirds();
         GenerateCranes();
@@ -150,21 +148,6 @@ public class MapGenerator : MonoBehaviour
         Instantiate(obstaclePrefab, obstaclesContainer);
 
         timeForNextObstacle = Random.Range(3.2f, 5f);
-    }
-
-    void GenerateWindParticles()
-    {
-        timeForNextParticle -= Time.deltaTime * ObjectPassingBy.speedMultiplier;
-        if (timeForNextParticle > 0) return;
-
-        float randValue = Random.value;
-
-        if (randValue > 0.75f) Instantiate(wind1pref, particlesContainer);
-        else if (randValue > 0.5f) Instantiate(wind2pref, particlesContainer);
-        else if (randValue > 0.25f) Instantiate(wind3pref, particlesContainer);
-        else Instantiate(wind4pref, particlesContainer);
-
-        timeForNextParticle = Random.Range(0.4f, 0.6f);
     }
 
     void GenerateBirdGroups()

@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: f40e60b545fac0b4c944b312e681309a
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - mobileSettings: {fileID: 11400000, guid: 89498aded711d5d4f83f8a488bd4deab, type: 2}
+  - pcSettings: {fileID: 11400000, guid: 14376b7686d86f84893a84ff30abbc5c, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

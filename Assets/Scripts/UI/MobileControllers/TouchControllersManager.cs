@@ -6,30 +6,30 @@ public class TouchControllersManager : MonoBehaviour
 {
     static public bool isUsingPhone;
 
-    private GameObject controllersGO;
+    private GameObject controllersObject;
 
     void Start()
     {
-        controllersGO = transform.GetChild(0).gameObject;
+        controllersObject = transform.GetChild(0).gameObject;
 
-        if (!isUsingPhone) controllersGO.SetActive(false);
+        if (!isUsingPhone) controllersObject.SetActive(false);
         else EnableTouchControls();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.touchCount > 0 && !isUsingPhone)
+        if (Application.isMobilePlatform && !isUsingPhone)
         {
             EnableTouchControls();
         }
 
-        if (PlayerController.dead) controllersGO.SetActive(false);
+        if (PlayerController.dead) controllersObject.SetActive(false);
     }
 
     void EnableTouchControls()
     {
-        controllersGO.SetActive(true);
+        controllersObject.SetActive(true);
         isUsingPhone = true;
 
         MoveUISingleElement(transform.parent.Find("Charge").GetComponent<RectTransform>(), 0.18f, 0);
