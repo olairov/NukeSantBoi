@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39c0a2bf284f8094fb66c0ea2bf5f59e, type: 3}
   m_Name: PCSettings
   m_EditorClassIdentifier: 
-  targetFramerate: -1
+  targetFramerate: 60

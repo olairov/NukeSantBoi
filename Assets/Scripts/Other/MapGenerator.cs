@@ -263,7 +263,7 @@ public class MapGenerator : MonoBehaviour
     public void ExplosionGenerated()
     {
         explosionsGenerated++;
-        if (explosionsGenerated > 6 && !PlayerController.dead)
+        if (explosionsGenerated > 0 && !PlayerController.dead)
         {
             canGenerateEnemies = true;
             enemyWarning.SetActive(true);

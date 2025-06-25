@@ -27,7 +27,7 @@ public class EnemyPlaneController : MonoBehaviour
         rb = transform.GetComponent<Rigidbody2D>();
         boostSoundOptionsModifier = transform.Find("Boost/BoostSound").GetComponent<InGameSound>();
 
-        ChoseColor();
+        //ChoseColor();
 
         dyingXpos = Camera.main.ScreenToWorldPoint(Vector3.zero).x - 10;
         playerXpos = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width / 5, 0)).x;
@@ -148,11 +148,11 @@ public class EnemyPlaneController : MonoBehaviour
         if (Random.value > 0.5f) rb.angularVelocity *= -1;
         rb.AddForce(new Vector2(Random.Range(-2, 3), 5), ForceMode2D.Impulse);
 
-        for (int childNum = 0; childNum < transform.Find("Parts").childCount; childNum++) transform.Find("Parts").GetChild(childNum).GetComponent<SpriteRenderer>().color = burnColor;
+        //for (int childNum = 0; childNum < transform.Find("Parts").childCount; childNum++) transform.Find("Parts").GetChild(childNum).GetComponent<SpriteRenderer>().color = burnColor;
 
         transform.GetComponent<Collider2D>().enabled = false;
         transform.GetComponent<ObjectPassingBy>().enabled = false;
         transform.Find("Boost").gameObject.SetActive(false);
-        transform.Find("Lights").gameObject.SetActive(false);
+        //transform.Find("Lights").gameObject.SetActive(false);
     }
 }
