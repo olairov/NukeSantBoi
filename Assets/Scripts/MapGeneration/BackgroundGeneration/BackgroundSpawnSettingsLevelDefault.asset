@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74be4d597e761354abf91a09617ceb11, type: 3}
+  m_Name: BackgroundSpawnSettingsLevelDefault
+  m_EditorClassIdentifier: 
+  layer1BackgroundPrefab: {fileID: 4192240246891131737, guid: 1da005b656a0eb249bcf06fb710f4c21, type: 3}
+  layer2BackgroundPrefab: {fileID: 1974110732575367854, guid: b335b00309d57974b851ec5391a7766b, type: 3}
+  layer3BackgroundPrefab: {fileID: 4508482827058652685, guid: da58002dc0972184e8f264db22d0c6b6, type: 3}
+  layer1SpawnInterval: 5
+  layer2SpawnInterval: 7
+  layer3SpawnInterval: 8
+  firstGenerationSpaceBetweenBackgrounds: 24.5

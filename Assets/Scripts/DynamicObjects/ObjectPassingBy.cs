@@ -48,7 +48,7 @@ public class ObjectPassingBy : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Make objects that also move using their own methods are unaffected by the change of speedMultiplier when in loops.
+        // Objects that also move using their own methods are unaffected by the change of speedMultiplier when in loops (kinda).
         MovementFix();
 
         if (moveInFixedUpdate) UpdateXpos();

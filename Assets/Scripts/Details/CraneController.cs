@@ -21,7 +21,7 @@ public class CraneController : MonoBehaviour
 
         if (Random.value > 0.6f)
         {
-            Transform newCraneTransform = Instantiate(cranePrefab, GameObject.Find("DetailsContainer").transform).transform;
+            Transform newCraneTransform = Instantiate(cranePrefab, GameObject.Find("DetailGenerator/CraneGenerator").transform).transform;
 
             newCraneTransform.position += new Vector3(Random.value > 0.5f ? 4 : -4, -2, 0.2f);
             newCraneTransform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, 1) * 0.8f;

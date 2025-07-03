@@ -33,8 +33,8 @@ public class ExplosionController : MonoBehaviour
         else
         {
             if (GameObject.Find("Player")) playerTramsform = GameObject.Find("Player").transform;
-            obstaclesContainer = GameObject.Find("ObstaclesContainer").transform;
-            buildingsContainer = GameObject.Find("BuildingsContainer").transform;
+            obstaclesContainer = GameObject.Find("ObstacleGenerator").transform;
+            buildingsContainer = GameObject.Find("BuildingGenerator").transform;
             hudScript = GameObject.Find("________________Canvas________________").GetComponent<HudController>();
 
             mySprite = transform.GetComponent<SpriteRenderer>();
@@ -130,11 +130,11 @@ public class ExplosionController : MonoBehaviour
         if (other.CompareTag("Obstacle"))
         {
             pointsToAdd += 1;
-            other.GetComponent<ObstacleScript>().Die();
+            other.GetComponent<HotAirBalloonScript>().Die();
 
             comboNum++;
         }
-        else if (other.CompareTag("Building") || other.CompareTag("Skystraper"))
+        else if (other.CompareTag("Building") || other.CompareTag("Skyscraper"))
         {
             if (!other.GetComponent<Building>().dead)
             {
@@ -154,27 +154,44 @@ public class ExplosionController : MonoBehaviour
             comboNum++;
         }
 
-        if ((other.CompareTag("Skystraper") || other.CompareTag("SkystraperUpperPart")) && !cantBreakSkystraperAgain) // So that the skystrapers can break multiple times.
+        if ((other.CompareTag("Skyscraper") || other.CompareTag("SkyscraperUpperPart")) && !cantBreakSkystraperAgain) // So that the skyscrapers can break multiple times.
         {
-            other.GetComponent<SkystraperBreakAgain>().BreakAgain(transform);
+            other.GetComponent<SkyscraperBreakAgain>().BreakAgain(transform);
             PlayDestructAudio(true);
         }
     }
 
     void PushObjects ()
     {
-        for (int obstIdx = 0; obstIdx < obstaclesContainer.childCount; obstIdx++)
+        // Obstacles
+
+        for (int obstacleTypeIdx = 0; obstacleTypeIdx < obstaclesContainer.childCount; obstacleTypeIdx++)
         {
-            Transform obstacleTransform = obstaclesContainer.GetChild(obstIdx);
-            if (Vector2.Distance(obstacleTransform.position, transform.position) > transform.GetComponent<CircleCollider2D>().radius)
-                obstacleTransform.GetComponent<ObstacleScript>().PushAway((obstacleTransform.transform.position - transform.position).normalized, Vector2.Distance(obstacleTransform.position, transform.position));
+            for (int obstacleIdx = 0; obstacleIdx < obstaclesContainer.childCount; obstacleIdx++)
+            {
+                Transform obstacleTransform = obstaclesContainer.GetChild(obstacleIdx);
+                switch (obstaclesContainer.GetChild(obstacleTypeIdx).name)
+                {
+                    case "HotAirBalloon":
+                        if (Vector2.Distance(obstacleTransform.position, transform.position) > transform.GetComponent<CircleCollider2D>().radius)
+                            obstacleTransform.GetComponent<HotAirBalloonScript>().PushAway((obstacleTransform.transform.position - transform.position).normalized, Vector2.Distance(obstacleTransform.position, transform.position));
+                        continue;
+                    default:
+                        continue;
+                }
+            }
         }
 
-        for (int buildingIdx = 0; buildingIdx < buildingsContainer.childCount; buildingIdx++)
+        // Buildings
+
+        for (int buildingClassIdx = 0; buildingClassIdx < buildingsContainer.childCount; buildingClassIdx++)
         {
-            Transform buildingTransform = buildingsContainer.GetChild(buildingIdx);
-            if (!buildingTransform.CompareTag("SkystraperUpperPart"))
+            for (int buildingIdx = 0; buildingIdx < buildingsContainer.GetChild(buildingClassIdx).childCount; buildingIdx++)
+            {
+                Transform buildingTransform = buildingsContainer.GetChild(buildingClassIdx).GetChild(buildingIdx);
+                if (!buildingTransform.CompareTag("Building")) continue;
                 buildingTransform.GetComponent<Building>().PushAway((buildingTransform.transform.position - transform.position).normalized.x, Vector2.Distance(buildingTransform.position, transform.position));
+            }
         }
     }
 }

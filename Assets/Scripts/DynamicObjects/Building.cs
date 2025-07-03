@@ -7,7 +7,7 @@ public class Building : MonoBehaviour
     [SerializeField] private Color flashColor;
     [SerializeField] private GameObject skystraperUpperPart, smokeParticles, shardsParticles, skyStraperPieces, buildingPrefab;
     [SerializeField] private Sprite buildingSprite2, buildingSprite3, backBuildingSprite2, backBuildingSprite3;
-    public Sprite lastSprite;
+    static Sprite lastDefaultSprite, lastWideSprite;
 
     private MapGenerator mapGeneratorScript;
 
@@ -124,11 +124,11 @@ public class Building : MonoBehaviour
                 }
             }
 
-            if (isWide && mySpriteRenderer.sprite != mapGeneratorScript.lastWideBuildingSprite) break;
-            else if (!isWide && mySpriteRenderer.sprite != mapGeneratorScript.lastBuildingSprite) break;
+            if (isWide && mySpriteRenderer.sprite != lastWideSprite) break;
+            else if (!isWide && mySpriteRenderer.sprite != lastDefaultSprite) break;
 
             idx++;
-            if (idx > 9)
+            if (idx > 99)  // A 100 times loop to avoid excessive repetition if for some reason the sprite always matches the last sprite.
             {
                 if (!isWide && (mySpriteRenderer.sprite == buildingSprite2 || mySpriteRenderer.sprite == buildingSprite3))
                 {
@@ -142,7 +142,7 @@ public class Building : MonoBehaviour
 
         if (isWide)
         {
-            mapGeneratorScript.lastWideBuildingSprite = mySpriteRenderer.sprite;
+            lastWideSprite = mySpriteRenderer.sprite;
 
             if (mySpriteRenderer.sprite == buildingSprite2) // In this case, the upper part of the sprite isn't something with what you would collide, so the collider is moved
             {
@@ -152,7 +152,7 @@ public class Building : MonoBehaviour
                 myColider.size = new Vector2(6, 7);
             }
         }
-        else mapGeneratorScript.lastBuildingSprite = mySpriteRenderer.sprite;
+        else lastDefaultSprite = mySpriteRenderer.sprite;
     }
 
     public void Destruct(Transform otherTransform)

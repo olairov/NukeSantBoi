@@ -137,6 +137,7 @@ MonoBehaviour:
   myYpos: 0
   background: 0
   fakePassingSpeed: 0
+  moveInFixedUpdate: 0
   appearingObject: 0
   imSkystraperPart: 0
 --- !u!114 &1161062619281861206
@@ -161,7 +162,6 @@ MonoBehaviour:
   buildingSprite3: {fileID: -1446773485, guid: 6d0d2cf6d8f33004392701554df285c0, type: 3}
   backBuildingSprite2: {fileID: 1630317402, guid: 319415866f83b704f8111327c882120b, type: 3}
   backBuildingSprite3: {fileID: -1548818590, guid: 6d0d2cf6d8f33004392701554df285c0, type: 3}
-  lastSprite: {fileID: 0}
   colorValuesIncreaseWhenDie: 90
   pushAwayForce: 120
   dead: 0

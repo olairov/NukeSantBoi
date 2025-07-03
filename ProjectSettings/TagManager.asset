@@ -5,12 +5,12 @@ TagManager:
   serializedVersion: 2
   tags:
   - Explosion
-  - Skystraper
   - Building
   - Obstacle
   - Enemy
   - playerPoint
-  - SkystraperUpperPart
+  - Skyscraper
+  - SkyscraperUpperPart
   layers:
   - Default
   - TransparentFX
