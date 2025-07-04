@@ -7598,7 +7598,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0192972b9f69db848a5d51c0f17d0b13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnSettings: {fileID: 11400000, guid: d3703bba9b8428b409dee25ea3ceddce, type: 2}
+  generationSettings: {fileID: 11400000, guid: d3703bba9b8428b409dee25ea3ceddce, type: 2}
   defaultBuildingsContainer: {fileID: 1211255786}
   wideBuildingsContainer: {fileID: 1225164155}
   skyscrapersContainer: {fileID: 1084910573}
@@ -12929,11 +12929,6 @@ MonoBehaviour:
   obstacleGeneratorScript: {fileID: 558374580}
   enemyGeneratorScript: {fileID: 1721406265}
   detailGeneratorScript: {fileID: 960262494}
-  frontBirdPrefab: {fileID: 1474960776555097528, guid: aa533362c4377054fb672f24daaab4ab, type: 3}
-  bushPrefab: {fileID: 9084043014546198088, guid: c9768bc8287d8814eadb598bca093882, type: 3}
-  birdGroupPrefab: {fileID: 7862433997937421755, guid: e3fcec73a87f18140b9519ff0339a4ea, type: 3}
-  singleBirdPrefab: {fileID: 8342589050914399541, guid: d255077168aaf184d87ca5e0496e81c6, type: 3}
-  cranePrefab: {fileID: 828266947501970034, guid: f6932f3252e9abd488acb866ae7cbb02, type: 3}
   enemyWarning: {fileID: 1633794886}
   speedIncreaseFactor: 0.008
   loopSpeedMultiplier: 1

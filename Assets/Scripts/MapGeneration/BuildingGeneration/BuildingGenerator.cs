@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BuildingGenerator : MonoBehaviour
 {
-    public BuildingSpawnSettings spawnSettings;
+    public BuildingGenerationSettings generationSettings;
 
     private float timeToNextGeneration;
     private int buildingsFromDangerousBuilding;
@@ -16,51 +16,95 @@ public class BuildingGenerator : MonoBehaviour
         timeToNextGeneration -= Time.deltaTime * ObjectPassingBy.speedMultiplier;
         if (timeToNextGeneration > 0) return;
 
-        Dictionary<string, float> adjustedBuildingProbabilities = GetAdjustedBuildingProbabilities(spawnSettings.buildingTypesProbabilities);
+        Dictionary<string, float> buildingProbabilities = GetBuildingProbabilitiesDictionary(generationSettings.buildingTypesProbabilities);
+        int percentageAddition = 0;
+        foreach (int percentage in buildingProbabilities.Values) percentageAddition += percentage;
+        if (Mathf.RoundToInt(percentageAddition) != 100)
+        {
+            Debug.LogWarning("Building RAW percentages don't add up to 100!, they add up to: " + percentageAddition.ToString());
+        }
+
+        // For every dangerous building there is (the ones that can have their percentage changed), the redistribution process will happen
+        Dictionary<string, float> adjustedBuildingProbabilities = new Dictionary<string, float>(buildingProbabilities);
+        foreach (string dangerousBuildingName in generationSettings.dangerousBuildingsNames)
+        {
+            adjustedBuildingProbabilities = GetAdjustedBuildingProbabilities(adjustedBuildingProbabilities, dangerousBuildingName);
+        }
+
+        percentageAddition = 0;
+        foreach (int percentage in adjustedBuildingProbabilities.Values) percentageAddition += percentage;
+        if (Mathf.RoundToInt(percentageAddition) != 100)
+        {
+            Debug.LogWarning("Building ADJUSTED percentages don't add up to 100!, they add up to: " + percentageAddition.ToString());
+        }
+
+        Debug.Log(adjustedBuildingProbabilities["default"] + "   " + adjustedBuildingProbabilities["wide"] + "   " + adjustedBuildingProbabilities["skyscraper"]);
 
         string buildingToGenerate = DecideGeneratedBuilding(adjustedBuildingProbabilities);        
         switch (buildingToGenerate)
         {
             case "default":
-                Instantiate(spawnSettings.defaultBuildingPrefab, defaultBuildingsContainer);
+                Instantiate(generationSettings.defaultBuildingPrefab, defaultBuildingsContainer);
                 break;
             case "wide":
-                Instantiate(spawnSettings.wideBuildingPrefab, wideBuildingsContainer);
+                Instantiate(generationSettings.wideBuildingPrefab, wideBuildingsContainer);
                 break;
             case "skyscraper":
-                Instantiate(spawnSettings.skyscraperPrefab, transform);
+                Instantiate(generationSettings.skyscraperPrefab, transform);
                 buildingsFromDangerousBuilding = 0;
-                if (!PlayerController.dead) Instantiate(spawnSettings.warningPrefab, warningsContainerCanvas);
+                if (!PlayerController.dead) Instantiate(generationSettings.warningPrefab, warningsContainerCanvas);
                 break;
             default:
                 Debug.LogError("Somehow, an unexistent building class elected...");
                 break;
         }
 
-        timeToNextGeneration = Random.Range(spawnSettings.spawnIntervalMin, spawnSettings.spawnIntervalMax);
+        timeToNextGeneration = Random.Range(generationSettings.spawnIntervalMin, generationSettings.spawnIntervalMax);
         buildingsFromDangerousBuilding++;
     }
 
-    Dictionary<string, float> GetAdjustedBuildingProbabilities(Dictionary<string, float> originalDictionary)
+    Dictionary<string, float> GetBuildingProbabilitiesDictionary(List<SerializableKeyValue> originalList)
     {
-        KeyValuePair<string, float> skyscraperPair = new KeyValuePair<string, float>();
+        Dictionary<string, float> buildingProbabilitiesList = new Dictionary<string, float>();
+        foreach (SerializableKeyValue pair in originalList)
+        {
+            if (!buildingProbabilitiesList.ContainsKey(pair.key))
+            {
+                buildingProbabilitiesList.Add(pair.key, pair.value);
+            }
+            else
+            {
+                Debug.LogWarning("Duplicated entry in Building Probabilities Dictionary: " + pair.ToString());
+            }
+        }
+        return buildingProbabilitiesList;
+    }
+
+    Dictionary<string, float> GetAdjustedBuildingProbabilities(Dictionary<string, float> originalDictionary, string dangerousBuildingName)
+    {
+        if (!originalDictionary.ContainsKey(dangerousBuildingName))
+        {
+            Debug.LogError("Searched Dangerous Building does not exist in the Building Probabilities Dictionary: " + dangerousBuildingName);
+            return originalDictionary;
+        }
+
+        float dangerousBuildingValue = 0;
         foreach (KeyValuePair<string, float> pair in originalDictionary)
         {
-            if (pair.Key == "skyscraper")
+            if (pair.Key == dangerousBuildingName)
             {
-                skyscraperPair = pair;
+                dangerousBuildingValue = pair.Value;
                 break;
             }
         }
-        if (skyscraperPair.Value == 0) return originalDictionary;
 
-        // The chance a skyscraper appears isn't only dictated by the percentage chance, but also depends on external factors.
-        float realChanceItIsSkyscraper = buildingsFromDangerousBuilding > spawnSettings.minimumNormalBuildingsInBetweenTwoSkyscrapers * ObjectPassingBy.realSpeedMultiplier ?
-            0 : skyscraperPair.Value / Mathf.Sqrt(ObjectPassingBy.speedMultiplier);
+        // The chance a dangerous building appears isn't only dictated by the percentage chance, but also depends on external factors.
+        float realChanceItIsDangerousBuilding = buildingsFromDangerousBuilding > generationSettings.minimumNormalBuildingsInBetweenTwoDangerous * ObjectPassingBy.realSpeedMultiplier ?
+            dangerousBuildingValue / Mathf.Sqrt(ObjectPassingBy.realSpeedMultiplier) : 0;
 
         // When "realChanceItIsSkyscraper" is lower than "chanceItIsSkyscraper", there is a small percentage left
         // that is not taken into account when calculating the rest of the buildings' probabilities.
-        float percentageVoid = skyscraperPair.Value - realChanceItIsSkyscraper;
+        float percentageVoid = dangerousBuildingValue - realChanceItIsDangerousBuilding;
 
         // The sum of the percentage of all the buildings that will have the "percentage void" distributed proportionally
         // is used later to calculate each building's weight in between the receivers, so that each one gets added a
@@ -68,16 +112,16 @@ public class BuildingGenerator : MonoBehaviour
         float receiversPercentageAddition = 0;
         foreach (KeyValuePair<string, float> pair in originalDictionary)
         {
-            if (pair.Key != "skyscraper") continue;
+            if (pair.Key == dangerousBuildingName) continue;
             receiversPercentageAddition += pair.Value;
         }
 
-        Dictionary<string, float> adjustedBuildingProbabilities = originalDictionary;
+        Dictionary<string, float> adjustedBuildingProbabilities = new Dictionary<string, float>(originalDictionary);
         foreach (KeyValuePair<string, float> pair in originalDictionary)
         {
-            if (pair.Key != "skyscraper")
+            if (pair.Key == dangerousBuildingName)
             {
-                adjustedBuildingProbabilities["skyscraper"] = realChanceItIsSkyscraper;
+                adjustedBuildingProbabilities[dangerousBuildingName] = realChanceItIsDangerousBuilding;
                 continue;
             }
 
@@ -105,7 +149,7 @@ public class BuildingGenerator : MonoBehaviour
         foreach (KeyValuePair<string, float> pair in buildingProbabilities)
         {
             maxCheckedRandomValue += pair.Value;
-            if (maxCheckedRandomValue < randomValue) return pair.Key;
+            if (randomValue < maxCheckedRandomValue) return pair.Key;
             lastCheckedPair = pair;
         }
 
@@ -116,12 +160,12 @@ public class BuildingGenerator : MonoBehaviour
 
     public void FirstGeneration(float startX, float finishX)
     {
-        Vector3 buildingDefaultPos = spawnSettings.defaultBuildingPrefab.transform.position;
+        Vector3 buildingDefaultPos = generationSettings.defaultBuildingPrefab.transform.position;
 
-        for (float actualX = startX; actualX > finishX - 30; actualX -= spawnSettings.firstGenerationSpaceBetweenBuildings)
+        for (float actualX = startX; actualX > finishX - 30; actualX -= generationSettings.firstGenerationSpaceBetweenBuildings)
         {
-            if (Random.value < 0.7f) Instantiate(spawnSettings.defaultBuildingPrefab, new Vector3(actualX, buildingDefaultPos.y, buildingDefaultPos.z), Quaternion.identity, defaultBuildingsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
-            else Instantiate(spawnSettings.wideBuildingPrefab, new Vector2(actualX, buildingDefaultPos.y), Quaternion.identity, wideBuildingsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
+            if (Random.value < 0.7f) Instantiate(generationSettings.defaultBuildingPrefab, new Vector3(actualX, buildingDefaultPos.y, buildingDefaultPos.z), Quaternion.identity, defaultBuildingsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
+            else Instantiate(generationSettings.wideBuildingPrefab, new Vector2(actualX, buildingDefaultPos.y), Quaternion.identity, wideBuildingsContainer).GetComponent<ObjectPassingBy>().appearingObject = true;
         }
     }
 }
