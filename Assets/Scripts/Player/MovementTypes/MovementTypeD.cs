@@ -4,17 +4,13 @@ using UnityEngine;
 
 public class MovementTypeD : BaseMovement
 {
-    private Transform playerTransform;
-    private Rigidbody2D playerRB;
-
     private PlayerController playerScript;
 
     private float downForceWhenBackwards, rotationVelocityBeforeStop, idleRotationBeforeStop, timeSinceDeviationStarted;
 
-    public MovementTypeD(Transform transform, Rigidbody2D rb)
+    public override void Init(Transform transform, Rigidbody2D rb)
     {
-        playerTransform = transform;
-        playerRB = rb;
+        base.Init(transform, rb);
 
         playerScript = transform.GetComponent<PlayerController>();
     }

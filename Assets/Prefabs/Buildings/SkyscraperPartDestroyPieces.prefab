@@ -29034,11 +29034,12 @@ MonoBehaviour:
   passingSpeed: 5
   realPassingSpeed: 0
   myYpos: 0
+  dontSetPosition: 0
+  appearingDistance: 2
   background: 0
   fakePassingSpeed: 0
-  moveInFixedUpdate: 0
   appearingObject: 1
-  imSkystraperPart: 0
+  moveInFixedUpdate: 0
 --- !u!1 &7339504830323239019
 GameObject:
   m_ObjectHideFlags: 0

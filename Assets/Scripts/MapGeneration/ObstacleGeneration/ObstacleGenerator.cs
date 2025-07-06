@@ -13,7 +13,7 @@ public class ObstacleGenerator : MonoBehaviour
         if (generationSettings.hotAirBalloons) hotAirBalloonGeneratorScript.GenerateHotAirBalloon();
     }
 
-    public void FirstGeneration()
+    public void FirstGeneration(float startX, float finishX)
     {
         if (generationSettings.hotAirBalloons) hotAirBalloonGeneratorScript.FirstGeneration();
     }

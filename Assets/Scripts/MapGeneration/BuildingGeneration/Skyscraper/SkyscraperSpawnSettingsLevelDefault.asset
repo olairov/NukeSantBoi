@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5648b57203d58d47add6ea00fc75334, type: 3}
+  m_Name: SkyscraperSpawnSettingsLevelDefault
+  m_EditorClassIdentifier: 
+  skyscraperPrefab: {fileID: 1161062619281861293, guid: c337d325ce8c89e4bb3b42bd49107c24, type: 3}
+  warningPrefab: {fileID: 2392637196239052846, guid: c56e1c57cf13f5841b1f7272b9750143, type: 3}
+  warningSignsContainer: {fileID: 0}

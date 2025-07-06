@@ -2,48 +2,47 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectPassingBy : MonoBehaviour
+public class ObjectPassingBy : MonoBehaviour, ResetPoolObject
 {
-    private MapGenerator mapScript;
-
     private Transform cameraRiserTransform, playerTransform;
 
     public static float speedMultiplier, realSpeedMultiplier;
     public float passingSpeed, realPassingSpeed, myYpos;
-    private float appearingDistance = 8, lastCameraYpos, movementFixSpeed, originalSceneMovement;
+    private float lastCameraYpos, movementFixSpeed, originalSceneMovement;
+    public bool dontSetPosition;
     // movementFixMultiplier is used for assigning an initial speed to the moving object, so that it moves accordingly to the original velocity.
     public float OriginalMovement
     {
         set { originalSceneMovement = value; }
     }
 
-    [SerializeField] private bool background, fakePassingSpeed;
+    [SerializeField] private float appearingDistance;
+    [SerializeField] private bool background, fakePassingSpeed, appearingObject;
     [SerializeField] public bool moveInFixedUpdate;
-    public bool appearingObject, imSkystraperPart;
 
     private void Start()
     {
-        if (background) appearingDistance = 30;
-
-        if (!appearingObject) transform.position = new Vector3(Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, 0, 0)).x + appearingDistance, transform.position.y, transform.position.z);
-
-        imSkystraperPart = name.Contains("Skystraper") && gameObject.layer != 3;
         cameraRiserTransform = Camera.main.transform.parent;
-        if (fakePassingSpeed)
-        {
-            playerTransform = GameObject.Find("Player").transform;
-            mapScript = GameObject.Find("__________________Map___________________").GetComponent<MapGenerator>();
-            lastCameraYpos = cameraRiserTransform.position.y;
-        }
+        if (fakePassingSpeed) playerTransform = GameObject.Find("Player").transform;
 
-        //passingSpeed = 0;
-        //realPassingSpeed = 0;
+        Initialize();
+    }
+
+    void Initialize()
+    {
+        // AppearingObject is the variable accessible from the inspector, which if true, will ALWAYS make the object appear wherever.
+        // While "dontSetPosition" is the variable that, if appearingObject is false, can have the same effect. This one is for the scripts to access and change.
+        if (appearingObject) dontSetPosition = true;
+
+        if (fakePassingSpeed) lastCameraYpos = cameraRiserTransform.position.y;
+        if (!dontSetPosition) transform.position = new Vector3(Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, 0, 0)).x + appearingDistance, transform.position.y, transform.position.z);
     }
 
     private void Update()
     {
         if (!moveInFixedUpdate) UpdateXpos();
         UpdateYpos();
+        CheckIfGone();
     }
 
     private void FixedUpdate()
@@ -58,9 +57,19 @@ public class ObjectPassingBy : MonoBehaviour
     {
         transform.position += new Vector3(-passingSpeed * Time.deltaTime * speedMultiplier * MapGenerator.playerDistanceToStandardPos, 0, 0);
         transform.position += new Vector3(-realPassingSpeed * Time.deltaTime * realSpeedMultiplier * MapGenerator.playerDistanceToStandardPos, 0, 0);
+    }
 
-        // Multiplied by 3 so that the bombs have time to hit passed buildings and some other reasons.
-        if (transform.position.x < Camera.main.ScreenToWorldPoint(Vector3.zero).x - appearingDistance * 3) Destroy(gameObject);
+    void CheckIfGone()
+    {
+        // Multiplied by 5 so that the bombs have time to hit passed buildings and some other reasons.
+        if (transform.position.x > Camera.main.ScreenToWorldPoint(Vector3.zero).x - appearingDistance * 5) return;
+
+        if (GetComponent<PooledObject>() != null) GetComponent<PooledObject>().ReturnToPool(gameObject);
+        else
+        {
+            Debug.LogWarning("Pooled Object script not found in " + transform.name);
+            Destroy(gameObject);
+        }
     }
 
     void MovementFix() // This is a semi-futile attempt of making dynamic objects look like they're moving independently from the player
@@ -85,5 +94,16 @@ public class ObjectPassingBy : MonoBehaviour
         transform.position = new Vector3(transform.position.x, myYpos, transform.position.z);
 
         lastCameraYpos = cameraRiserTransform.position.y;
+    }
+
+
+    // Reset Pooled Object State
+
+    public void ResetState()
+    {
+        dontSetPosition = false;
+        lastCameraYpos = movementFixSpeed = originalSceneMovement = 0;
+
+        Initialize();
     }
 }

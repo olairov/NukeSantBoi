@@ -34,7 +34,7 @@ public class HotAirBalloonGenerator : MonoBehaviour
     public void FirstGeneration()
     {
         GameObject hotAirBalloon = Instantiate(spawnSettings.hotAirBalloonPrefab, transform);
-        hotAirBalloon.GetComponent<ObjectPassingBy>().appearingObject = true;
+        hotAirBalloon.GetComponent<ObjectPassingBy>().dontSetPosition = true;
 
         float xPos = Random.Range(spawnSettings.firstGenerationMinX,
             Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, 0, 0)).x) - spawnSettings.firstGenerationMinDistanceFromRightBorder;

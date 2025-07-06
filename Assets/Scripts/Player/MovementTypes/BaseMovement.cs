@@ -2,16 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseMovement : MonoBehaviour
+public abstract class BaseMovement : MonoBehaviour
 {
     protected float rotationSpeed, movementSpeed, deviationSpeed, downForceWhenBackwardsMagnitude, movementArotationLimit, deviationWavesSpeed,
         deviationWavesAmplitude, deviationWavesDuration, deviationDecaySmoothness, endOfMovementDeviationMultiplier, loopDownForceFadingSpeed;
+
+    protected Transform playerTransform;
+    protected Rigidbody2D playerRB;
 
     private bool isPaused;
     public virtual bool IsPaused
     {
         set { isPaused = value; }
         get { return isPaused; }
+    }
+
+    public virtual void Init(Transform transform, Rigidbody2D rb)
+    {
+        playerTransform = transform;
+        playerRB = rb;
     }
 
     public void SetPlayerStats()
@@ -31,8 +40,5 @@ public class BaseMovement : MonoBehaviour
         loopDownForceFadingSpeed = playerStats.loopDownForceFadingSpeed;
     }
 
-    public virtual void MovementProcess()
-    {
-
-    }
+    public abstract void MovementProcess();
 }

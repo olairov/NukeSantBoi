@@ -6,55 +6,63 @@ public class BackgroundGenerator : MonoBehaviour
 {
     public BackgroundSpawnSettings spawnSettings;
     
-    public Transform layer1Container, layer2Container, layer3Container;
+    List<float> timeForEveryNextLayer = new List<float>();
 
-    float timeForNextLayer1, timeForNextLayer2, timeForNextLayer3;
+    float numberOfLayers;
+    bool canGenerateBackground;
+
+    private void Awake()
+    {
+        numberOfLayers = transform.childCount;
+        canGenerateBackground = spawnSettings.spawnTimeIntervals.Count >= numberOfLayers;
+        if (!canGenerateBackground) Debug.LogError("Number of Background Layers is not the same within Background information lists.");
+        else timeForEveryNextLayer = GetResetedTimesList();
+    }
 
     public void GenerateBackground()
     {
-        Layer1BackgroundGeneration();
-        Layer2BackgroundGeneration();
-        Layer3BackgroundGeneration();
+        for (int idx = 0; idx < numberOfLayers; idx++)
+        {
+            timeForEveryNextLayer[idx] -= Time.deltaTime * ObjectPassingBy.speedMultiplier;
+            if (timeForEveryNextLayer[idx] > 0) continue;
+
+            EveryLayerBackgroundGeneration(idx);
+        }
     }
 
-    void Layer1BackgroundGeneration()
+    GameObject EveryLayerBackgroundGeneration(int idx)
     {
-        timeForNextLayer1 -= Time.deltaTime * ObjectPassingBy.speedMultiplier;
-        if (timeForNextLayer1 > 0) return;
+        timeForEveryNextLayer[idx] = spawnSettings.spawnTimeIntervals[idx];
 
-        Instantiate(spawnSettings.layer1BackgroundPrefab, layer1Container);
-
-        timeForNextLayer1 = spawnSettings.layer1SpawnInterval;
+        GameObject instantiatedBackground = transform.GetChild(idx).GetComponent<ObjectPool>().GetObject(true);
+        return instantiatedBackground;
     }
-
-    void Layer2BackgroundGeneration()
-    {
-        timeForNextLayer2 -= Time.deltaTime * ObjectPassingBy.speedMultiplier;
-        if (timeForNextLayer2 > 0) return;
-
-        Instantiate(spawnSettings.layer2BackgroundPrefab, layer2Container);
-
-        timeForNextLayer2 = spawnSettings.layer2SpawnInterval;
-    }
-
-    void Layer3BackgroundGeneration()
-    {
-        timeForNextLayer3 -= Time.deltaTime * ObjectPassingBy.speedMultiplier;
-        if (timeForNextLayer3 > 0) return;
-
-        Instantiate(spawnSettings.layer3BackgroundPrefab, layer3Container);
-
-        timeForNextLayer3 = spawnSettings.layer3SpawnInterval;
-    }
-
 
     public void FirstGeneration(float startX, float finishX)
     {
         for (float actualX = startX + 5; actualX > finishX - 30; actualX -= spawnSettings.firstGenerationSpaceBetweenBackgrounds)
         {
-            Instantiate(spawnSettings.layer1BackgroundPrefab, new Vector2(actualX, 0), Quaternion.identity, layer1Container).GetComponent<ObjectPassingBy>().appearingObject = true;
-            Instantiate(spawnSettings.layer2BackgroundPrefab, new Vector2(actualX, 0), Quaternion.identity, layer2Container).GetComponent<ObjectPassingBy>().appearingObject = true;
-            Instantiate(spawnSettings.layer3BackgroundPrefab, new Vector2(actualX, 0), Quaternion.identity, layer3Container).GetComponent<ObjectPassingBy>().appearingObject = true;
+            for (int idx = 0; idx < numberOfLayers; idx++)
+            {
+                GameObject instantiatedBackground = EveryLayerBackgroundGeneration(idx);
+
+                instantiatedBackground.transform.position = new Vector3(actualX, 0, instantiatedBackground.transform.position.z);
+                instantiatedBackground.GetComponent<ObjectPassingBy>().dontSetPosition = true;
+            }
         }
+
+        timeForEveryNextLayer = GetResetedTimesList();
+    }
+
+    List<float> GetResetedTimesList()
+    {
+        List<float> resetedList = new List<float>();
+
+        for (int idx = 0; idx < numberOfLayers; idx++)
+        {
+            resetedList.Add(0);
+        }
+
+        return resetedList;
     }
 }

@@ -2,25 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Building : MonoBehaviour
+public class Building : MonoBehaviour, ResetPoolObject
 {
     [SerializeField] private Color flashColor;
-    [SerializeField] private GameObject skystraperUpperPart, smokeParticles, shardsParticles, skyStraperPieces, buildingPrefab;
     [SerializeField] private Sprite buildingSprite2, buildingSprite3, backBuildingSprite2, backBuildingSprite3;
     static Sprite lastDefaultSprite, lastWideSprite;
-
-    private MapGenerator mapGeneratorScript;
+    ObjectPool skyscraperUpperPartPool, smokeParticlesPool, shardsParticlesPool, skyscraperPiecesPool, defaultBuildingPool;
 
     private Material instanceMaterial, backSpriteInstanceMaterial;
     private SpriteRenderer myRenderer;
 
-    private Transform particlesContainer, myBackSprite, cameraRiserTransform;
+    private Transform myBackSprite;
 
     [SerializeField] private float colorValuesIncreaseWhenDie, pushAwayForce;
-    private float rotationSpeed, fallingSpeed, timeSinceDestruction, cameraWidthInUnits, pushAwayTime, pushAwayProgress, actualFallRotation, myYdefaultPos;
+    private float cameraWidthInUnits, rotationSpeed, fallingSpeed, timeSinceDestruction, pushAwayTime, pushAwayProgress, actualFallRotation, myYdefaultPos;
 
     public bool dead;
-    private bool iStrapSky, isWide, imUpsideDown;
+    private bool iStrapSky, imWide, imUpsideDown;
 
     public bool SetImUpsideDown
     {
@@ -29,34 +27,30 @@ public class Building : MonoBehaviour
 
     void Start()
     {
-        mapGeneratorScript = GameObject.Find("__________________Map___________________").GetComponent<MapGenerator>();
-        particlesContainer = GameObject.Find("ParticlesContainer").transform;
-        cameraRiserTransform = GameObject.Find("Camera/CameraRiser").transform;
+        skyscraperUpperPartPool = GameObject.Find("BuildingPartsContainer/skyscraperUpperPart").GetComponent<ObjectPool>();
+        smokeParticlesPool = GameObject.Find("ParticlesContainer/buildingSmoke").GetComponent<ObjectPool>();
+        shardsParticlesPool = GameObject.Find("ParticlesContainer/buildingShards").GetComponent<ObjectPool>();
+        skyscraperPiecesPool = GameObject.Find("ParticlesContainer/skyscraperCutInHalfPieces").GetComponent<ObjectPool>();
+        defaultBuildingPool = GameObject.Find("BuildingGenerator/DefaultBuildingGenerator").GetComponent<ObjectPool>();
+
         myRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
         myBackSprite = transform.GetChild(1);
 
-        // Set the material for the gap shader.
-        instanceMaterial = new Material(myRenderer.sharedMaterial);
-        myRenderer.material = instanceMaterial;
-        instanceMaterial.SetVector("_breakPos", new Vector2(0, 3));
-
-        // Set the material for the gap shader to the back sprite.
-        backSpriteInstanceMaterial = new Material(myBackSprite.GetComponent<SpriteRenderer>().sharedMaterial);
-        myBackSprite.GetComponent<SpriteRenderer>().material = backSpriteInstanceMaterial;
-        backSpriteInstanceMaterial.SetVector("_breakPos", new Vector2(0, 3));
-
         cameraWidthInUnits = (Camera.main.ScreenToWorldPoint(Vector3.one * Screen.width).x - Camera.main.ScreenToWorldPoint(Vector3.zero).x);
+        
+        Initialize();
 
         if (transform.name.Contains("Sky")) iStrapSky = true;
         if (transform.name.Contains("Wide"))
         {
-            isWide = true;
+            imWide = true;
 
             // Set the material for the gap shader accordingly to being wide.
             instanceMaterial.SetFloat("_tiling", 4);
             backSpriteInstanceMaterial.SetFloat("_tiling", 4);
         }
-        CreateStats();
+
+        ChooseStats();
     }
 
     void Update()
@@ -66,19 +60,39 @@ public class Building : MonoBehaviour
         if (pushAwayTime > 0 && !iStrapSky) KeepPushingAway();
     }
 
-    void CreateStats()
+    void Initialize()
+    {
+        // Set the material for the gap shader.
+        instanceMaterial = new Material(myRenderer.sharedMaterial);
+        myRenderer.material = instanceMaterial;
+        instanceMaterial.SetVector("_breakPos", new Vector2(0, 3));
+
+        // Set the material for the gap shader to the back sprite.
+        backSpriteInstanceMaterial = new Material(myBackSprite.GetComponent<SpriteRenderer>().sharedMaterial);
+        myBackSprite.GetComponent<SpriteRenderer>().material = backSpriteInstanceMaterial;
+        backSpriteInstanceMaterial.SetVector("_breakPos", new Vector2(0, 3));
+    }
+
+    void ChooseStats()
     {
         float randomY = Random.Range(0f, 2.3f);
-        if (isWide) randomY = Random.Range(0f, 1.5f);
+        if (imWide) randomY = Random.Range(0f, 1.5f);
         if (iStrapSky) randomY = 0;
 
         if (imUpsideDown)
         {
             randomY = 14;
-            transform.localScale = new Vector3(transform.localScale.x, -transform.localScale.y, transform.localScale.z);
+            transform.localScale = new Vector3(transform.localScale.x, -Mathf.Abs(transform.localScale.y), transform.localScale.z);
+        }
+        else
+        {
+            transform.localScale = new Vector3(transform.localScale.x, Mathf.Abs(transform.localScale.y), transform.localScale.z);
         }
 
-        if (isWide && Random.value > 0.999f) Instantiate(buildingPrefab, transform.parent).GetComponent<Building>().SetImUpsideDown = true;
+        if (imWide && Random.value > 0.999f)
+        {
+            defaultBuildingPool.GetObject(true).GetComponent<Building>().SetImUpsideDown = true;
+        }
 
         myYdefaultPos = Camera.main.ScreenToWorldPoint(Vector3.zero).y + randomY;
         transform.position = new Vector3(imUpsideDown ? transform.position.x + 4 : transform.position.x, myYdefaultPos, iStrapSky ? -3f : -0.5f);
@@ -98,7 +112,7 @@ public class Building : MonoBehaviour
                 mySpriteRenderer.sprite = buildingSprite3;
                 myBackSpriteRenderer.sprite = backBuildingSprite3;
 
-                if (!isWide)
+                if (!imWide)
                 {
                     mySpriteRenderer.size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 10);
                     myBackSpriteRenderer.size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 10);
@@ -109,7 +123,7 @@ public class Building : MonoBehaviour
                 mySpriteRenderer.sprite = buildingSprite2;
                 myBackSpriteRenderer.sprite = backBuildingSprite2;
 
-                if (!isWide)
+                if (!imWide)
                 {
                     mySpriteRenderer.size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 10);
                     myBackSpriteRenderer.size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 10);
@@ -117,20 +131,20 @@ public class Building : MonoBehaviour
             }
             else
             {
-                if (!isWide)
+                if (!imWide)
                 {
                     mySpriteRenderer.size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 14);
                     myBackSpriteRenderer.size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 14);
                 }
             }
 
-            if (isWide && mySpriteRenderer.sprite != lastWideSprite) break;
-            else if (!isWide && mySpriteRenderer.sprite != lastDefaultSprite) break;
+            if (imWide && mySpriteRenderer.sprite != lastWideSprite) break;
+            else if (!imWide && mySpriteRenderer.sprite != lastDefaultSprite) break;
 
             idx++;
             if (idx > 99)  // A 100 times loop to avoid excessive repetition if for some reason the sprite always matches the last sprite.
             {
-                if (!isWide && (mySpriteRenderer.sprite == buildingSprite2 || mySpriteRenderer.sprite == buildingSprite3))
+                if (!imWide && (mySpriteRenderer.sprite == buildingSprite2 || mySpriteRenderer.sprite == buildingSprite3))
                 {
                     mySpriteRenderer.size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 10);
                     myBackSpriteRenderer.size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 10);
@@ -140,7 +154,7 @@ public class Building : MonoBehaviour
             }
         }
 
-        if (isWide)
+        if (imWide)
         {
             lastWideSprite = mySpriteRenderer.sprite;
 
@@ -179,12 +193,15 @@ public class Building : MonoBehaviour
 
     void EnableParticles(Vector2 explosionPos)
     {
-        Instantiate(smokeParticles, new Vector3(transform.position.x, Camera.main.ScreenToWorldPoint(Vector3.zero).y -1, -20), Quaternion.identity, particlesContainer);
+        smokeParticlesPool.GetObject(true).transform.position = new Vector3(transform.position.x, Camera.main.ScreenToWorldPoint(Vector3.zero).y - 1, -20);
 
         float shardsZrotation = -(explosionPos.x - transform.position.x) * 30 + 90;
         if (shardsZrotation < 20) shardsZrotation = 20;
         else if (shardsZrotation > 160) shardsZrotation = 160;
-        Instantiate(shardsParticles, new Vector3(explosionPos.x, explosionPos.y - 0.5f, shardsParticles.transform.position.z), Quaternion.Euler(0, 0, shardsZrotation), particlesContainer);
+
+        Transform shardsTransform = shardsParticlesPool.GetObject(true).transform;
+        shardsTransform.position = new Vector3(explosionPos.x, explosionPos.y - 0.5f, transform.position.z - 0.5f);
+        shardsTransform.eulerAngles = new Vector3(0, 0, shardsZrotation);
     }
 
     void DisplaceBackSprite()
@@ -206,15 +223,16 @@ public class Building : MonoBehaviour
         float cameraYposOffsetFix = transform.position.y - myYdefaultPos;
         transform.position = new Vector3(transform.position.x, otherYPos - 26f - cameraYposOffsetFix, transform.position.z);
 
-        Transform upperPartTransform = Instantiate(skystraperUpperPart, transform.parent).transform;
+        Transform upperPartTransform = skyscraperUpperPartPool.GetObject(true).transform;
         upperPartTransform.position = new Vector3(transform.position.x, otherYPos + 16f - cameraYposOffsetFix, transform.position.z);
         upperPartTransform.GetComponent<Rigidbody2D>().AddForce(Vector3.up * 7, ForceMode2D.Impulse);
         upperPartTransform.GetComponent<Rigidbody2D>().AddTorque(Random.Range(200, 300));
         if (Random.value > 0.5f) upperPartTransform.GetComponent<Rigidbody2D>().angularVelocity *= -1;
 
-        Instantiate(skyStraperPieces, new Vector3(transform.position.x, otherYPos - cameraYposOffsetFix, -7), Quaternion.identity, particlesContainer);
+        Transform skyscraperPiecesTransform = skyscraperPiecesPool.GetObject(true).transform;
+        skyscraperPiecesTransform.position = new Vector3(transform.position.x, otherYPos - cameraYposOffsetFix, -7);
         /*
-        // Make both upper and lower part's skystraper script know it has already been broken.
+        Make both upper and lower part's skystraper script know it has already been broken.
         GetComponent<SkystraperBreakAgain>().OriginalExplosionTransform = otherTransform;
         upperPartTransform.GetComponent<SkystraperBreakAgain>().OriginalExplosionTransform = otherTransform;
         */
@@ -237,7 +255,7 @@ public class Building : MonoBehaviour
 
         Vector2 posToPutDecal = ((Vector2)transform.position - otherPos) / Mathf.PI - new Vector2(0, 1);
 
-        if (!isWide)
+        if (!imWide)
         {
             if (posToPutDecal.x < -0.4f) posToPutDecal = new Vector2(-0.4f, posToPutDecal.y);
             else if (posToPutDecal.x > 0.4f) posToPutDecal = new Vector2(0.4f, posToPutDecal.y);
@@ -306,5 +324,18 @@ public class Building : MonoBehaviour
         if (pushAwayTime < 0.8f) pushAwayLerpProgress = pushAwayTime * 1.111f; // I should have commented this before.
 
         transform.eulerAngles = new Vector3(0, 0, dead? pushAwayProgress * pushAwayLerpProgress * 3 + actualFallRotation : pushAwayProgress * pushAwayLerpProgress);
+    }
+
+
+    // Reset Pooled Object State
+
+    public void ResetState()
+    {
+        rotationSpeed = fallingSpeed = timeSinceDestruction = pushAwayTime = pushAwayProgress = actualFallRotation = myYdefaultPos = 0;
+        imUpsideDown = dead = false;
+        transform.eulerAngles = Vector3.zero;
+
+        Initialize();
+        ChooseStats();
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
@@ -71,8 +72,8 @@ public class MapGenerator : MonoBehaviour
 
         buildingGeneratorScript.FirstGeneration(startX, finishX);
         backgroundGeneratorScript.FirstGeneration(startX, finishX);
-        obstacleGeneratorScript.FirstGeneration();
-        enemyGeneratorScript.FirstGeneration();
+        obstacleGeneratorScript.FirstGeneration(startX, finishX);
+        enemyGeneratorScript.FirstGeneration(startX, finishX);
         detailGeneratorScript.FirstGeneration(startX, finishX);
     }
 

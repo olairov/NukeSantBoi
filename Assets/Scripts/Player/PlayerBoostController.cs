@@ -31,11 +31,6 @@ public class PlayerBoostController : MonoBehaviour
         PushTrailBackwards();
     }
 
-    void FixedUpdate()
-    {
-        //if (Time.deltaTime >= 0.02f) PushTrailBackwards();
-    }
-
     private void PushTrailBackwards()
     {
         for (int posNum = 0; posNum < myTrail.positionCount; posNum++)

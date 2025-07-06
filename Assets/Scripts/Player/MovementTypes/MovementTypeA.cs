@@ -7,15 +7,6 @@ public class MovementTypeA : BaseMovement
     private float lastIdleRotation, lastRotationSpeed, timeSinceDeviationStarted, idleRotationBeforeStop;
     private bool isInCenter = true, wasStoppedBefore, inUpperLimit, inLowerLimit;
 
-    private Transform playerTransform;
-    private Rigidbody2D playerRB;
-
-    public MovementTypeA(Transform transform, Rigidbody2D rb)
-    {
-        playerTransform = transform;
-        playerRB = rb;
-    }
-
     public override void MovementProcess()
     {
         if (!IsPaused)

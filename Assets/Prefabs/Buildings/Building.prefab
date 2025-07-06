@@ -136,11 +136,11 @@ MonoBehaviour:
   passingSpeed: 5
   realPassingSpeed: 0
   myYpos: 0
+  appearingObject: 0
+  appearingDistance: 10
   background: 0
   fakePassingSpeed: 0
   moveInFixedUpdate: 0
-  appearingObject: 0
-  imSkystraperPart: 0
 --- !u!114 &1161062619281861206
 MonoBehaviour:
   m_ObjectHideFlags: 0

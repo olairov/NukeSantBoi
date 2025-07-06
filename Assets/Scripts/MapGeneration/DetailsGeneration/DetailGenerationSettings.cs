@@ -5,5 +5,6 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "DetailsGenerationSettings", menuName = "SpawnSettings/Detail")]
 public class DetailGenerationSettings : ScriptableObject
 {
-    public bool wind, cranes, bushes, birdGroups, singleBirds, frontBirds;
+    public bool wind, cranes, birdGroups, singleBirds, frontBirds;
+    public List<string> defaultObjectsThatWillAppear = new();
 }

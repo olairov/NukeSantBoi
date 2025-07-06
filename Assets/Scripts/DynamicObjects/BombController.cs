@@ -2,22 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BombController : MonoBehaviour
+public class BombController : MonoBehaviour, ResetPoolObject
 {
-    [SerializeField] private GameObject explosionPrefab;
-
-    private Rigidbody2D rb;
+    [SerializeField] ObjectPool explosionPool;
 
     [SerializeField] private float bombThrowSpeed;
+
+    private Rigidbody2D rb;
 
     private bool alreadyExploded; // I'm not sure this variable is needed, but sometimes, two explosions are generated. It's just in case Destroy() is not instant.
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        explosionPool = GameObject.Find("ExplosionsContainer").GetComponent<ObjectPool>();
 
+        Initialize();
+    }
+
+    void Initialize()
+    {
         transform.position += new Vector3(0, 0, 2);
-
         transform.position += (Vector3)rb.velocity * 0.06f;
     }
 
@@ -30,7 +35,7 @@ public class BombController : MonoBehaviour
 
     public void SetDirection(Vector2 normalDir, Vector2 yAdder, float playerRotiationIndicator)
     {
-        float speedMultiplier = ObjectPassingBy.realSpeedMultiplier / 2f + 0.5f;
+        float speedMultiplier = ObjectPassingBy.realSpeedMultiplier / 2f + 0.5f; // Why did I do this
         GetComponent<Rigidbody2D>().velocity = normalDir * speedMultiplier * bombThrowSpeed + yAdder;
 
         GetComponent<ObjectPassingBy>().OriginalMovement = playerRotiationIndicator * 5;
@@ -51,13 +56,31 @@ public class BombController : MonoBehaviour
         transform.GetComponent<SpriteRenderer>().enabled = false;
         transform.GetComponent<Collider2D>().enabled = false;
 
-        Instantiate(explosionPrefab, transform.position, Quaternion.identity, null);
+        explosionPool.GetObject(true).transform.position = transform.position;
 
-        Destroy(gameObject);
+        if (GetComponent<PooledObject>() != null) GetComponent<PooledObject>().ReturnToPool(gameObject);
+        else
+        {
+            Debug.LogWarning("Pooled Object script not found in " + transform.name);
+            Destroy(gameObject);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.layer == 3 || other.gameObject.layer == 6) Explode();
+    }
+
+
+    // Reset Pooled Object State
+
+    public void ResetState()
+    {
+        alreadyExploded = false;
+        rb.velocity = Vector2.zero;
+        transform.GetComponent<SpriteRenderer>().enabled = true;
+        transform.GetComponent<Collider2D>().enabled = true;
+
+        Initialize();
     }
 }

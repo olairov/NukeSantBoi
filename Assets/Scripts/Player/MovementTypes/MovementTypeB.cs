@@ -4,17 +4,8 @@ using UnityEngine;
 
 public class MovementTypeB : BaseMovement
 {
-    private float lastIdleRotation, lastRotationSpeed, timeSinceDeviationStarted, idleRotationBeforeStop;
+    private float lastRotationSpeed, timeSinceDeviationStarted, idleRotationBeforeStop;
     private bool wasStoppedBefore, inUpperLimit, inLowerLimit;
-
-    private Transform playerTransform;
-    private Rigidbody2D playerRB;
-
-    public MovementTypeB(Transform transform, Rigidbody2D rb)
-    {
-        playerTransform = transform;
-        playerRB = rb;
-    }
 
     public override void MovementProcess()
     {
@@ -43,8 +34,6 @@ public class MovementTypeB : BaseMovement
             {
                 NotRotatingProcess(idleRotation);
             }
-
-            lastIdleRotation = idleRotation;
         }
         float forceToAddFormula = Mathf.Cos(-playerTransform.eulerAngles.z / 57.3f - Mathf.PI / 2);
 

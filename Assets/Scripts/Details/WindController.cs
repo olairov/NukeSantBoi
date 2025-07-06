@@ -2,16 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WindController : MonoBehaviour
+public class WindController : MonoBehaviour, ResetPoolObject
 {
     void Start()
     {
         ChoseStats();
-    }
-
-    void Update()
-    {
-        
     }
 
     void ChoseStats()
@@ -25,5 +20,10 @@ public class WindController : MonoBehaviour
         GetComponent<ObjectPassingBy>().passingSpeed = Random.Range(1, 2) * transform.localScale.x;
         
         if (Random.value > 0.5f) transform.localScale = new Vector2(transform.localScale.x, -transform.localScale.y);
+    }
+
+    public void ResetState()
+    {
+        ChoseStats();
     }
 }

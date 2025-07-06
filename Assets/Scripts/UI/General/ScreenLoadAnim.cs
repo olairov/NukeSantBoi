@@ -121,19 +121,6 @@ public class ScreenLoadAnim : MonoBehaviour
 
             yield return null;
         }
-
-        /*while (true)
-        {
-            // Maybe put a Loading Bar
-
-            if (asyncLoad.isDone)
-            {
-                asyncLoad.allowSceneActivation = true;  // Activate the scene
-                break;
-            }
-
-            yield return null;
-        }*/
     }
 
     public void LoadScene(string scene, string sceneFromCalled)

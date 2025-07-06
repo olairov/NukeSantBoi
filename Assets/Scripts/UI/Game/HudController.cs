@@ -13,9 +13,9 @@ public class HudController : MonoBehaviour
 
     private TMP_Text pointsCounter;
 
-    [SerializeField] private GameObject pointsSumPrefab, pointsPrefab, epicComboLight;
+    [SerializeField] ObjectPool pointsSumAnimPool, appearingPointsPool, epicComboLightPool;
 
-    private Transform cameraTransform, pauseMenu, deadMenu, morePointsContainer, pointsContainer;
+    private Transform cameraTransform, pauseMenu, deadMenu;
 
     private Camera cameraComponent;
 
@@ -25,7 +25,7 @@ public class HudController : MonoBehaviour
         set { actualLevel = value; }
     }
 
-    [SerializeField] private float everyPointAddInterval;
+    [SerializeField] private float everyPointAddInterval, comboTextYDistanceFromNumber;
     private float deadPanelOutProgress = -1, lastDeadPanelYPos, lastTimeScale;
     public float actualTimescale = 1;
 
@@ -54,8 +54,6 @@ public class HudController : MonoBehaviour
         cameraTransform = GameObject.Find("Camera").transform;
         pauseMenu = GameObject.Find("Canvas/pauseMenu").transform;
         deadMenu = GameObject.Find("Canvas/deadMenu/BothMenusContainer/deadMenu").transform;
-        morePointsContainer = GameObject.Find("Canvas/MorePointsContainer").transform;
-        pointsContainer = GameObject.Find("NotPhysicElementsContainer").transform;
 
         menuInSound = GameObject.Find("UIsounds/MenuInSound").GetComponent<AudioSource>();
         menuOutSound = GameObject.Find("UIsounds/MenuOutSound").GetComponent<AudioSource>();
@@ -75,8 +73,6 @@ public class HudController : MonoBehaviour
         deadMenu.localPosition = new Vector3(0, -550, 0);
 
         pretendsToBePaused = false;
-
-        //PlayerPrefs.SetInt("Highscore", 0);
     }
 
     private void Update()
@@ -91,8 +87,10 @@ public class HudController : MonoBehaviour
         SendVariableInfo();
     }
 
-    public void ChangePointsValue(int sumPoints, Vector3 pointsPos, int combo, int type) // Combo >= 1;   Type -->  0 = Default attack, 1 = Single Loop, 2 = Combo Loop
+    public void ChangePointsValue(int pointsToAdd, Vector3 pointsPos, int combo, int type) // Combo >= 1;   Type -->  0 = Default attack, 1 = Single Loop, 2 = Combo Loop
     {
+        int sumPoints = pointsToAdd + (combo - 1);
+
         if (type != 1 && LoopCheckerScript.PointsScored()) // First, detect if player is looping to DOUBLE the score in that case.
         {
             sumPoints *= 2;
@@ -105,15 +103,23 @@ public class HudController : MonoBehaviour
         if (combo > 1) ShowComboText(combo, pointsPos);
         if (type != 0) ShowAdditionalTextOnScore(type, combo > 1, pointsPos);
 
-        Instantiate(pointsPrefab, pointsPos, Quaternion.identity, pointsContainer).GetComponentInChildren<TMP_Text>().text = "+ " + sumPoints;
-        if (type == 2) Instantiate(epicComboLight, pointsPos, Quaternion.identity, pointsContainer);
+        GameObject instantiatedPoints = appearingPointsPool.GetObject(true);
+        instantiatedPoints.transform.position = pointsPos;
+        instantiatedPoints.GetComponentInChildren<TMP_Text>().text = "+ " + sumPoints;
+
+        if (type == 2)
+        {
+            epicComboLightPool.GetObject(true).transform.position = pointsPos;
+        }
 
         StartCoroutine(SlowlyAddPoints(sumPoints));
     }
 
     void ShowComboText(int comboNum, Vector3 pointsPosition)
     {
-        TMP_Text comboText = Instantiate(pointsPrefab, pointsPosition + new Vector3(0, 1.3f), Quaternion.identity, pointsContainer).GetComponentInChildren<TMP_Text>();
+        GameObject instantiatedPoints = appearingPointsPool.GetObject(true);
+        instantiatedPoints.transform.position = pointsPosition + new Vector3(0, comboTextYDistanceFromNumber);
+        TMP_Text comboText = instantiatedPoints.GetComponentInChildren<TMP_Text>();
         comboText.fontSize /= 2;
         comboText.text = "COMBO x" + comboNum;
     }
@@ -134,21 +140,22 @@ public class HudController : MonoBehaviour
                 textSizeMultiplier = 0.7f;
                 break;
             default:
-                Debug.LogWarning("Point addition case number " + caseNumber + ", (which you entered) does not exist, stupid monkey. These are the possible ones: 0 = Default attack, 1 = Single Loop, 2 = Combo Loop");
+                Debug.LogWarning("Point addition case number " + caseNumber + ", (which you entered) does not exist, stupid monkey.\nThese are the possible ones: 0 = Default attack, 1 = Single Loop, 2 = Combo Loop");
                 // If you're wondering how you got here, go to where the "caseNumber" variable (coming from the "type" variable in the "ChangePointsValue" function)
                 // value is originally entered and replace it with a valid one (the Log Warning explains which ones are valid).
                 return;
         }
 
-        TMP_Text additionalText = Instantiate(pointsPrefab, pointsPosition + new Vector3(0, comboTextAppears ? 2.5f : 1.2f), Quaternion.identity, pointsContainer).GetComponentInChildren<TMP_Text>();
+        GameObject instantiatedPoints = appearingPointsPool.GetObject(true);
+        instantiatedPoints.transform.position = pointsPosition + new Vector3(0, comboTextAppears ? comboTextYDistanceFromNumber * 2 : comboTextYDistanceFromNumber);
+        TMP_Text additionalText = instantiatedPoints.GetComponentInChildren<TMP_Text>();
         additionalText.text = textToShow;
         additionalText.fontSize *= textSizeMultiplier;
     }
 
     private IEnumerator SlowlyAddPoints(int pointsIsum)
     {
-        GameObject pointsSumAnimationObj = Instantiate(pointsSumPrefab, morePointsContainer);
-        pointsSumAnimationObj.transform.GetChild(1).GetComponent<TMP_Text>().text = "+" + pointsIsum;
+        pointsSumAnimPool.GetObject(true).transform.GetChild(1).GetComponent<TMP_Text>().text = "+" + pointsIsum;
 
         yield return new WaitForSeconds(0.53f); // --> Time it takes for the animation to reach the ending point
 
@@ -164,10 +171,6 @@ public class HudController : MonoBehaviour
 
             yield return new WaitForSeconds(everyPointAddInterval);
         }
-
-        yield return new WaitForSeconds(1);
-
-        Destroy(pointsSumAnimationObj);
     }
 
     public void PauseManager()

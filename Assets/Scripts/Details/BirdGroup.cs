@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BirdGroup : MonoBehaviour
+public class BirdGroup : MonoBehaviour, ResetPoolObject
 {
     private List<float> birdsStartTimes = new List<float>(), birdsYPositions = new List<float>();
     private float timeSinceAppeared, yPos, randDelay, lastYcosCalculatedYAdder;
@@ -13,11 +13,10 @@ public class BirdGroup : MonoBehaviour
 
     void Start()
     {
-        ChoseStats();
-        lastYcosCalculatedYAdder = Mathf.Cos(Time.time + randDelay) / 5;
+        ChooseStats();
     }
 
-    private void ChoseStats()
+    private void ChooseStats()
     {
         float distance = Random.Range(0.6f, 1f);
         transform.localScale = Vector3.one * distance;
@@ -46,6 +45,7 @@ public class BirdGroup : MonoBehaviour
         yPos = Random.Range(1f, 5f);
         if (distance > 0.85f) transform.position = new Vector3(transform.position.x, yPos, 11); // Make the bird be in front of the nearest buildings when they are bigger.
         randDelay = Random.Range(0, 3.14f);
+        lastYcosCalculatedYAdder = Mathf.Cos(Time.time + randDelay) / 5;
     }
 
     void Update()
@@ -84,5 +84,16 @@ public class BirdGroup : MonoBehaviour
         }
 
         if (timeSinceAppeared > 4) finishedStartingBirds = true;
+    }
+
+
+    // Reset Pooled Object State
+
+    public void ResetState()
+    {
+        timeSinceAppeared = 0;
+        finishedStartingBirds = false;
+
+        ChooseStats();
     }
 }

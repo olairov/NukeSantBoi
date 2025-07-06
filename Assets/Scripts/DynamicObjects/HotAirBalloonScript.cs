@@ -2,12 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HotAirBalloonScript : MonoBehaviour
+public class HotAirBalloonScript : MonoBehaviour, ResetPoolObject
 {
     [SerializeField] private Color burnColor, possibleColor1, possibleColor2, possibleColor3, possibleColor4, possibleColor5;
 
     [SerializeField] private GameObject obstaclePrefab;
-    private Transform hotAirBalloonsContainer;
 
     private Rigidbody2D rb;
 
@@ -21,9 +20,8 @@ public class HotAirBalloonScript : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        hotAirBalloonsContainer = GameObject.Find("ObstacleGenerator/HotAirBalloonGenerator").transform;
 
-        ChoseStats();
+        ChooseStats();
     }
 
     void Update()
@@ -49,7 +47,7 @@ public class HotAirBalloonScript : MonoBehaviour
         Vector2.ClampMagnitude(actualDirection, 1); // Prevent it from reaching too high speeds;
     }
 
-    void ChoseStats()
+    void ChooseStats()
     {
         float randValue = Random.value;
 
@@ -90,5 +88,19 @@ public class HotAirBalloonScript : MonoBehaviour
     public void SlowDown()
     {
         if (!dead) rb.velocity *= 1 - Time.deltaTime * slowDownSpeed;
+    }
+
+
+    // Reset Pooled Object State
+
+    public void ResetState()
+    {
+        rb.velocity = Vector2.zero;
+        rb.angularVelocity = 0;
+        dead = false;
+        actualDirection = Vector2.zero;
+        rb.rotation = 0f;
+
+        ChooseStats();
     }
 }

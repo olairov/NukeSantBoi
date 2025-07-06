@@ -2,19 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BackgroundController : MonoBehaviour
+public class BackgroundController : MonoBehaviour, ResetPoolObject
 {
     [SerializeField] private int zPos;
 
     [SerializeField] private Sprite background1, background2, background3;
-    Sprite lastBackgroundLayer1, lastBackgroundLayer2, lastBackgroundLayer3;
+    static Sprite lastBackgroundLayer1, lastBackgroundLayer2, lastBackgroundLayer3;
 
     void Start()
     {
-        CreateStats();
+        ChooseStats();
     }
 
-    void CreateStats()
+    void ChooseStats()
     {
         transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, zPos);
 
@@ -25,17 +25,17 @@ public class BackgroundController : MonoBehaviour
             if (randomNum > 0.66f) mySprite = background2;
             else if (randomNum > 0.33f) mySprite = background3;
 
-            if (name.Contains("1") && CheckBackgroundMismatch(mySprite, lastBackgroundLayer1))
+            if (name.Contains("1") && mySprite != lastBackgroundLayer1)
             {
                 lastBackgroundLayer1 = mySprite;
                 break;
             }
-            else if (name.Contains("2") && CheckBackgroundMismatch(mySprite, lastBackgroundLayer2))
+            else if (name.Contains("2") && mySprite != lastBackgroundLayer2)
             {
                 lastBackgroundLayer2 = mySprite;
                 break;
             }
-            else if (CheckBackgroundMismatch(mySprite, lastBackgroundLayer3))
+            else if (mySprite != lastBackgroundLayer3)
             {
                 lastBackgroundLayer3 = mySprite;
                 break;
@@ -52,8 +52,11 @@ public class BackgroundController : MonoBehaviour
         GetComponent<SpriteRenderer>().sprite = mySprite;
     }
 
-    bool CheckBackgroundMismatch(Sprite sprite, Sprite lastSprite)
+
+    // Reset Pooled Object State
+
+    public void ResetState()
     {
-        return sprite != lastSprite;
+        ChooseStats();
     }
 }

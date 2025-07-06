@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50fe093fa05198e4aa513a4453a18fe1, type: 3}
+  m_Name: BackBushSpawnSettingsLevelDefault 1
+  m_EditorClassIdentifier: 
+  timeIntervalMin: 2.5
+  timeIntervalMax: 6
+  firstGenMinDistance: 8
+  firstGenMaxDistance: 13
+  firstGenDistFromRightBorder: 4
+  firstGenDistFromLeftBorder: -4
+  yMin: -3
+  yMax: -4.5
+  zMin: 12.5
+  zMax: 12.5
+  xMin: 0
+  xMax: 0
+  appearingObject: 0
+  onlyFirstGeneration: 0
+  firstGenIsOnlyManual: 0
+  firstGeneratedObjectsXPositions: []
+  ignoreFirstGenXPos: 0
+  ignoreFirstGenYPos: 0
+  ignoreFirstGenZPos: 0
+  objectName: backBush

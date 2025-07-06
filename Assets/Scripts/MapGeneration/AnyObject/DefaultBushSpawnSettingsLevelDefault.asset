@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50fe093fa05198e4aa513a4453a18fe1, type: 3}
+  m_Name: DefaultBushSpawnSettingsLevelDefault
+  m_EditorClassIdentifier: 
+  timeIntervalMin: 1.2
+  timeIntervalMax: 2.4
+  firstGenMinDistance: 5
+  firstGenMaxDistance: 9
+  firstGenDistFromRightBorder: 0
+  firstGenDistFromLeftBorder: -10
+  yMin: -6.5
+  yMax: -8
+  zMin: 0
+  zMax: 0
+  xMin: 0
+  xMax: 0
+  appearingObject: 0
+  onlyFirstGeneration: 0
+  firstGenIsOnlyManual: 0
+  firstGeneratedObjectsXPositions: []
+  ignoreFirstGenXPos: 0
+  ignoreFirstGenYPos: 0
+  ignoreFirstGenZPos: 0
+  objectName: defaultBush

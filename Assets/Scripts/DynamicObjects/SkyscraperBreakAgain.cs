@@ -3,25 +3,36 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // This entire script is a joke. I did it for no reason at all, it's not necessary for the game but i wanted to do it.
-// Enjoy doing whatever you're doing here, but if your intention is understanding it, i wish you the best of luck.
 
-public class SkyscraperBreakAgain : MonoBehaviour
+public class SkyscraperBreakAgain : MonoBehaviour, ResetPoolObject
 {
-    [SerializeField] private GameObject middlePartPrefab, completeDestroyParticlesPref, cutInHalfParticlesPref;
-    [SerializeField] private Sprite brokenPartSprite;
-
-    private Transform particlesContainer, originalExplosionTransform;
-    public Transform OriginalExplosionTransform
-    {
-        set { originalExplosionTransform = value; }
-    }
+    [SerializeField] private ObjectPool middlePartPool, completeDestroyParticlesPool, cutInHalfParticlesPool;
+    [SerializeField] private Sprite brokenPartSprite, topSprite;
 
     private bool imOriginalPart;
 
-    private void Start()
+    // Variables only meant to reset the state after the object is reused.
+    float originalHeight;
+    Vector3 upperSpritePos, lowerSpritePos, upperSpriteSize;
+    Color upperSpriteOriginalColor;
+
+    private void Awake()
     {
         imOriginalPart = CompareTag("Skyscraper");
-        particlesContainer = GameObject.Find("ParticlesContainer").transform;
+        originalHeight = transform.GetComponent<BoxCollider2D>().size.y;
+        upperSpritePos = transform.Find("UpperSprite").localPosition;
+        if (!imOriginalPart) lowerSpritePos = transform.Find("LowerSprite").localPosition;
+
+        SpriteRenderer upperSpriteRenderer = transform.Find("UpperSprite").GetComponent<SpriteRenderer>();
+        upperSpriteOriginalColor = upperSpriteRenderer.color;
+        upperSpriteSize = upperSpriteRenderer.size;
+    }
+
+    private void Start()
+    {
+        middlePartPool = GameObject.Find("BuildingPartsContainer/skyscraperMiddlePart").GetComponent<ObjectPool>();
+        completeDestroyParticlesPool = GameObject.Find("ParticlesContainer/skyscraperCompletePartDestruction").GetComponent<ObjectPool>();
+        cutInHalfParticlesPool = GameObject.Find("ParticlesContainer/skyscraperCutInHalfPieces").GetComponent<ObjectPool>();
     }
 
     public void BreakAgain(Transform explosionTransform)
@@ -51,7 +62,7 @@ public class SkyscraperBreakAgain : MonoBehaviour
     void BreakingProcess(Vector2 breakPos) // Once obtained the cut position, the building has to be splitted (or not) AGAIN.
     {
         float myRotation = transform.eulerAngles.z * Mathf.Deg2Rad;
-        float myHeightHalf = transform.GetComponent<BoxCollider2D>().size.y / 2;
+        float myHeightHalf = originalHeight / 2;
 
         // The positions of both edges. Each one is located at a distance of half building part's height from the center.
         Vector2 lowerEdge = new Vector2(transform.position.x + Mathf.Sin(myRotation) * myHeightHalf, transform.position.y + Mathf.Cos(myRotation) * -myHeightHalf);
@@ -80,7 +91,10 @@ public class SkyscraperBreakAgain : MonoBehaviour
                 DeleteSmallBuildingPart(direction + direction.normalized, false); // Direction increased for a bigger part destroyed.
 
                 // Particles:
-                Instantiate(completeDestroyParticlesPref, lowerEdge + direction / 2, Quaternion.identity, particlesContainer).transform.eulerAngles = transform.eulerAngles;
+                Transform completeDestroyParticlesTransform = completeDestroyParticlesPool.GetObject(true).transform;
+                // With the next formula we obtain the center position between the lower edge of the building part and the part where it broke:
+                completeDestroyParticlesTransform.position = lowerEdge + direction / 2;
+                completeDestroyParticlesTransform.eulerAngles = transform.eulerAngles;
 
                 if (!imOriginalPart)
                 {
@@ -106,9 +120,12 @@ public class SkyscraperBreakAgain : MonoBehaviour
                 if (Vector2.Distance(breakPos, upperEdge) < 1) direction = ((Vector2)transform.position - upperEdge).normalized;
 
                 DeleteSmallBuildingPart(direction + direction.normalized, true); // Direction increased for a bigger part destroyed.
-                
+
                 // Particles
-                Instantiate(completeDestroyParticlesPref, upperEdge + direction / 2, Quaternion.identity, particlesContainer).transform.eulerAngles = transform.eulerAngles;
+                Transform completeDestroyParticlesTransform = completeDestroyParticlesPool.GetObject(true).transform;
+                // With the next formula we obtain the center position between the upper edge of the building part and the part where it broke:
+                completeDestroyParticlesTransform.position = upperEdge + direction / 2;
+                completeDestroyParticlesTransform.eulerAngles = transform.eulerAngles;
 
                 if (!imOriginalPart)
                 {
@@ -128,18 +145,30 @@ public class SkyscraperBreakAgain : MonoBehaviour
         else // If the explosion is at a good distance from both edges, the building part can be splitted in half.
         {
             CutInHalf(breakPos, lowerEdge - breakPos, upperEdge - breakPos);
-            /* Particles */ Instantiate(cutInHalfParticlesPref, new Vector3(breakPos.x, breakPos.y, -2), Quaternion.identity, particlesContainer).transform.eulerAngles = transform.eulerAngles;
+
+            // Particles
+            Transform cutInHalfParticlesTransform = cutInHalfParticlesPool.GetObject(true).transform;
+            cutInHalfParticlesTransform.position = new Vector3(breakPos.x, breakPos.y, -2);
+            cutInHalfParticlesTransform.eulerAngles = transform.eulerAngles;
         }
     }
 
     void DestroyLittleBuildingPiece(GameObject buildingPieceToDestroy, Vector2 breakPos)
     {
         // In this remotely possible case, the building piece would be too little that it just needs to be completely annihilated.
-        // Particles:
-        Instantiate(completeDestroyParticlesPref, breakPos, Quaternion.identity, particlesContainer).transform.eulerAngles = transform.eulerAngles;
+
+        // Particles
+        Transform completeDestroyParticlesTransform = completeDestroyParticlesPool.GetObject(true).transform;
+        completeDestroyParticlesTransform.position = breakPos;
+        completeDestroyParticlesTransform.eulerAngles = transform.eulerAngles;
 
         Debug.Log("That building didn't deserve it.");
-        Destroy(buildingPieceToDestroy);
+        if (buildingPieceToDestroy.GetComponent<PooledObject>() != null) buildingPieceToDestroy.GetComponent<PooledObject>().ReturnToPool(gameObject);
+        else
+        {
+            Debug.LogWarning("Pooled Object script not found in " + buildingPieceToDestroy.name);
+            Destroy(buildingPieceToDestroy);
+        }
         return;
     }
     
@@ -176,7 +205,8 @@ public class SkyscraperBreakAgain : MonoBehaviour
         // Depending on the height of the building it has to be given more or less force so that it always looks the same.
         float upperPartMultiplierForHeight = (30 - upperPartHeight) / 60; // 30 is the default upper part's size, and then 90 because otherwise it gets too fast.
 
-        Transform newPartTransform = Instantiate(middlePartPrefab, cutPos, Quaternion.identity, transform.parent).transform;
+        Transform newPartTransform = middlePartPool.GetObject(true).transform;
+        newPartTransform.position = cutPos;
         newPartTransform.eulerAngles = transform.eulerAngles;
         Rigidbody2D newPartRB = newPartTransform.GetComponent<Rigidbody2D>();
 
@@ -188,7 +218,7 @@ public class SkyscraperBreakAgain : MonoBehaviour
 
             // Creating and positioning the new part
             CreateNewPart(newPartTransform, upperPartHeight - 1);
-            newPartTransform.position += new Vector3(dirToUpperEdge.x / 2, dirToUpperEdge.y / 2, 1);
+            newPartTransform.position += new Vector3(dirToUpperEdge.x / 2, dirToUpperEdge.y / 2, 0);
 
             // Adding RB forces to the new part to give space for the player to go through
             newPartRB.AddTorque(600 * upperPartMultiplierForHeight);
@@ -202,6 +232,11 @@ public class SkyscraperBreakAgain : MonoBehaviour
 
             Rigidbody2D rb = GetComponent<Rigidbody2D>();
 
+            // Adding RB forces to give space for the player to go through.
+            rb.velocity = Vector2.zero;
+            rb.AddTorque(600 * upperPartMultiplierForHeight);
+            rb.AddForce(Vector2.up * 7 * forceAddRotationMultiplier, ForceMode2D.Impulse);
+
             // Creating and positioning the new part (just the same we did with the existing part but inverted)
             if (transform.name.Contains("Middle")) // For some reason, if the middle part instantiates ANOTHER middle part, it isn't created properly, sizes don't fit.
             {
@@ -210,17 +245,12 @@ public class SkyscraperBreakAgain : MonoBehaviour
             else
             {
                 CreateNewPart(newPartTransform, lowerPartHeight - 1);
-                newPartTransform.position += new Vector3(dirToLowerEdge.x / 2, dirToLowerEdge.y / 2, 1);
+                newPartTransform.position += new Vector3(dirToLowerEdge.x / 2, dirToLowerEdge.y / 2, 0);
 
                 float lowerPartMultiplierForHeight = (30 - lowerPartHeight) / 60; // Same as upperPartMultiplierForHeight
                 newPartRB.AddTorque(-600 * lowerPartMultiplierForHeight);
                 newPartRB.velocity = rb.velocity;
             }
-
-            // Adding RB forces to give space for the player to go through.
-            rb.velocity = Vector2.zero;
-            rb.AddTorque(600 * upperPartMultiplierForHeight);
-            rb.AddForce(Vector2.up * 7 * forceAddRotationMultiplier, ForceMode2D.Impulse);
         }
     }
 
@@ -228,13 +258,17 @@ public class SkyscraperBreakAgain : MonoBehaviour
     {
         // Imagine a building part with height 5. if the cut happens in height 3, the resting height is 2,
         // so the part's height is decreased by 2 (the height of the remaining part), the upper part is descended 1 unit
-        // and the lower part is highthened 1 unit (the reesting height / 2), to match the two corners.
+        // (the resting height / 2), and the lower part is heightened 1 unit, to match the two corners.
 
         Vector2 colliderSize = partTransform.GetComponent<BoxCollider2D>().size;
         Vector2 newSize = new Vector2(colliderSize.x, colliderSize.y - sizeSubstracter);
         // If this was the example, colliderSize.y is 5, and sizeSubstracter is 2, leaving a heigth of 3
 
-        if (newSize.y < 3) DestroyLittleBuildingPiece(partTransform.gameObject, partTransform.position);
+        if (newSize.y < 3)
+        {
+            DestroyLittleBuildingPiece(partTransform.gameObject, partTransform.position);
+            return;
+        }
 
         if (isOriginalPart) // The original part's GameObject structure is different from the other pieces.
         {
@@ -264,5 +298,40 @@ public class SkyscraperBreakAgain : MonoBehaviour
 
         partTransform.Find("UpperSprite").localPosition += new Vector3(0, partSize / 2, 0);
         partTransform.Find("LowerSprite").localPosition -= new Vector3(0, partSize / 2, 0);
+    }
+
+
+    // Reset Pooled Object State
+
+    public void ResetState()
+    {
+        if (imOriginalPart)
+        {
+            GetComponent<BoxCollider2D>().size = new Vector2(GetComponent<BoxCollider2D>().size.x, originalHeight);
+            transform.Find("Sprite").GetComponent<SpriteRenderer>().size = new Vector2(transform.Find("Sprite").GetComponent<SpriteRenderer>().size.x, originalHeight);
+            transform.Find("BackSprite").GetComponent<SpriteRenderer>().size = new Vector2(transform.Find("BackSprite").GetComponent<SpriteRenderer>().size.x, originalHeight);
+        }
+        else
+        {
+            GetComponent<BoxCollider2D>().size = new Vector2(GetComponent<BoxCollider2D>().size.x, originalHeight);
+            GetComponent<SpriteRenderer>().size = new Vector2(GetComponent<SpriteRenderer>().size.x, originalHeight);
+        }
+
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.velocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+            rb.rotation = 0f;
+        }
+
+        transform.eulerAngles = Vector3.zero;
+        transform.Find("UpperSprite").localPosition = upperSpritePos;
+        if (!imOriginalPart) transform.Find("LowerSprite").localPosition = lowerSpritePos;
+
+        SpriteRenderer upperSpriteRenderer = transform.Find("UpperSprite").GetComponent<SpriteRenderer>();
+        if (transform.name.Contains("Upper")) upperSpriteRenderer.sprite = topSprite;
+        upperSpriteRenderer.color = upperSpriteOriginalColor;
+        upperSpriteRenderer.size = upperSpriteSize;
     }
 }

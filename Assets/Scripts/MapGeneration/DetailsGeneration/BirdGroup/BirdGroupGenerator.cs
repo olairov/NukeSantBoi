@@ -23,6 +23,6 @@ public class BirdGroupGenerator : MonoBehaviour
     {
         Instantiate(spawnSettings.birdGroupPrefab,
             new Vector3(Random.Range(startX - spawnSettings.firstGenerationDistanceFromRightBorder, finishX + spawnSettings.firstGenerationDistanceFromLeftBorder), 0, spawnSettings.birdGroupPrefab.transform.position.z),
-            Quaternion.identity, transform).GetComponent<ObjectPassingBy>().appearingObject = true;
+            Quaternion.identity, transform).GetComponent<ObjectPassingBy>().dontSetPosition = true;
     }
 }

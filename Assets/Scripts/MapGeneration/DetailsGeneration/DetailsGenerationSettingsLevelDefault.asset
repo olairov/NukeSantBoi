@@ -14,7 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wind: 1
   cranes: 1
-  bushes: 1
   birdGroups: 1
   singleBirds: 1
   frontBirds: 1
+  defaultObjectsThatWillAppear:
+  - backBush
+  - defaultBush
+  - frontBush
+  - crane
+  - singleBird

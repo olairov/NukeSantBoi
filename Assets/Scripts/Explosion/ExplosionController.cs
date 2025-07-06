@@ -3,56 +3,51 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class ExplosionController : MonoBehaviour
+public class ExplosionController : MonoBehaviour, ResetPoolObject
 {
+    SpriteRenderer mySprite;
+    AudioSource concreteSound, glassSound;
+    HudController hudScript;
+    MapGenerator mapScript;
+
+    GameObject visuals;
     private Transform playerTramsform, obstaclesContainer, buildingsContainer;
 
-    private SpriteRenderer mySprite;
-
-    private AudioSource concreteSound, glassSound;
-
-    private HudController hudScript;
-
-    private float timeAlive, timeAliveForTimeScale, Acolor = 1, screenshakeValue;
-
+    private float timeAlive, timeAliveForTimeScale, alphaColor;
     private int pointsToAdd, comboNum;
-
     private bool alreadyEnabledHitbox, alreadyAddedPoints, collidedWithPlayer, alreadySentVignetteEffectAnim, cantBreakSkystraperAgain;
     public bool CantBreakSkystraperAgain
     {
-        // In case this is the same explosion that broke the original skystraper, it cannot also destroy the new parts.
+        // In case this is the same explosion that broke the original skystraper, it cannot destroy the new parts, too.
         set { cantBreakSkystraperAgain = value; }
     }
 
+    [SerializeField] float colorFadeSpeed, zPos, cameraDistanceWhereVisualsDisappear;
+
     void Start()
     {
-        if (Time.timeSinceLevelLoad < 0.1f)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            if (GameObject.Find("Player")) playerTramsform = GameObject.Find("Player").transform;
-            obstaclesContainer = GameObject.Find("ObstacleGenerator").transform;
-            buildingsContainer = GameObject.Find("BuildingGenerator").transform;
-            hudScript = GameObject.Find("________________Canvas________________").GetComponent<HudController>();
+        obstaclesContainer = GameObject.Find("ObstacleGenerator").transform;
+        buildingsContainer = GameObject.Find("BuildingGenerator").transform;
+        hudScript = GameObject.Find("________________Canvas________________").GetComponent<HudController>();
+        mapScript = GameObject.Find("__________________Map___________________").GetComponent<MapGenerator>();
+        mySprite = transform.GetComponent<SpriteRenderer>();
+        visuals = transform.Find("Visuals").gameObject;
 
-            mySprite = transform.GetComponent<SpriteRenderer>();
+        concreteSound = transform.Find("Sounds/ConcreteSound").GetComponent<AudioSource>();
+        glassSound = transform.Find("Sounds/GlassSound").GetComponent<AudioSource>();
 
-            concreteSound = transform.Find("Sounds/ConcreteSound").GetComponent<AudioSource>();
-            glassSound = transform.Find("Sounds/GlassSound").GetComponent<AudioSource>();
+        Initialize();
+    }
 
-            transform.position = new Vector3(transform.position.x, transform.position.y, -10);
-            transform.parent = GameObject.Find("ExplosionContainer").transform;
+    void Initialize()
+    {
+        if (GameObject.Find("Player")) playerTramsform = GameObject.Find("Player").transform;
+        alphaColor = 1;
 
-            screenshakeValue = PlayerPrefs.GetFloat("ScreenshakeValue");
-
-            Camera.main.GetComponent<ShakeController>().Shake(1);
-
-            GameObject.Find("__________________Map___________________").GetComponent<MapGenerator>().ExplosionGenerated();
-
-            PushObjects();
-        }
+        transform.position = new Vector3(transform.position.x, transform.position.y, zPos);
+        Camera.main.GetComponent<ShakeController>().Shake(1);
+        mapScript.ExplosionGenerated();
+        PushObjects();
     }
 
     private void Update()
@@ -61,8 +56,8 @@ public class ExplosionController : MonoBehaviour
 
         if (alreadyEnabledHitbox)
         {
-            Acolor -= Time.deltaTime * 1.5f;
-            mySprite.color = new Color(mySprite.color.r, mySprite.color.g, mySprite.color.b, Acolor);
+            alphaColor -= Time.deltaTime * colorFadeSpeed;
+            mySprite.color = new Color(mySprite.color.r, mySprite.color.g, mySprite.color.b, alphaColor);
         }
         if (timeAlive > 0.1f)
         {
@@ -78,13 +73,14 @@ public class ExplosionController : MonoBehaviour
         }
 
         AdjustTimescale();
+        DisableVisuals();
     }
 
     void AddPoints()
     {
         if (!PlayerController.dead && pointsToAdd != 0)
         {
-            hudScript.ChangePointsValue(pointsToAdd + (comboNum - 1), transform.position + new Vector3(2, 1, 0), comboNum, 0);
+            hudScript.ChangePointsValue(pointsToAdd, transform.position + new Vector3(2, 1, 0), comboNum, 0);
         }
 
         alreadyAddedPoints = true;
@@ -99,10 +95,18 @@ public class ExplosionController : MonoBehaviour
         if (timeAliveForTimeScale >= Mathf.PI * 2) Time.timeScale = 1;
         else
         {
-            float multiplier = screenshakeValue / 3; // <--- Increase this number for LESS time warp. Min is 2. Max is infinite (More than 10 won't be noticeable).
+            float multiplier = PlayerPrefs.GetFloat("ScreenshakeValue") / 3; // <--- Increase this number for LESS time warp. Min is 2. Max is infinite (More than 10 won't be noticeable).
 
             Time.timeScale = Mathf.Cos(timeAliveForTimeScale) * multiplier + 1 - multiplier;
             // FORMULA: y = cos(x) * a + 1 - a
+        }
+    }
+
+    void DisableVisuals()
+    {
+        if (visuals.activeSelf && transform.position.x < Camera.main.ScreenToWorldPoint(Vector3.zero).x - cameraDistanceWhereVisualsDisappear)
+        {
+            visuals.SetActive(true);
         }
     }
 
@@ -193,5 +197,18 @@ public class ExplosionController : MonoBehaviour
                 buildingTransform.GetComponent<Building>().PushAway((buildingTransform.transform.position - transform.position).normalized.x, Vector2.Distance(buildingTransform.position, transform.position));
             }
         }
+    }
+
+
+    // Reset Pooled Object State
+
+    public void ResetState()
+    {
+        timeAlive = timeAliveForTimeScale = pointsToAdd = comboNum = 0;
+        alreadyEnabledHitbox = alreadyAddedPoints = collidedWithPlayer = alreadySentVignetteEffectAnim = cantBreakSkystraperAgain = false;
+        transform.GetComponent<Collider2D>().enabled = true;
+        visuals.SetActive(true);
+
+        Initialize();
     }
 }

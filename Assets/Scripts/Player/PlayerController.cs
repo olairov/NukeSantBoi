@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private GameObject bombPrefab, explosionPrefab, simpleBombDropAnim;
-    [SerializeField] private Transform bombContainer;
+    [SerializeField] ObjectPool bombDropAnimPool, bombPool, explosionPool;
     [SerializeField] private Color burnColor;
-    private Transform cameraRiserTransform, targetTransform, nonPhysicalElementsContainer;
+    private Transform cameraRiserTransform, targetTransform;
 
     private Vector2 savedShootingDirection;
 
@@ -23,14 +22,12 @@ public class PlayerController : MonoBehaviour
 
     protected BaseMovement movement;
 
-    [SerializeField] private float bombReloadTime, regularBuildingPassingSpeed, appearInSceneSpeed;
+    [SerializeField] private float bombReloadTime, regularBuildingPassingSpeed, appearInSceneSpeed, bombReloadSpeedIncrementMultiplier, bombStartingDistance;
     private float timeUntilNextBomb, Yvelocity, lastCameraYpos, leftCameraCornerXpos, targetCameraXpos;
     public float GetPlayerYvelocity
     {
         get { return Yvelocity; }
     }
-
-    public int touchMovementDirection;
 
     static public bool dead;
     private bool isPaused, willShotWhenPossible, canDropBombWithClick = true;
@@ -59,8 +56,6 @@ public class PlayerController : MonoBehaviour
         cameraRiserTransform = Camera.main.transform.parent;
         targetTransform = GameObject.Find("Target").transform;
 
-        nonPhysicalElementsContainer = GameObject.Find("NotPhysicElementsContainer").transform;
-
         losingSpeedAnimator = GameObject.Find("Canvas/Warning/LosingSpeedWarning").GetComponent<Animator>();
         bombThrowSound = transform.Find("Sounds/BombThrow").GetComponent<AudioSource>();
         arrowSprite = transform.Find("TouchArrow").GetComponent<SpriteRenderer>();
@@ -79,18 +74,19 @@ public class PlayerController : MonoBehaviour
         switch (level)
         {
             case 2:
-                movement = new MovementTypeB(transform, rb);
+                movement = gameObject.AddComponent<MovementTypeB>();
                 break;
             case 3:
-                movement = new MovementTypeC(transform, rb);
+                movement = gameObject.AddComponent<MovementTypeC>();
                 break;
             case 4:
-                movement = new MovementTypeD(transform, rb);
+                movement = gameObject.AddComponent<MovementTypeD>();
                 break;
             default:
-                movement = new MovementTypeA(transform, rb);
+                movement = gameObject.AddComponent<MovementTypeA>();
                 break;
         }
+        movement.Init(transform, rb);
 
         GameObject.Find("________________Canvas________________").GetComponent<HudController>().GiveActualLevel = level;
     }
@@ -111,7 +107,6 @@ public class PlayerController : MonoBehaviour
         if (timeUntilNextBomb > 0) timeUntilNextBomb -= Time.deltaTime;
         else
         {
-            timeUntilNextBomb = 0;
             arrowSprite.color = chargedArrowColor;
             if (willShotWhenPossible && !dead && !isPaused) DropBomb(savedShootingDirection);
             willShotWhenPossible = false;
@@ -152,9 +147,10 @@ public class PlayerController : MonoBehaviour
 
     public void DropBomb(Vector2 direction)
     {
-        if (timeUntilNextBomb != 0)
+        direction.Normalize();
+        if (timeUntilNextBomb > 0)
         {
-            if (timeUntilNextBomb < 0.25f) // If the player shoots a little before the bomb is charged, It will shoot it when it's available.
+            if (timeUntilNextBomb < 0.2f) // If the player shoots a little before the bomb is charged, It will shoot it when it's available.
             {
                 willShotWhenPossible = true;
                 savedShootingDirection = direction;
@@ -166,23 +162,26 @@ public class PlayerController : MonoBehaviour
 
         float myRotationIndicator = Mathf.Cos((transform.eulerAngles.z - 180) / 57.3f) + 0.25f; // This is so that the bomb doesn't try going forward when launched while looping.
         if (myRotationIndicator > 1) myRotationIndicator = 1;
-        Instantiate(bombPrefab, transform.position, Quaternion.identity, bombContainer).GetComponent<BombController>().SetDirection(direction.normalized, new Vector2(0, Yvelocity), myRotationIndicator);
 
-        timeUntilNextBomb = bombReloadTime / ObjectPassingBy.realSpeedMultiplier;
+        GameObject bomb = bombPool.GetObject(true);
+        bomb.transform.position = transform.position + new Vector3(direction.x, direction.y, 0) * bombStartingDistance;
+        bomb.GetComponent<BombController>().SetDirection(direction, new Vector2(0, Yvelocity), myRotationIndicator);
+
+        timeUntilNextBomb = bombReloadTime / (ObjectPassingBy.realSpeedMultiplier * bombReloadSpeedIncrementMultiplier);
 
         chargeScript.DropBomb(timeUntilNextBomb);
 
         arrowSprite.color = unchargedArrowColor;
 
-        SimpleBombDropAnimation(direction.normalized);
+        SimpleBombDropAnimation(direction);
     }
 
     void SimpleBombDropAnimation(Vector2 bombDirection)
     {
-        GameObject newBombDropAnim = Instantiate(simpleBombDropAnim, transform.position, Quaternion.identity, nonPhysicalElementsContainer);
+        GameObject newBombDropAnim = bombDropAnimPool.GetObject(true);
 
+        newBombDropAnim.transform.position = transform.position + new Vector3(bombDirection.x, bombDirection.y, 0);
         newBombDropAnim.transform.up = bombDirection;
-        newBombDropAnim.transform.GetChild(0).GetComponent<SimpleBombDropAnimDestroyer>().SetMyDirection = bombDirection;
         newBombDropAnim.GetComponent<Rigidbody2D>().velocity = new Vector2(0, Yvelocity);
     }
 
@@ -199,7 +198,7 @@ public class PlayerController : MonoBehaviour
     {
         if (dead) return;
 
-        Instantiate(explosionPrefab, transform.position, Quaternion.identity, null);
+        explosionPool.GetObject(true).transform.position = transform.position;
     }
 
     public void LosingSpeedWarning(bool enabled)

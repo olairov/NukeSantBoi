@@ -13,7 +13,7 @@ public class EnemyGenerator : MonoBehaviour
         if (generationSettings.missiles) missileGeneratorScript.GenerateMissile();
     }
 
-    public void FirstGeneration()
+    public void FirstGeneration(float startX, float finishX)
     {
 
     }
