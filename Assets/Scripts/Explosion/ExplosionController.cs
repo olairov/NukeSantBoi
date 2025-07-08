@@ -15,11 +15,11 @@ public class ExplosionController : MonoBehaviour, ResetPoolObject
 
     private float timeAlive, timeAliveForTimeScale, alphaColor;
     private int pointsToAdd, comboNum;
-    private bool alreadyEnabledHitbox, alreadyAddedPoints, collidedWithPlayer, alreadySentVignetteEffectAnim, cantBreakSkystraperAgain;
-    public bool CantBreakSkystraperAgain
+    private bool alreadyEnabledHitbox, alreadyAddedPoints, collidedWithPlayer, alreadySentVignetteEffectAnim, cantBreakSkyscraperAgain;
+    public bool CantBreakSkyscraperAgain
     {
         // In case this is the same explosion that broke the original skystraper, it cannot destroy the new parts, too.
-        set { cantBreakSkystraperAgain = value; }
+        set { cantBreakSkyscraperAgain = value; }
     }
 
     [SerializeField] float colorFadeSpeed, zPos, cameraDistanceWhereVisualsDisappear;
@@ -32,22 +32,12 @@ public class ExplosionController : MonoBehaviour, ResetPoolObject
         mapScript = GameObject.Find("__________________Map___________________").GetComponent<MapGenerator>();
         mySprite = transform.GetComponent<SpriteRenderer>();
         visuals = transform.Find("Visuals").gameObject;
+        playerTramsform = GameObject.Find("Player").transform;
 
         concreteSound = transform.Find("Sounds/ConcreteSound").GetComponent<AudioSource>();
         glassSound = transform.Find("Sounds/GlassSound").GetComponent<AudioSource>();
 
         Initialize();
-    }
-
-    void Initialize()
-    {
-        if (GameObject.Find("Player")) playerTramsform = GameObject.Find("Player").transform;
-        alphaColor = 1;
-
-        transform.position = new Vector3(transform.position.x, transform.position.y, zPos);
-        Camera.main.GetComponent<ShakeController>().Shake(1);
-        mapScript.ExplosionGenerated();
-        PushObjects();
     }
 
     private void Update()
@@ -140,13 +130,13 @@ public class ExplosionController : MonoBehaviour, ResetPoolObject
         }
         else if (other.CompareTag("Building") || other.CompareTag("Skyscraper"))
         {
-            if (!other.GetComponent<Building>().dead)
+            if (!other.GetComponent<Entity>().dead)
             {
                 pointsToAdd += 3;
                 comboNum++;
             }
 
-            other.GetComponent<Building>().Destruct(transform);
+            other.GetComponent<Building>().Destroy(transform);
 
             PlayDestructAudio(!other.CompareTag("Building"));
         }
@@ -158,7 +148,7 @@ public class ExplosionController : MonoBehaviour, ResetPoolObject
             comboNum++;
         }
 
-        if ((other.CompareTag("Skyscraper") || other.CompareTag("SkyscraperUpperPart")) && !cantBreakSkystraperAgain) // So that the skyscrapers can break multiple times.
+        if ((other.CompareTag("Skyscraper") || other.CompareTag("SkyscraperUpperPart")) && !cantBreakSkyscraperAgain) // So that the skyscrapers can break multiple times.
         {
             other.GetComponent<SkyscraperBreakAgain>().BreakAgain(transform);
             PlayDestructAudio(true);
@@ -205,10 +195,18 @@ public class ExplosionController : MonoBehaviour, ResetPoolObject
     public void ResetState()
     {
         timeAlive = timeAliveForTimeScale = pointsToAdd = comboNum = 0;
-        alreadyEnabledHitbox = alreadyAddedPoints = collidedWithPlayer = alreadySentVignetteEffectAnim = cantBreakSkystraperAgain = false;
+        alreadyEnabledHitbox = alreadyAddedPoints = collidedWithPlayer = alreadySentVignetteEffectAnim = cantBreakSkyscraperAgain = false;
         transform.GetComponent<Collider2D>().enabled = true;
         visuals.SetActive(true);
+    }
 
-        Initialize();
+    public void Initialize()
+    {
+        alphaColor = 1;
+
+        transform.position = new Vector3(transform.position.x, transform.position.y, zPos);
+        Camera.main.GetComponent<ShakeController>().Shake(1);
+        mapScript.ExplosionGenerated();
+        PushObjects();
     }
 }

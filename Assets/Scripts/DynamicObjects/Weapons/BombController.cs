@@ -20,12 +20,6 @@ public class BombController : MonoBehaviour, ResetPoolObject
         Initialize();
     }
 
-    void Initialize()
-    {
-        transform.position += new Vector3(0, 0, 2);
-        transform.position += (Vector3)rb.velocity * 0.06f;
-    }
-
     void Update()
     {
         if (transform.position.y < Camera.main.ScreenToWorldPoint(new Vector3(0, 0, 0)).y - 0.5f) Explode();
@@ -80,7 +74,11 @@ public class BombController : MonoBehaviour, ResetPoolObject
         rb.velocity = Vector2.zero;
         transform.GetComponent<SpriteRenderer>().enabled = true;
         transform.GetComponent<Collider2D>().enabled = true;
+    }
 
-        Initialize();
+    public void Initialize()
+    {
+        transform.position += new Vector3(0, 0, 2);
+        transform.position += (Vector3)rb.velocity * 0.06f;
     }
 }

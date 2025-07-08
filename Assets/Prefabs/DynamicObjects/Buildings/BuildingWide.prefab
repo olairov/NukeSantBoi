@@ -94,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1161062619281861290}
   - component: {fileID: 1161062619281861291}
-  - component: {fileID: 1161062619281861206}
+  - component: {fileID: -5253013548430468141}
   - component: {fileID: 1161062619281861289}
   m_Layer: 3
   m_Name: BuildingWide
@@ -135,12 +135,13 @@ MonoBehaviour:
   passingSpeed: 5
   realPassingSpeed: 0
   myYpos: 0
-  appearingObject: 0
+  dontSetPosition: 0
   appearingDistance: 10
   background: 0
   fakePassingSpeed: 0
+  appearingObject: 0
   moveInFixedUpdate: 0
---- !u!114 &1161062619281861206
+--- !u!114 &-5253013548430468141
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -149,22 +150,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 1161062619281861293}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0784bb12f4fc47146988e1b355a09d16, type: 3}
+  m_Script: {fileID: 11500000, guid: 14bbfca87abd8af48a296ac4410826a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flashColor: {r: 1, g: 0, b: 0, a: 1}
-  skystraperUpperPart: {fileID: 1161062619281861293, guid: ae6ce79881c9aa9449388614e0b6f4af, type: 3}
-  smokeParticles: {fileID: 964766084372196553, guid: 3ca2ad5e7a6843840a66f9a12518a74b, type: 3}
-  shardsParticles: {fileID: 8017182100323422166, guid: 90de008cf96bb004b873425d23e8ae10, type: 3}
-  skyStraperPieces: {fileID: 0}
-  buildingPrefab: {fileID: 1161062619281861293, guid: ec0a60ee1deebdd4ab0ff5e61e11ade0, type: 3}
-  buildingSprite2: {fileID: 211912357, guid: 319415866f83b704f8111327c882120b, type: 3}
-  buildingSprite3: {fileID: -1446773485, guid: 6d0d2cf6d8f33004392701554df285c0, type: 3}
-  backBuildingSprite2: {fileID: 1630317402, guid: 319415866f83b704f8111327c882120b, type: 3}
-  backBuildingSprite3: {fileID: -1548818590, guid: 6d0d2cf6d8f33004392701554df285c0, type: 3}
-  colorValuesIncreaseWhenDie: 90
-  pushAwayForce: 120
   dead: 0
+  pushAwayForce: 120
+  fallSpeedMin: 3
+  fallSpeedMax: 6
+  fallRotationSpeedMax: 8
+  fallRotationSpeedmMin: 12
+  cantFallBackwards: 0
+  flashColor: {r: 1, g: 0, b: 0, a: 1}
+  afterFlashColor: {r: 1, g: 1, b: 1, a: 1}
+  myBackSprite: {fileID: 0}
+  flashDuration: 0.1
+  imUpsideDown: 0
+  iStrapSky: 0
+  buildingSprite2: {fileID: -986921947, guid: 684d9b9e26cb2654383c63c9495ea13e, type: 3}
+  buildingSprite3: {fileID: -1446773485, guid: 6d0d2cf6d8f33004392701554df285c0, type: 3}
+  backBuildingSprite2: {fileID: 330113335, guid: 684d9b9e26cb2654383c63c9495ea13e, type: 3}
+  backBuildingSprite3: {fileID: -1548818590, guid: 6d0d2cf6d8f33004392701554df285c0, type: 3}
 --- !u!61 &1161062619281861289
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class AppearingObject : MonoBehaviour
-{
+{/*
     private Transform cameraTransform;
 
     public float passingSpeed;
@@ -39,5 +39,5 @@ public class AppearingObject : MonoBehaviour
         transform.position = new Vector3(transform.position.x, transform.position.y - (cameraTransform.position.y - lastCameraYpos) * passingSpeed, transform.position.z);
 
         lastCameraYpos = cameraTransform.position.y;
-    }
+    }*/
 }

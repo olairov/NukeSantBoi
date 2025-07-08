@@ -21,7 +21,7 @@ public class HotAirBalloonScript : MonoBehaviour, ResetPoolObject
     {
         rb = GetComponent<Rigidbody2D>();
 
-        ChooseStats();
+        Initialize();
     }
 
     void Update()
@@ -45,19 +45,6 @@ public class HotAirBalloonScript : MonoBehaviour, ResetPoolObject
         }
 
         Vector2.ClampMagnitude(actualDirection, 1); // Prevent it from reaching too high speeds;
-    }
-
-    void ChooseStats()
-    {
-        float randValue = Random.value;
-
-        if (randValue > 0.8f) transform.GetComponent<SpriteRenderer>().color = possibleColor1;
-        else if (randValue > 0.6f) transform.GetComponent<SpriteRenderer>().color = possibleColor2;
-        else if (randValue > 0.4f) transform.GetComponent<SpriteRenderer>().color = possibleColor3;
-        else if (randValue > 0.2f) transform.GetComponent<SpriteRenderer>().color = possibleColor4;
-        else transform.GetComponent<SpriteRenderer>().color = possibleColor5;
-
-        randRotDelay = Random.Range(0f, 3f);
     }
 
     public void Die()
@@ -100,7 +87,18 @@ public class HotAirBalloonScript : MonoBehaviour, ResetPoolObject
         dead = false;
         actualDirection = Vector2.zero;
         rb.rotation = 0f;
+    }
 
-        ChooseStats();
+    public void Initialize()
+    {
+        float randValue = Random.value;
+
+        if (randValue > 0.8f) transform.GetComponent<SpriteRenderer>().color = possibleColor1;
+        else if (randValue > 0.6f) transform.GetComponent<SpriteRenderer>().color = possibleColor2;
+        else if (randValue > 0.4f) transform.GetComponent<SpriteRenderer>().color = possibleColor3;
+        else if (randValue > 0.2f) transform.GetComponent<SpriteRenderer>().color = possibleColor4;
+        else transform.GetComponent<SpriteRenderer>().color = possibleColor5;
+
+        randRotDelay = Random.Range(0f, 3f);
     }
 }

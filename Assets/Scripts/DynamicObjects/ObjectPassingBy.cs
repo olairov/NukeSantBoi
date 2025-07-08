@@ -28,16 +28,6 @@ public class ObjectPassingBy : MonoBehaviour, ResetPoolObject
         Initialize();
     }
 
-    void Initialize()
-    {
-        // AppearingObject is the variable accessible from the inspector, which if true, will ALWAYS make the object appear wherever.
-        // While "dontSetPosition" is the variable that, if appearingObject is false, can have the same effect. This one is for the scripts to access and change.
-        if (appearingObject) dontSetPosition = true;
-
-        if (fakePassingSpeed) lastCameraYpos = cameraRiserTransform.position.y;
-        if (!dontSetPosition) transform.position = new Vector3(Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, 0, 0)).x + appearingDistance, transform.position.y, transform.position.z);
-    }
-
     private void Update()
     {
         if (!moveInFixedUpdate) UpdateXpos();
@@ -103,7 +93,15 @@ public class ObjectPassingBy : MonoBehaviour, ResetPoolObject
     {
         dontSetPosition = false;
         lastCameraYpos = movementFixSpeed = originalSceneMovement = 0;
+    }
 
-        Initialize();
+    public void Initialize()
+    {
+        // AppearingObject is the variable accessible from the inspector, which if true, will ALWAYS make the object appear wherever.
+        // While "dontSetPosition" is the variable that, if appearingObject is false, can have the same effect. This one is for the scripts to access and change.
+        if (appearingObject) dontSetPosition = true;
+
+        if (fakePassingSpeed) lastCameraYpos = cameraRiserTransform.position.y;
+        if (!dontSetPosition) transform.position = new Vector3(Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, 0, 0)).x + appearingDistance, transform.position.y, transform.position.z);
     }
 }

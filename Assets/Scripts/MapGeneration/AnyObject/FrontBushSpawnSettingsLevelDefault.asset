@@ -14,12 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeIntervalMin: 2.5
   timeIntervalMax: 6
-  firstGenMinDistance: 7
-  firstGenMaxDistance: 12
-  firstGenDistFromRightBorder: 0
+  firstGenMinDistance: 12
+  firstGenMaxDistance: 19
+  firstGenMinDistFromRightBorder: 0
+  firstGenMaxDistFromRightBorder: 0
   firstGenDistFromLeftBorder: -5
-  yMin: -7.5
-  yMax: -9
+  yMin: -6.7
+  yMax: -8.5
   zMin: -12
   zMax: -12
   xMin: 0
@@ -27,7 +28,7 @@ MonoBehaviour:
   appearingObject: 0
   onlyFirstGeneration: 0
   firstGenIsOnlyManual: 0
-  firstGeneratedObjectsXPositions: []
+  firstGeneratedObjectsPositions: []
   ignoreFirstGenXPos: 0
   ignoreFirstGenYPos: 0
   ignoreFirstGenZPos: 0

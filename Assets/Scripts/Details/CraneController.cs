@@ -10,10 +10,18 @@ public class CraneController : MonoBehaviour, ResetPoolObject
     void Start()
     {
         cranePool = GameObject.Find("DetailGenerator/CraneGenerator/RepeatedCranes").GetComponent<ObjectPool>();
-        ChooseStats();
+        Initialize();
     }
 
-    void ChooseStats()
+
+    // Reset Pooled Object State
+
+    public void ResetState()
+    {
+        
+    }
+
+    public void Initialize()
     {
         transform.position = new Vector3(transform.position.x, Random.Range(-2, 0), transform.position.z);
         transform.localScale = new Vector3(Random.value > 0.5f ? 1 : -1, 1, 1) * Random.Range(0.8f, 1.1f);
@@ -25,13 +33,5 @@ public class CraneController : MonoBehaviour, ResetPoolObject
             newCraneTransform.position += new Vector3(Random.value > 0.5f ? 4 : -4, -3, 0.2f);
             newCraneTransform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, 1) * 0.8f;
         }
-    }
-
-
-    // Reset Pooled Object State
-
-    public void ResetState()
-    {
-        ChooseStats();
     }
 }

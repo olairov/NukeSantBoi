@@ -13,39 +13,7 @@ public class BirdGroup : MonoBehaviour, ResetPoolObject
 
     void Start()
     {
-        ChooseStats();
-    }
-
-    private void ChooseStats()
-    {
-        float distance = Random.Range(0.6f, 1f);
-        transform.localScale = Vector3.one * distance;
-        transform.GetComponent<ObjectPassingBy>().realPassingSpeed *= distance;
-
-        childNum = transform.childCount; // Get the num of children before the loop, as while on it, this number is likely to change.
-
-        for (int idx = 0; idx < childNum; idx++)
-        {
-            Transform childTransform = transform.GetChild(idx);
-
-            // Allow the possibiliy of having a bird group with less members randomly erasing the last ones.
-            if ((childTransform.name.Contains("4") || childTransform.name.Contains("7")) && Random.value > 0.6f)
-            {
-                childTransform.GetComponent<SpriteRenderer>().enabled = false;
-            }
-
-            // Making each bird seem individual
-            childTransform.localScale = Vector3.one * Random.Range(0.18f, 0.3f);
-            childTransform.GetComponent<Animator>().speed = Random.Range(0.7f, 1.3f);
-
-            birdsStartTimes.Add(Random.value * 4);
-            birdsYPositions.Add(childTransform.localPosition.y);
-        }
-
-        yPos = Random.Range(1f, 5f);
-        if (distance > 0.85f) transform.position = new Vector3(transform.position.x, yPos, 11); // Make the bird be in front of the nearest buildings when they are bigger.
-        randDelay = Random.Range(0, 3.14f);
-        lastYcosCalculatedYAdder = Mathf.Cos(Time.time + randDelay) / 5;
+        Initialize();
     }
 
     void Update()
@@ -93,7 +61,37 @@ public class BirdGroup : MonoBehaviour, ResetPoolObject
     {
         timeSinceAppeared = 0;
         finishedStartingBirds = false;
+    }
 
-        ChooseStats();
+    public void Initialize()
+    {
+        float distance = Random.Range(0.6f, 1f);
+        transform.localScale = Vector3.one * distance;
+        transform.GetComponent<ObjectPassingBy>().realPassingSpeed *= distance;
+
+        childNum = transform.childCount; // Get the num of children before the loop, as while on it, this number is likely to change.
+
+        for (int idx = 0; idx < childNum; idx++)
+        {
+            Transform childTransform = transform.GetChild(idx);
+
+            // Allow the possibiliy of having a bird group with less members randomly erasing the last ones.
+            if ((childTransform.name.Contains("4") || childTransform.name.Contains("7")) && Random.value > 0.6f)
+            {
+                childTransform.GetComponent<SpriteRenderer>().enabled = false;
+            }
+
+            // Making each bird seem individual
+            childTransform.localScale = Vector3.one * Random.Range(0.18f, 0.3f);
+            childTransform.GetComponent<Animator>().speed = Random.Range(0.7f, 1.3f);
+
+            birdsStartTimes.Add(Random.value * 4);
+            birdsYPositions.Add(childTransform.localPosition.y);
+        }
+
+        yPos = Random.Range(1f, 5f);
+        if (distance > 0.85f) transform.position = new Vector3(transform.position.x, yPos, 11); // Make the bird be in front of the nearest buildings when they are bigger.
+        randDelay = Random.Range(0, 3.14f);
+        lastYcosCalculatedYAdder = Mathf.Cos(Time.time + randDelay) / 5;
     }
 }

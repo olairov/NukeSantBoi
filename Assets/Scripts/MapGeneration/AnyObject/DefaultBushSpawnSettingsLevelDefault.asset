@@ -16,10 +16,11 @@ MonoBehaviour:
   timeIntervalMax: 2.4
   firstGenMinDistance: 5
   firstGenMaxDistance: 9
-  firstGenDistFromRightBorder: 0
+  firstGenMinDistFromRightBorder: 0
+  firstGenMaxDistFromRightBorder: 0
   firstGenDistFromLeftBorder: -10
-  yMin: -6.5
-  yMax: -8
+  yMin: -5.7
+  yMax: -7.5
   zMin: 0
   zMax: 0
   xMin: 0
@@ -27,7 +28,7 @@ MonoBehaviour:
   appearingObject: 0
   onlyFirstGeneration: 0
   firstGenIsOnlyManual: 0
-  firstGeneratedObjectsXPositions: []
+  firstGeneratedObjectsPositions: []
   ignoreFirstGenXPos: 0
   ignoreFirstGenYPos: 0
   ignoreFirstGenZPos: 0

@@ -11,10 +11,18 @@ public class BackgroundController : MonoBehaviour, ResetPoolObject
 
     void Start()
     {
-        ChooseStats();
+        Initialize();
     }
 
-    void ChooseStats()
+
+    // Reset Pooled Object State
+
+    public void ResetState()
+    {
+        
+    }
+
+    public void Initialize()
     {
         transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, zPos);
 
@@ -50,13 +58,5 @@ public class BackgroundController : MonoBehaviour, ResetPoolObject
         }
 
         GetComponent<SpriteRenderer>().sprite = mySprite;
-    }
-
-
-    // Reset Pooled Object State
-
-    public void ResetState()
-    {
-        ChooseStats();
     }
 }

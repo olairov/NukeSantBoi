@@ -26,11 +26,12 @@ public class ObjectPool : MonoBehaviour
         {
             GameObject dequeuedObject = pool.Dequeue();
             dequeuedObject.SetActive(true);
-            if (resetObject && dequeuedObject.GetComponent<PooledObject>().alreadyUsed)
+            if (dequeuedObject.GetComponent<PooledObject>().alreadyUsed)
             {
                 foreach (var poolable in dequeuedObject.GetComponents<ResetPoolObject>())
                 {
                     poolable.ResetState();
+                    if (resetObject) poolable.Initialize();
                 }
             }
             return dequeuedObject;

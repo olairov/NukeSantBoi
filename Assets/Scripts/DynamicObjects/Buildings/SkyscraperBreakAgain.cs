@@ -37,7 +37,7 @@ public class SkyscraperBreakAgain : MonoBehaviour, ResetPoolObject
 
     public void BreakAgain(Transform explosionTransform)
     {
-        explosionTransform.GetComponent<ExplosionController>().CantBreakSkystraperAgain = true;
+        explosionTransform.GetComponent<ExplosionController>().CantBreakSkyscraperAgain = true;
 
         Vector2 breakPos = GetBreakPos(explosionTransform.position);
         BreakingProcess(breakPos);
@@ -333,5 +333,10 @@ public class SkyscraperBreakAgain : MonoBehaviour, ResetPoolObject
         if (transform.name.Contains("Upper")) upperSpriteRenderer.sprite = topSprite;
         upperSpriteRenderer.color = upperSpriteOriginalColor;
         upperSpriteRenderer.size = upperSpriteSize;
+    }
+
+    public void Initialize()
+    {
+
     }
 }

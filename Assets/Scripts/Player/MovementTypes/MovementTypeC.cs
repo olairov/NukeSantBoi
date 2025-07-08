@@ -9,14 +9,6 @@ public class MovementTypeC : BaseMovement
     private bool isInCenter = true, wasStoppedBefore;
 
     private PlayerController playerScript;
-    /*
-    public MovementTypeC(Transform transform, Rigidbody2D rb)
-    {
-        playerTransform = transform;
-        playerRB = rb;
-
-        playerScript = transform.GetComponent<PlayerController>();
-    }*/
 
     public override void Init(Transform transform, Rigidbody2D rb)
     {

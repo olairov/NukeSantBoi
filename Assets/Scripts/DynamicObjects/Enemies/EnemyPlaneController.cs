@@ -31,15 +31,6 @@ public class EnemyPlaneController : MonoBehaviour, ResetPoolObject
         boostSoundVolume = boostSoundOptionsModifier.gameObject.GetComponent<AudioSource>().volume;
     }
 
-    void Initialize()
-    {
-        if (PlayerController.dead) dutyFinished = true;
-        else playerTransform = GameObject.Find("Player").transform;
-
-        transform.position = new Vector3(transform.position.x, Random.Range(Camera.main.ScreenToWorldPoint(Vector3.zero).y, Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y), transform.position.z);
-        appearingXpos = transform.position.x;
-    }
-
     void Update()
     {
         if (!dead) RotateAndMove();
@@ -161,7 +152,14 @@ public class EnemyPlaneController : MonoBehaviour, ResetPoolObject
         rb.velocity = Vector2.zero;
         rb.angularVelocity = 0;
         rb.rotation = 0f;
+    }
 
-        Initialize();
+    public void Initialize()
+    {
+        if (PlayerController.dead) dutyFinished = true;
+        else playerTransform = GameObject.Find("Player").transform;
+
+        transform.position = new Vector3(transform.position.x, Random.Range(Camera.main.ScreenToWorldPoint(Vector3.zero).y, Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y), transform.position.z);
+        appearingXpos = transform.position.x;
     }
 }
