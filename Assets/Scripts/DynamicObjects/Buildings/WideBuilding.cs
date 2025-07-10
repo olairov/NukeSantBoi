@@ -158,7 +158,7 @@ public class WideBuilding : Building, ResetPoolObject
 
             if (posToPutDecal.y < -2.4f) posToPutDecal = new Vector2(posToPutDecal.x, -2.4f);
         }
-
+        posToPutDecal = transform.position;
         instanceMaterial.SetVector("_breakPos", posToPutDecal);
         backSpriteInstanceMaterial.SetVector("_breakPos", posToPutDecal);
     }

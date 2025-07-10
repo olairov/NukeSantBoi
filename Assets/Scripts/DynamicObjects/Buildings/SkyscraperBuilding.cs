@@ -35,16 +35,19 @@ public class SkyscraperBuilding : Building, ResetPoolObject
     IEnumerator UpperPartFlash(Transform upperPartTransform)
     {
         SpriteRenderer upperPartSpriteRenderer = upperPartTransform.GetComponent<SpriteRenderer>();
+        SpriteRenderer myUpperSpriteSpriteRenderer = transform.Find("UpperSprite").GetComponent<SpriteRenderer>();
         SpriteRenderer upperSpriteSpriteRenderer = upperPartTransform.Find("UpperSprite").GetComponent<SpriteRenderer>();
         SpriteRenderer lowerSpriteSpriteRenderer = upperPartTransform.Find("LowerSprite").GetComponent<SpriteRenderer>();
 
         upperPartSpriteRenderer.color = flashColor;
+        myUpperSpriteSpriteRenderer.color = flashColor;
         upperSpriteSpriteRenderer.color = flashColor;
         lowerSpriteSpriteRenderer.color = flashColor;
 
         yield return new WaitForSeconds(flashDuration);
 
         upperPartSpriteRenderer.color = afterFlashColor;
+        myUpperSpriteSpriteRenderer.color = afterFlashColor;
         upperSpriteSpriteRenderer.color = afterFlashColor;
         lowerSpriteSpriteRenderer.color = afterFlashColor;
     }
