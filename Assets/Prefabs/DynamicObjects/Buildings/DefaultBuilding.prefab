@@ -167,10 +167,22 @@ MonoBehaviour:
   flashDuration: 0.1
   imUpsideDown: 0
   iStrapSky: 0
-  buildingSprite2: {fileID: -773216641, guid: 33293665203b12f4885ddbdaa702205f, type: 3}
-  buildingSprite3: {fileID: 1628079857, guid: 51b299089f3b6164197a119648542a81, type: 3}
-  backBuildingSprite2: {fileID: -1754880918, guid: 33293665203b12f4885ddbdaa702205f, type: 3}
-  backBuildingSprite3: {fileID: -1089298751, guid: 51b299089f3b6164197a119648542a81, type: 3}
+  buildingSprite2: {fileID: 1628079857, guid: 51b299089f3b6164197a119648542a81, type: 3}
+  buildingSprite3: {fileID: -1359764356, guid: 0d17a8df2fdbf3e48848eb456676e6be, type: 3}
+  backBuildingSprite2: {fileID: -1089298751, guid: 51b299089f3b6164197a119648542a81, type: 3}
+  backBuildingSprite3: {fileID: -759644284, guid: 0d17a8df2fdbf3e48848eb456676e6be, type: 3}
+  mainSprites:
+  - {fileID: -773216641, guid: 33293665203b12f4885ddbdaa702205f, type: 3}
+  - {fileID: 1628079857, guid: 51b299089f3b6164197a119648542a81, type: 3}
+  - {fileID: -1359764356, guid: 0d17a8df2fdbf3e48848eb456676e6be, type: 3}
+  backSprites:
+  - {fileID: -1754880918, guid: 33293665203b12f4885ddbdaa702205f, type: 3}
+  - {fileID: -1089298751, guid: 51b299089f3b6164197a119648542a81, type: 3}
+  - {fileID: -759644284, guid: 0d17a8df2fdbf3e48848eb456676e6be, type: 3}
+  spriteSizesForEachSprite:
+  - {x: 3, y: 10}
+  - {x: 3, y: 10}
+  - {x: 3, y: 13.6}
 --- !u!61 &1161062619281861289
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -326,7 +338,7 @@ Transform:
   m_GameObject: {fileID: 6326396166626260203}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -5.1, z: 0}
+  m_LocalPosition: {x: 0, y: -5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

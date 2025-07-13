@@ -34,22 +34,23 @@ public class SkyscraperBuilding : Building, ResetPoolObject
 
     IEnumerator UpperPartFlash(Transform upperPartTransform)
     {
-        SpriteRenderer upperPartSpriteRenderer = upperPartTransform.GetComponent<SpriteRenderer>();
         SpriteRenderer myUpperSpriteSpriteRenderer = transform.Find("UpperSprite").GetComponent<SpriteRenderer>();
-        SpriteRenderer upperSpriteSpriteRenderer = upperPartTransform.Find("UpperSprite").GetComponent<SpriteRenderer>();
-        SpriteRenderer lowerSpriteSpriteRenderer = upperPartTransform.Find("LowerSprite").GetComponent<SpriteRenderer>();
+        SpriteRenderer upperPartSpriteRenderer = upperPartTransform.GetComponent<SpriteRenderer>();
+        SpriteRenderer upperPartUpperSpriteRenderer = upperPartTransform.Find("UpperSprite").GetComponent<SpriteRenderer>();
+        SpriteRenderer upperPartLowerSpriteRenderer = upperPartTransform.Find("LowerSprite").GetComponent<SpriteRenderer>();
+        Color upperPartUpperSpriteColor = upperPartUpperSpriteRenderer.color; // The upper part's upper sprite has a unique color.
 
-        upperPartSpriteRenderer.color = flashColor;
         myUpperSpriteSpriteRenderer.color = flashColor;
-        upperSpriteSpriteRenderer.color = flashColor;
-        lowerSpriteSpriteRenderer.color = flashColor;
+        upperPartSpriteRenderer.color = flashColor;
+        upperPartUpperSpriteRenderer.color = flashColor;
+        upperPartLowerSpriteRenderer.color = flashColor;
 
         yield return new WaitForSeconds(flashDuration);
 
-        upperPartSpriteRenderer.color = afterFlashColor;
         myUpperSpriteSpriteRenderer.color = afterFlashColor;
-        upperSpriteSpriteRenderer.color = afterFlashColor;
-        lowerSpriteSpriteRenderer.color = afterFlashColor;
+        upperPartSpriteRenderer.color = afterFlashColor;
+        upperPartUpperSpriteRenderer.color = upperPartUpperSpriteColor;
+        upperPartLowerSpriteRenderer.color = afterFlashColor;
     }
 
     Transform SkyscraperFallStats(float otherYPos)
@@ -65,11 +66,7 @@ public class SkyscraperBuilding : Building, ResetPoolObject
 
         Transform skyscraperPiecesTransform = skyscraperPiecesPool.GetObject(true).transform;
         skyscraperPiecesTransform.position = new Vector3(transform.position.x, otherYPos - cameraYposOffsetFix, -7);
-        /*
-        Make both upper and lower part's skystraper script know it has already been broken.
-        GetComponent<SkystraperBreakAgain>().OriginalExplosionTransform = otherTransform;
-        upperPartTransform.GetComponent<SkystraperBreakAgain>().OriginalExplosionTransform = otherTransform;
-        */
+        
         return upperPartTransform;
     }
 
@@ -79,6 +76,7 @@ public class SkyscraperBuilding : Building, ResetPoolObject
     public override void ResetState()
     {
         base.ResetState();
+        transform.position = new Vector3(transform.position.x, 0, transform.position.z);
     }
 
     public override void Initialize()

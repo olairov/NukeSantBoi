@@ -22,6 +22,8 @@ public class Building : Entity
         cameraWidthInUnits = Camera.main.ScreenToWorldPoint(Vector3.one * Screen.width).x - Camera.main.ScreenToWorldPoint(Vector3.zero).x;
         myBackSprite = transform.GetChild(1);
 
+        if (transform.name.Contains("Sky")) iStrapSky = true;
+
         smokeParticlesPool = GameObject.Find("ParticlesContainer/buildingSmoke").GetComponent<ObjectPool>();
         shardsParticlesPool = GameObject.Find("ParticlesContainer/buildingShards").GetComponent<ObjectPool>();
     }
@@ -35,7 +37,31 @@ public class Building : Entity
         if (dead) Fall();
     }
 
+    public int ChooseBuildingSprite(int numberOfPossibleSprites, int lastSprite) // THIS ALWAYS GETS IN AN INFINITE LOOP
+    {
+        // We create as many float ranges / intervals between 0 & 1 as the number of different sprites there are.
+        // Each range represents the weight of each sprite when choosing one (all sprites' weights are equal).
+        float rangeOfChance = 1f / numberOfPossibleSprites;
 
+        int timesTried = 0;
+        while (true) // This will loop until a random sprite different from the last sprite is chosen.
+        {
+            float randomValue = Random.value;
+
+            for (int idx = 0; idx < numberOfPossibleSprites; idx++)
+            {
+                // For each sprite, we test if randomValue is inside this sprite's interval.
+                // The beginning of this interval is the end of the last interval,
+                // and the end of this interval is the end of the last interval added to rangeOfChance
+                float chanceThresholdForThisSprite = rangeOfChance * (idx + 1);
+                if (randomValue > chanceThresholdForThisSprite) continue;
+                
+                // It's a 100 times loop to avoid excessive looping if for some reason the chosen sprite always matches the last sprite.
+                if (idx == lastSprite && timesTried < 100) break;
+                return idx;
+            }
+        }
+    }
 
     public virtual void Destroy(Transform otherTransform)
     {

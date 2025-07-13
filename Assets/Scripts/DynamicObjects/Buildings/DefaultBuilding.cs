@@ -5,29 +5,21 @@ using UnityEngine;
 public class DefaultBuilding : Building, ResetPoolObject
 {
     [SerializeField] private Sprite buildingSprite2, buildingSprite3, backBuildingSprite2, backBuildingSprite3;
-    static Sprite lastDefaultSprite, lastWideSprite;
-    ObjectPool defaultBuildingPool;
+    static int lastSprite;
 
     private Material instanceMaterial, backSpriteInstanceMaterial;
     private SpriteRenderer myRenderer;
 
-    private float myYdefaultPos;
-
-    private bool imWide;
+    [SerializeField] List<Sprite> mainSprites = new(), backSprites = new();
+    [SerializeField] List<Vector2> spriteSizesForEachSprite = new();
 
     protected override void Start()
     {
         base.Start();
 
-        defaultBuildingPool = GameObject.Find("BuildingGenerator/DefaultBuildingGenerator").GetComponent<ObjectPool>();
-
         myRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
 
-        if (transform.name.Contains("Sky")) iStrapSky = true;
-        
         Initialize();
-
-        ChooseStats();
     }
 
     protected override void Update()
@@ -38,115 +30,52 @@ public class DefaultBuilding : Building, ResetPoolObject
     void ChooseStats()
     {
         float randomY = Random.Range(0f, 2.3f);
-        if (imWide) randomY = Random.Range(0f, 1.5f);
-        if (iStrapSky) randomY = 0;
 
         if (imUpsideDown)
         {
             randomY = 14;
             transform.localScale = new Vector3(transform.localScale.x, -Mathf.Abs(transform.localScale.y), transform.localScale.z);
         }
-        else
-        {
-            transform.localScale = new Vector3(transform.localScale.x, Mathf.Abs(transform.localScale.y), transform.localScale.z);
-        }
 
-        if (imWide && Random.value > 0.999f)
-        {
-            defaultBuildingPool.GetObject(true).GetComponent<Building>().imUpsideDown = true;
-        }
+        float myYdefaultPos = Camera.main.ScreenToWorldPoint(Vector3.zero).y + randomY;
+        transform.position = new Vector3(imUpsideDown ? transform.position.x + 4 : transform.position.x, myYdefaultPos, -0.5f);
 
-        myYdefaultPos = Camera.main.ScreenToWorldPoint(Vector3.zero).y + randomY;
-        transform.position = new Vector3(imUpsideDown ? transform.position.x + 4 : transform.position.x, myYdefaultPos, iStrapSky ? -3f : -0.5f);
+        int chosenBuildingSpriteIdx = ChooseBuildingSprite(mainSprites.Count, lastSprite);
 
-        if (iStrapSky) return;
+        SpriteRenderer frontSprite = transform.GetChild(0).GetComponent<SpriteRenderer>();
+        SpriteRenderer backSprite = myBackSprite.GetComponent<SpriteRenderer>();
 
-        SpriteRenderer mySpriteRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
-        SpriteRenderer myBackSpriteRenderer = myBackSprite.GetComponent<SpriteRenderer>();
+        frontSprite.sprite = mainSprites[chosenBuildingSpriteIdx];
+        backSprite.sprite = backSprites[chosenBuildingSpriteIdx];
+        frontSprite.size = spriteSizesForEachSprite[chosenBuildingSpriteIdx];
+        backSprite.size = spriteSizesForEachSprite[chosenBuildingSpriteIdx];
 
-        int idx = 0;
-        while (true)
-        {
-            float randomValue = Random.value;
-
-            if (randomValue > 0.66f)
-            {
-                mySpriteRenderer.sprite = buildingSprite3;
-                myBackSpriteRenderer.sprite = backBuildingSprite3;
-
-                if (!imWide)
-                {
-                    mySpriteRenderer.size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 10);
-                    myBackSpriteRenderer.size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 10);
-                }
-            }
-            else if (randomValue > 0.33f)
-            {
-                mySpriteRenderer.sprite = buildingSprite2;
-                myBackSpriteRenderer.sprite = backBuildingSprite2;
-
-                if (!imWide)
-                {
-                    mySpriteRenderer.size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 10);
-                    myBackSpriteRenderer.size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 10);
-                }
-            }
-            else
-            {
-                if (!imWide)
-                {
-                    mySpriteRenderer.size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 14);
-                    myBackSpriteRenderer.size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 14);
-                }
-            }
-
-            if (imWide && mySpriteRenderer.sprite != lastWideSprite) break;
-            else if (!imWide && mySpriteRenderer.sprite != lastDefaultSprite) break;
-
-            idx++;
-            if (idx > 99)  // A 100 times loop to avoid excessive repetition if for some reason the sprite always matches the last sprite.
-            {
-                if (!imWide && (mySpriteRenderer.sprite == buildingSprite2 || mySpriteRenderer.sprite == buildingSprite3))
-                {
-                    mySpriteRenderer.size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 10);
-                    myBackSpriteRenderer.size = new Vector2(transform.GetComponentInChildren<SpriteRenderer>().size.x, 10);
-                }
-
-                break;
-            }
-        }
-
-        if (imWide)
-        {
-            lastWideSprite = mySpriteRenderer.sprite;
-
-            if (mySpriteRenderer.sprite == buildingSprite2) // In this case, the upper part of the sprite isn't something with what you would collide, so the collider is moved
-            {
-                BoxCollider2D myColider = GetComponent<BoxCollider2D>();
-
-                myColider.offset = new Vector2(0, -0.5f);
-                myColider.size = new Vector2(6, 7);
-            }
-        }
-        else lastDefaultSprite = mySpriteRenderer.sprite;
+        lastSprite = chosenBuildingSpriteIdx;
     }
 
     public override void Destroy(Transform otherTransform)
     {
         base.Destroy(otherTransform);
 
-        SetGap(otherTransform.position);
+        StartCoroutine(SetGap(otherTransform.position));
     }
 
     IEnumerator SetGap(Vector2 otherPos)
     {
-        yield return new WaitForSeconds(flashDuration);
+        yield return new WaitForSeconds(0.1f);
 
         Vector2 posToPutDecal = ((Vector2)transform.position - otherPos) / Mathf.PI - new Vector2(0, 1);
 
-        posToPutDecal = new Vector2(Mathf.Clamp(posToPutDecal.x, -1, 1), posToPutDecal.y);
+        posToPutDecal = new Vector2(Mathf.Clamp(posToPutDecal.x, -0.4f, 0.4f), posToPutDecal.y);
 
-        if (posToPutDecal.y < -2.4f) posToPutDecal = new Vector2(posToPutDecal.x, -2.4f);
+        if (myRenderer.sprite == buildingSprite3)
+        {
+            if (posToPutDecal.y < -2) posToPutDecal = new Vector2(posToPutDecal.x, -2f);
+        }
+        else
+        {
+            if (posToPutDecal.y < -2.3f) posToPutDecal = new Vector2(posToPutDecal.x, -2.3f);
+        }
 
         instanceMaterial.SetVector("_breakPos", posToPutDecal);
         backSpriteInstanceMaterial.SetVector("_breakPos", posToPutDecal);
@@ -159,7 +88,8 @@ public class DefaultBuilding : Building, ResetPoolObject
     {
         base.ResetState();
 
-        myYdefaultPos = 0;
+        transform.localScale = new Vector3(transform.localScale.x, Mathf.Abs(transform.localScale.y), transform.localScale.z);
+
         imUpsideDown = false;
     }
 
