@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BackgroundGenerator : MonoBehaviour
+public class BackgroundGenerator : ObjectGenerator
 {
     public BackgroundSpawnSettings spawnSettings;
     
@@ -19,7 +19,7 @@ public class BackgroundGenerator : MonoBehaviour
         else timeForEveryNextLayer = GetResetedTimesList();
     }
 
-    public void GenerateBackground()
+    public override void GenerateObject()
     {
         for (int idx = 0; idx < numberOfLayers; idx++)
         {
@@ -38,7 +38,7 @@ public class BackgroundGenerator : MonoBehaviour
         return instantiatedBackground;
     }
 
-    public void FirstGeneration(float startX, float finishX)
+    public override void FirstGeneration(float startX, float finishX)
     {
         for (float actualX = startX + 5; actualX > finishX - 30; actualX -= spawnSettings.firstGenerationSpaceBetweenBackgrounds)
         {

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60bf5707133b74043a4be731cf28898d, type: 3}
+  m_Name: DuplicatedCraneSpawnSettingsLevelDefault
+  m_EditorClassIdentifier: 
+  chanceOfDuplication: 100
+  minPositionAdder: {x: 3, y: -2, z: 1}
+  maxPositionAdder: {x: 4, y: -2.5, z: 1}
+  minRotationAdder: 0
+  maxRotationAdder: 0
+  minSizeMultiplier: 0.7
+  maxSizeMultiplier: 0.8
+  canAppearOnTheOtherSide: 1
+  canAppearFlipped: 1

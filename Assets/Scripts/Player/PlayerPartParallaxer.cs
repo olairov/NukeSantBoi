@@ -10,11 +10,11 @@ public class PlayerPartParallaxer : MonoBehaviour
 
     [SerializeField] bool controlledByRotationForce;
 
-    private EnemyPlaneController myEnemyPlaneController;
+    private EnemyMissileController myEnemyMissileController;
 
     void Start()
     {
-        if (controlledByRotationForce) myEnemyPlaneController = transform.parent.parent.GetComponent<EnemyPlaneController>();
+        if (controlledByRotationForce) myEnemyMissileController = transform.parent.parent.GetComponent<EnemyMissileController>();
     }
 
     void Update()
@@ -27,7 +27,7 @@ public class PlayerPartParallaxer : MonoBehaviour
     {
         if (Time.timeScale < 1) return;
 
-        float lerpValue = controlledByRotationForce? myEnemyPlaneController.actualRotationSpeed / 100 + 0.5f : CorrectInputs.verticalAxis / 2 + 0.5f;
+        float lerpValue = controlledByRotationForce? myEnemyMissileController.actualRotationSpeed / 100 + 0.5f : CorrectInputs.verticalAxis / 2 + 0.5f;
         lerpValue = Mathf.Clamp01(lerpValue);
 
         transform.localEulerAngles = new Vector3(Mathf.Lerp(startXrot, endXrot, lerpValue), 0, 180);

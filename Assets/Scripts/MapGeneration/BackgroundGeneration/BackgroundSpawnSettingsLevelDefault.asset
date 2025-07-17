@@ -15,5 +15,5 @@ MonoBehaviour:
   spawnTimeIntervals:
   - 5.9
   - 7.5
-  - 12
+  - 11.5
   firstGenerationSpaceBetweenBackgrounds: 24.5

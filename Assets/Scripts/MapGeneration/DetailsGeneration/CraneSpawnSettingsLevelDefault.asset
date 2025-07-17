@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50fe093fa05198e4aa513a4453a18fe1, type: 3}
+  m_Name: CraneSpawnSettingsLevelDefault
+  m_EditorClassIdentifier: 
+  timeIntervalMin: 16
+  timeIntervalMax: 20
+  firstGenMinDistance: 40
+  firstGenMaxDistance: 40
+  firstGenMinDistFromRightBorder: 5
+  firstGenMaxDistFromRightBorder: 15
+  firstGenDistFromLeftBorder: -10
+  yMin: -2
+  yMax: 0
+  zMin: 12.5
+  zMax: 12.5
+  xMin: 0
+  xMax: 0
+  minScale: 0.85
+  maxScale: 1.2
+  minRotation: 0
+  maxRotation: 0
+  appearingObject: 0
+  canAppearFlipped: 1
+  canAppearDuplicated: 1
+  onlyFirstGeneration: 0
+  firstGenIsOnlyManual: 0
+  firstGeneratedObjectsPositions: []
+  ignoreFirstGenXPos: 0
+  ignoreFirstGenYPos: 0
+  ignoreFirstGenZPos: 0
+  objectName: crane

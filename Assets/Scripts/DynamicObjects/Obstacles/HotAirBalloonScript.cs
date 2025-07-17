@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HotAirBalloonScript : MonoBehaviour, ResetPoolObject
+public class HotAirBalloonScript : Entity, ResetPoolObject
 {
     [SerializeField] private Color burnColor, possibleColor1, possibleColor2, possibleColor3, possibleColor4, possibleColor5;
 
@@ -10,22 +10,28 @@ public class HotAirBalloonScript : MonoBehaviour, ResetPoolObject
 
     private Rigidbody2D rb;
 
-    private Vector2 actualDirection;
+    Vector2 actualDirection;
+    Color originalBasketColor;
+    SpriteRenderer basketSpriteRenderer;
 
     [SerializeField] private float speed, rotSpeed, pushForce, speedMax, slowDownSpeed;
     private float randRotDelay;
 
-    private bool dead;
-
-    void Start()
+    protected override void Start()
     {
+        base.Start();
+
         rb = GetComponent<Rigidbody2D>();
+        basketSpriteRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
+        originalBasketColor = basketSpriteRenderer.color;
 
         Initialize();
     }
 
-    void Update()
+    protected override void Update()
     {
+        base.Update();
+
         if (rb.velocity.magnitude < speedMax) rb.AddForce(actualDirection * Time.deltaTime * speed);
 
         if (!dead) transform.eulerAngles = new Vector3(0, 0, Mathf.Cos(Time.time * rotSpeed + randRotDelay) * 12);
@@ -62,7 +68,7 @@ public class HotAirBalloonScript : MonoBehaviour, ResetPoolObject
         rb.AddForce(new Vector2(Random.Range(3, 7), 6), ForceMode2D.Impulse);
 
         GetComponent<SpriteRenderer>().color = burnColor;
-        transform.GetChild(0).GetComponent<SpriteRenderer>().color = burnColor;
+        basketSpriteRenderer.color = burnColor;
         GetComponent<Collider2D>().enabled = false;
         GetComponent<ObjectPassingBy>().moveInFixedUpdate = true;
     }
@@ -80,17 +86,24 @@ public class HotAirBalloonScript : MonoBehaviour, ResetPoolObject
 
     // Reset Pooled Object State
 
-    public void ResetState()
+    public override void ResetState()
     {
+        base.ResetState();
+
         rb.velocity = Vector2.zero;
         rb.angularVelocity = 0;
-        dead = false;
         actualDirection = Vector2.zero;
         rb.rotation = 0f;
+        rb.gravityScale = 0;
+        basketSpriteRenderer.color = originalBasketColor;
+        GetComponent<Collider2D>().enabled = true;
+        GetComponent<ObjectPassingBy>().moveInFixedUpdate = false;
     }
 
-    public void Initialize()
+    public override void Initialize()
     {
+        base.Initialize();
+
         float randValue = Random.value;
 
         if (randValue > 0.8f) transform.GetComponent<SpriteRenderer>().color = possibleColor1;

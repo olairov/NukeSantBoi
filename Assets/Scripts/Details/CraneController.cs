@@ -23,9 +23,6 @@ public class CraneController : MonoBehaviour, ResetPoolObject
 
     public void Initialize()
     {
-        transform.position = new Vector3(transform.position.x, Random.Range(-2, 0), transform.position.z);
-        transform.localScale = new Vector3(Random.value > 0.5f ? 1 : -1, 1, 1) * Random.Range(0.8f, 1.1f);
-
         if (Random.value > 0.6f)
         {
             Transform newCraneTransform = cranePool.GetObject(false).transform;

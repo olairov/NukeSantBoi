@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 828266947501970035}
   - component: {fileID: 828266947501970032}
-  - component: {fileID: 828266947501970033}
   m_Layer: 0
   m_Name: Crane
   m_TagString: Untagged
@@ -56,18 +55,6 @@ MonoBehaviour:
   fakePassingSpeed: 0
   appearingObject: 0
   moveInFixedUpdate: 0
---- !u!114 &828266947501970033
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 828266947501970034}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c06d30214567e3e4eaed2163508aa5a1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &828266947981058563
 GameObject:
   m_ObjectHideFlags: 0

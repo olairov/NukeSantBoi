@@ -12,7 +12,7 @@ public class DefaultBuilding : Building, ResetPoolObject
 
     [SerializeField] List<Sprite> mainSprites = new(), backSprites = new();
     [SerializeField] List<Vector2> spriteSizesForEachSprite = new();
-
+    
     protected override void Start()
     {
         base.Start();
@@ -89,8 +89,6 @@ public class DefaultBuilding : Building, ResetPoolObject
         base.ResetState();
 
         transform.localScale = new Vector3(transform.localScale.x, Mathf.Abs(transform.localScale.y), transform.localScale.z);
-
-        imUpsideDown = false;
     }
 
     public override void Initialize()

@@ -57,7 +57,7 @@ public class ObjectPassingBy : MonoBehaviour, ResetPoolObject
         if (GetComponent<PooledObject>() != null) GetComponent<PooledObject>().ReturnToPool(gameObject);
         else
         {
-            //Debug.LogWarning("Pooled Object script not found in " + transform.name);
+            Debug.LogWarning("Pooled Object script not found in " + transform.name);
             Destroy(gameObject);
         }
     }

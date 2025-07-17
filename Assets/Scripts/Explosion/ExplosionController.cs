@@ -143,7 +143,7 @@ public class ExplosionController : MonoBehaviour, ResetPoolObject
         else if (other.CompareTag("Enemy"))
         {
             pointsToAdd += 5;
-            other.GetComponent<EnemyPlaneController>().Die();
+            other.GetComponent<EnemyMissileController>().Die();
 
             comboNum++;
         }

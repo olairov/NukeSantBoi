@@ -13,7 +13,7 @@ public class Building : Entity
 
     public float flashDuration;
     float cameraWidthInUnits, pushAwayTime, rotationSpeed, pushAwayProgress, fallingSpeed, timeSinceDestruction, actualFallRotation;
-    public bool imUpsideDown, iStrapSky;
+    public bool imUpsideDown;
 
     protected override void Start()
     {
@@ -21,8 +21,6 @@ public class Building : Entity
         
         cameraWidthInUnits = Camera.main.ScreenToWorldPoint(Vector3.one * Screen.width).x - Camera.main.ScreenToWorldPoint(Vector3.zero).x;
         myBackSprite = transform.GetChild(1);
-
-        if (transform.name.Contains("Sky")) iStrapSky = true;
 
         smokeParticlesPool = GameObject.Find("ParticlesContainer/buildingSmoke").GetComponent<ObjectPool>();
         shardsParticlesPool = GameObject.Find("ParticlesContainer/buildingShards").GetComponent<ObjectPool>();
@@ -118,7 +116,7 @@ public class Building : Entity
         transform.position += new Vector3(0, fallingSpeed * timeSinceDestruction * Time.deltaTime, 0);
 
         actualFallRotation += rotationSpeed * timeSinceDestruction * Time.deltaTime;
-        if (iStrapSky) transform.eulerAngles = new Vector3(0, 0, actualFallRotation);
+        if (pushAwayTime <= 0) transform.eulerAngles = new Vector3(0, 0, actualFallRotation);
     }
 
 
@@ -135,7 +133,7 @@ public class Building : Entity
     private void KeepPushingAway()
     {
         // This makes pushAwayTime decrease less every frame. At first it decreases fast, and then very slow, to create a smooth effect.
-        pushAwayTime /= 1 + (Time.deltaTime * 3);
+        pushAwayTime = pushAwayTime / (1 + Time.deltaTime * 3);
 
         float pushAwayLerpProgress = (-pushAwayTime + 1) * 5;
         if (pushAwayTime < 0.8f) pushAwayLerpProgress = pushAwayTime * 1.111f; // I should have commented this before.

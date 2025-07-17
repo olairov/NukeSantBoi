@@ -3,12 +3,7 @@ using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
-    // Each Generator Script
-    public BuildingGenerator buildingGeneratorScript;
-    public BackgroundGenerator backgroundGeneratorScript;
-    public ObstacleGenerator obstacleGeneratorScript;
-    public EnemyGenerator enemyGeneratorScript;
-    public DetailGenerator detailGeneratorScript;
+    public List<ObjectGenerator> objectGeneratorScripts = new();
 
     [SerializeField] private GameObject enemyWarning;
 
@@ -23,7 +18,7 @@ public class MapGenerator : MonoBehaviour
 
     private int explosionsGenerated;
 
-    private bool canGenerateEnemies;
+    static public bool canGenerateEnemies;
 
     void Start()
     {
@@ -31,9 +26,21 @@ public class MapGenerator : MonoBehaviour
 
         FirstGeneration();
 
+        canGenerateEnemies = false;
         playerDistanceToStandardPos = 0;
         ObjectPassingBy.realSpeedMultiplier = 1;
         ObjectPassingBy.speedMultiplier = 1;
+    }
+
+    void FirstGeneration()
+    {
+        float startX = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, 0)).x;
+        float finishX = Camera.main.ScreenToWorldPoint(Vector3.zero).x;
+
+        foreach (ObjectGenerator generatorScript in objectGeneratorScripts)
+        {
+            generatorScript.FirstGeneration(startX, finishX);
+        }
     }
 
     void Update()
@@ -42,11 +49,10 @@ public class MapGenerator : MonoBehaviour
 
         AdjustSpeedMultiplier();
 
-        buildingGeneratorScript.GenerateBuilding();
-        backgroundGeneratorScript.GenerateBackground();
-        obstacleGeneratorScript.GenerateObstacles();
-        if (!PlayerController.dead && canGenerateEnemies) enemyGeneratorScript.GenerateEnemies();
-        detailGeneratorScript.GenerateDetails();
+        foreach (ObjectGenerator generatorScript in objectGeneratorScripts)
+        {
+            generatorScript.GenerateObject();
+        }
     }
 
     void AdjustSpeedMultiplier()
@@ -63,18 +69,6 @@ public class MapGenerator : MonoBehaviour
         if (speedMultiplierFactor > 1) speedMultiplierFactor = 1;
 
         ObjectPassingBy.speedMultiplier = ObjectPassingBy.realSpeedMultiplier * speedMultiplierFactor;
-    }
-
-    void FirstGeneration()
-    {
-        float startX = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, 0)).x;
-        float finishX = Camera.main.ScreenToWorldPoint(Vector3.zero).x;
-
-        buildingGeneratorScript.FirstGeneration(startX, finishX);
-        backgroundGeneratorScript.FirstGeneration(startX, finishX);
-        obstacleGeneratorScript.FirstGeneration(startX, finishX);
-        enemyGeneratorScript.FirstGeneration(startX, finishX);
-        detailGeneratorScript.FirstGeneration(startX, finishX);
     }
 
     public void ExplosionGenerated()

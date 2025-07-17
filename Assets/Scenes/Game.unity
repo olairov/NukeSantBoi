@@ -7094,7 +7094,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 255657813}
-  - component: {fileID: 255657814}
+  - component: {fileID: 255657816}
+  - component: {fileID: 255657817}
   - component: {fileID: 255657815}
   m_Layer: 0
   m_Name: HotAirBalloonGenerator
@@ -7118,19 +7119,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 558374579}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &255657814
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 255657812}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2998aeea665f3484382129eb6a88ec21, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spawnSettings: {fileID: 11400000, guid: eba4b50c33167bf488e353b6c50af024, type: 2}
 --- !u!114 &255657815
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7146,6 +7134,34 @@ MonoBehaviour:
   poolObject: {fileID: 8916123517466623639, guid: 8e8a5fb5a98150a45bc023ce39dd69df, type: 3}
   containerObject: {fileID: 255657813}
   defaultObjectCount: 4
+--- !u!114 &255657816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 255657812}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8bfe18f84cc66540b45a309d39b990a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myObjectPool: {fileID: 0}
+  spawnSettings: {fileID: 11400000, guid: 2c63fec06d39ba44586959b6f2ff9e65, type: 2}
+  duplicatorScript: {fileID: 0}
+--- !u!114 &255657817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 255657812}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2070e1ec217a5b34887fe3981d50afec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnSettings: {fileID: 11400000, guid: 5920522079330714d876a7f328c38057, type: 2}
 --- !u!1 &258844924
 GameObject:
   m_ObjectHideFlags: 0
@@ -8144,7 +8160,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 335628623}
-  - component: {fileID: 335628624}
+  - component: {fileID: 335628626}
   - component: {fileID: 335628625}
   m_Layer: 0
   m_Name: BirdGroupGenerator
@@ -8168,19 +8184,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 960262493}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &335628624
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 335628622}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fdab81fc7d3b1142a0573da6a853196, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spawnSettings: {fileID: 11400000, guid: 54e3d202174aa154ba6baba6c487b4be, type: 2}
 --- !u!114 &335628625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8196,6 +8199,21 @@ MonoBehaviour:
   poolObject: {fileID: 7862433997937421755, guid: e3fcec73a87f18140b9519ff0339a4ea, type: 3}
   containerObject: {fileID: 335628623}
   defaultObjectCount: 2
+--- !u!114 &335628626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 335628622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8bfe18f84cc66540b45a309d39b990a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myObjectPool: {fileID: 0}
+  spawnSettings: {fileID: 11400000, guid: fa063e7b5319711448e30b661393669b, type: 2}
+  duplicatorScript: {fileID: 0}
 --- !u!1 &352564867
 GameObject:
   m_ObjectHideFlags: 0
@@ -8988,6 +9006,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 410537765}
+  - component: {fileID: 410537767}
   - component: {fileID: 410537766}
   m_Layer: 0
   m_Name: Wind2
@@ -9026,53 +9045,21 @@ MonoBehaviour:
   poolObject: {fileID: 88672797662930169, guid: 1a1b0a30e1dbf884f8f70065dbdca488, type: 3}
   containerObject: {fileID: 0}
   defaultObjectCount: 2
---- !u!1 &412394725
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 412394726}
-  - component: {fileID: 412394727}
-  m_Layer: 0
-  m_Name: RepeatedCranes
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &412394726
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 412394725}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1211907847}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &412394727
+--- !u!114 &410537767
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 412394725}
+  m_GameObject: {fileID: 410537764}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 021230ca52333b64685eca8cc02f144f, type: 3}
+  m_Script: {fileID: 11500000, guid: d8bfe18f84cc66540b45a309d39b990a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poolObject: {fileID: 828266947501970034, guid: faf4e4b541d720d4cb23a94d029f082a, type: 3}
-  containerObject: {fileID: 0}
-  defaultObjectCount: 1
+  myObjectPool: {fileID: 0}
+  spawnSettings: {fileID: 11400000, guid: 1f22dd197c3e5754b8e39aa4005f4ae1, type: 2}
+  duplicatorScript: {fileID: 0}
 --- !u!1 &437733752
 GameObject:
   m_ObjectHideFlags: 0
@@ -9995,6 +9982,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 514493177}
+  - component: {fileID: 514493179}
   - component: {fileID: 514493178}
   m_Layer: 0
   m_Name: Wind1
@@ -10033,6 +10021,21 @@ MonoBehaviour:
   poolObject: {fileID: 3064928887408917092, guid: 0355b14afbe8f3443a6c20bf1ea7dc23, type: 3}
   containerObject: {fileID: 0}
   defaultObjectCount: 2
+--- !u!114 &514493179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 514493176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8bfe18f84cc66540b45a309d39b990a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myObjectPool: {fileID: 0}
+  spawnSettings: {fileID: 11400000, guid: 1f22dd197c3e5754b8e39aa4005f4ae1, type: 2}
+  duplicatorScript: {fileID: 0}
 --- !u!1 &516434584
 GameObject:
   m_ObjectHideFlags: 0
@@ -10201,6 +10204,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 530203329}
+  - component: {fileID: 530203331}
   - component: {fileID: 530203330}
   m_Layer: 0
   m_Name: Wind4
@@ -10239,6 +10243,21 @@ MonoBehaviour:
   poolObject: {fileID: 5565454798818487719, guid: 07ce1ea3aeb4d0542af8b19331b132a9, type: 3}
   containerObject: {fileID: 0}
   defaultObjectCount: 2
+--- !u!114 &530203331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 530203328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8bfe18f84cc66540b45a309d39b990a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myObjectPool: {fileID: 0}
+  spawnSettings: {fileID: 11400000, guid: 1f22dd197c3e5754b8e39aa4005f4ae1, type: 2}
+  duplicatorScript: {fileID: 0}
 --- !u!1 &552825446
 GameObject:
   m_ObjectHideFlags: 0
@@ -10523,11 +10542,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 558374578}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63ab0b72963cfef4b84fe61e0fd784b0, type: 3}
+  m_Script: {fileID: 11500000, guid: 5eafbc90f063a804a9c10fb22e66f0f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  generationSettings: {fileID: 11400000, guid: e0eaf0cf9a669164b8ccfa56aaea7bc6, type: 2}
-  hotAirBalloonGeneratorScript: {fileID: 255657814}
+  generatorScripts:
+  - {fileID: 255657816}
+  generatesEnemies: 0
+  stopWhenPlayerDies: 0
 --- !u!1 &572825261
 GameObject:
   m_ObjectHideFlags: 0
@@ -12348,6 +12369,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myObjectPool: {fileID: 0}
   spawnSettings: {fileID: 11400000, guid: b6168dbe7061fe245a802476d382b7e4, type: 2}
+  duplicatorScript: {fileID: 0}
 --- !u!114 &740733260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13261,11 +13283,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2191616d4c0a334cb8a3977fae380af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildingGeneratorScript: {fileID: 280863545}
-  backgroundGeneratorScript: {fileID: 1225162692}
-  obstacleGeneratorScript: {fileID: 558374580}
-  enemyGeneratorScript: {fileID: 1721406265}
-  detailGeneratorScript: {fileID: 960262494}
+  objectGeneratorScripts:
+  - {fileID: 280863545}
+  - {fileID: 1225162692}
+  - {fileID: 558374580}
+  - {fileID: 1721406265}
+  - {fileID: 960262494}
   enemyWarning: {fileID: 1633794886}
   speedIncreaseFactor: 0.008
   loopSpeedMultiplier: 1
@@ -13321,15 +13344,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5eafbc90f063a804a9c10fb22e66f0f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  generationSettings: {fileID: 11400000, guid: cf86d433be130e3439e6e75805f4e01f, type: 2}
-  windGeneratorScript: {fileID: 1230839072}
-  birdGroupGeneratorScript: {fileID: 335628624}
-  frontBirdGeneratorScript: {fileID: 1114317905}
-  anyObjectGeneratorScripts:
+  generatorScripts:
+  - {fileID: 1230839072}
+  - {fileID: 1211907850}
   - {fileID: 740733259}
   - {fileID: 1034837350}
   - {fileID: 1258172173}
-  - {fileID: 1211907850}
+  - {fileID: 335628626}
+  - {fileID: 1197817834}
+  - {fileID: 1114317907}
+  generatesEnemies: 0
+  stopWhenPlayerDies: 0
 --- !u!1 &994695091
 GameObject:
   m_ObjectHideFlags: 0
@@ -13676,6 +13701,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myObjectPool: {fileID: 0}
   spawnSettings: {fileID: 11400000, guid: 3f68d75167a043d4c98649afe4c61f69, type: 2}
+  duplicatorScript: {fileID: 0}
 --- !u!1 &1040910421
 GameObject:
   m_ObjectHideFlags: 0
@@ -14620,7 +14646,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1114317904}
-  - component: {fileID: 1114317905}
+  - component: {fileID: 1114317907}
   - component: {fileID: 1114317906}
   m_Layer: 0
   m_Name: FrontBirdGenerator
@@ -14644,19 +14670,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 960262493}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1114317905
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1114317903}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 760d95d09bf22364685ea93ff3ada84a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spawnSettings: {fileID: 11400000, guid: 29ad8bb46bd857a4c8122568db34ed94, type: 2}
 --- !u!114 &1114317906
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14672,6 +14685,21 @@ MonoBehaviour:
   poolObject: {fileID: 1474960776555097528, guid: aa533362c4377054fb672f24daaab4ab, type: 3}
   containerObject: {fileID: 1114317904}
   defaultObjectCount: 1
+--- !u!114 &1114317907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1114317903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8bfe18f84cc66540b45a309d39b990a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myObjectPool: {fileID: 0}
+  spawnSettings: {fileID: 11400000, guid: 4bff3f451c253654abe0579a4d3a2994, type: 2}
+  duplicatorScript: {fileID: 0}
 --- !u!1 &1115384491
 GameObject:
   m_ObjectHideFlags: 0
@@ -15737,8 +15765,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1197817831}
-  - component: {fileID: 1197817833}
   - component: {fileID: 1197817834}
+  - component: {fileID: 1197817833}
   m_Layer: 0
   m_Name: SingleBirdGenerator
   m_TagString: Untagged
@@ -15790,6 +15818,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myObjectPool: {fileID: 0}
   spawnSettings: {fileID: 11400000, guid: ed558b0d5a884d944bb20349d2716c44, type: 2}
+  duplicatorScript: {fileID: 0}
 --- !u!1 &1198865109
 GameObject:
   m_ObjectHideFlags: 0
@@ -16083,8 +16112,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1211907847}
-  - component: {fileID: 1211907849}
   - component: {fileID: 1211907850}
+  - component: {fileID: 1211907851}
+  - component: {fileID: 1211907849}
   m_Layer: 0
   m_Name: CraneGenerator
   m_TagString: Untagged
@@ -16104,8 +16134,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 412394726}
+  m_Children: []
   m_Father: {fileID: 960262493}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1211907849
@@ -16137,6 +16166,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myObjectPool: {fileID: 0}
   spawnSettings: {fileID: 11400000, guid: 500dcf0f08dc3be4ca5eceb7772c3b8b, type: 2}
+  duplicatorScript: {fileID: 0}
+--- !u!114 &1211907851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1211907846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2070e1ec217a5b34887fe3981d50afec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnSettings: {fileID: 11400000, guid: a9b1ab51a07598b41a7f9477f77a4124, type: 2}
 --- !u!1 &1225162690
 GameObject:
   m_ObjectHideFlags: 0
@@ -16292,10 +16335,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1230839070}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac81104d0224a2440ab0a81e9b805dfa, type: 3}
+  m_Script: {fileID: 11500000, guid: 5eafbc90f063a804a9c10fb22e66f0f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnSettings: {fileID: 11400000, guid: 5d76fe732c83a23468f251f88f6096aa, type: 2}
+  generatorScripts:
+  - {fileID: 514493179}
+  - {fileID: 410537767}
+  - {fileID: 1813425237}
+  - {fileID: 530203331}
+  generatesEnemies: 0
+  stopWhenPlayerDies: 0
 --- !u!1 &1246952111
 GameObject:
   m_ObjectHideFlags: 0
@@ -16470,6 +16519,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myObjectPool: {fileID: 0}
   spawnSettings: {fileID: 11400000, guid: 047b439ffd96f0449981084206b92ccb, type: 2}
+  duplicatorScript: {fileID: 0}
 --- !u!1 &1258380635
 GameObject:
   m_ObjectHideFlags: 0
@@ -17020,7 +17070,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1321168503}
-  - component: {fileID: 1321168504}
+  - component: {fileID: 1321168506}
   - component: {fileID: 1321168505}
   m_Layer: 0
   m_Name: MissileGenerator
@@ -17044,19 +17094,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1721406264}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1321168504
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1321168502}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6a3741cfad3f824ab43a9fc3a35d985, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spawnSettings: {fileID: 11400000, guid: 4d4e267979e5ca54c89248e4ab44ab8d, type: 2}
 --- !u!114 &1321168505
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17072,6 +17109,21 @@ MonoBehaviour:
   poolObject: {fileID: 2503070929597295574, guid: b0d23395a1c5f2e419ae701a15373a58, type: 3}
   containerObject: {fileID: 1321168503}
   defaultObjectCount: 1
+--- !u!114 &1321168506
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1321168502}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8bfe18f84cc66540b45a309d39b990a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myObjectPool: {fileID: 0}
+  spawnSettings: {fileID: 11400000, guid: 8613abc000c46dc479733f503606ac57, type: 2}
+  duplicatorScript: {fileID: 0}
 --- !u!1 &1342886616
 GameObject:
   m_ObjectHideFlags: 0
@@ -20163,11 +20215,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1721406263}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e275e059d18eb244385746f9bbfc7133, type: 3}
+  m_Script: {fileID: 11500000, guid: 5eafbc90f063a804a9c10fb22e66f0f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  generationSettings: {fileID: 11400000, guid: 619bd0c4c7151c74480af48c1c6e3f72, type: 2}
-  missileGeneratorScript: {fileID: 1321168504}
+  generatorScripts:
+  - {fileID: 1321168506}
+  generatesEnemies: 1
+  stopWhenPlayerDies: 1
 --- !u!1 &1740813219
 GameObject:
   m_ObjectHideFlags: 0
@@ -20952,6 +21006,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1813425235}
+  - component: {fileID: 1813425237}
   - component: {fileID: 1813425236}
   m_Layer: 0
   m_Name: Wind3
@@ -20990,6 +21045,21 @@ MonoBehaviour:
   poolObject: {fileID: 7771924444019298891, guid: 9aaa6f0f4b125dc4e9f267dfa68f98b1, type: 3}
   containerObject: {fileID: 0}
   defaultObjectCount: 2
+--- !u!114 &1813425237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1813425234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8bfe18f84cc66540b45a309d39b990a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myObjectPool: {fileID: 0}
+  spawnSettings: {fileID: 11400000, guid: 1f22dd197c3e5754b8e39aa4005f4ae1, type: 2}
+  duplicatorScript: {fileID: 0}
 --- !u!1 &1819884009
 GameObject:
   m_ObjectHideFlags: 0

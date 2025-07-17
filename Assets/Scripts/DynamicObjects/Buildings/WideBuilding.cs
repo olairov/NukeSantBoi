@@ -24,8 +24,6 @@ public class WideBuilding : Building, ResetPoolObject
 
         myRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
 
-        if (transform.name.Contains("Sky")) iStrapSky = true;
-
         defaultColliderSize = GetComponent<BoxCollider2D>().size;
         defaultColliderOffset = GetComponent<BoxCollider2D>().offset;
 
@@ -93,8 +91,6 @@ public class WideBuilding : Building, ResetPoolObject
         BoxCollider2D myColider = GetComponent<BoxCollider2D>();
         myColider.offset = defaultColliderOffset;
         myColider.size = defaultColliderSize;
-
-        imUpsideDown = false;
     }
 
     public override void Initialize()

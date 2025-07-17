@@ -6,14 +6,14 @@ public class SkyscraperBuilding : Building, ResetPoolObject
 {
     ObjectPool skyscraperUpperPartPool, skyscraperPiecesPool;
 
+    bool alreadyBroken;
+
     protected override void Start()
     {
         base.Start();
 
         skyscraperUpperPartPool = GameObject.Find("BuildingPartsContainer/skyscraperUpperPart").GetComponent<ObjectPool>();
         skyscraperPiecesPool = GameObject.Find("ParticlesContainer/skyscraperCutInHalfPieces").GetComponent<ObjectPool>();
-
-        if (transform.name.Contains("Sky")) iStrapSky = true;
 
         Initialize();
     }
@@ -27,29 +27,27 @@ public class SkyscraperBuilding : Building, ResetPoolObject
     {
         base.Destroy(otherTransform);
 
+        if (alreadyBroken) return;
         otherTransform.GetComponent<ExplosionController>().CantBreakSkyscraperAgain = true;
         Transform upperPartTransform = SkyscraperFallStats(otherTransform.position.y);
         StartCoroutine(UpperPartFlash(upperPartTransform));
+        alreadyBroken = true;
     }
 
     IEnumerator UpperPartFlash(Transform upperPartTransform)
     {
         SpriteRenderer myUpperSpriteSpriteRenderer = transform.Find("UpperSprite").GetComponent<SpriteRenderer>();
         SpriteRenderer upperPartSpriteRenderer = upperPartTransform.GetComponent<SpriteRenderer>();
-        SpriteRenderer upperPartUpperSpriteRenderer = upperPartTransform.Find("UpperSprite").GetComponent<SpriteRenderer>();
         SpriteRenderer upperPartLowerSpriteRenderer = upperPartTransform.Find("LowerSprite").GetComponent<SpriteRenderer>();
-        Color upperPartUpperSpriteColor = upperPartUpperSpriteRenderer.color; // The upper part's upper sprite has a unique color.
 
         myUpperSpriteSpriteRenderer.color = flashColor;
         upperPartSpriteRenderer.color = flashColor;
-        upperPartUpperSpriteRenderer.color = flashColor;
         upperPartLowerSpriteRenderer.color = flashColor;
 
         yield return new WaitForSeconds(flashDuration);
 
         myUpperSpriteSpriteRenderer.color = afterFlashColor;
         upperPartSpriteRenderer.color = afterFlashColor;
-        upperPartUpperSpriteRenderer.color = upperPartUpperSpriteColor;
         upperPartLowerSpriteRenderer.color = afterFlashColor;
     }
 
@@ -77,6 +75,7 @@ public class SkyscraperBuilding : Building, ResetPoolObject
     {
         base.ResetState();
         transform.position = new Vector3(transform.position.x, 0, transform.position.z);
+        alreadyBroken = false;
     }
 
     public override void Initialize()

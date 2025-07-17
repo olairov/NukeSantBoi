@@ -42,7 +42,7 @@ public class ModelHandler : MonoBehaviour
 
     void EnemyPlaneRotationHandling()
     {
-        if (transform.parent.GetComponent<EnemyPlaneController>().dead)
+        if (transform.parent.GetComponent<EnemyMissileController>().dead)
         {
             Die();
             return;

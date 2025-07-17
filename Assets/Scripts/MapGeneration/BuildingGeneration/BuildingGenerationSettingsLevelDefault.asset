@@ -12,20 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ad8ea6298577d64e8abe95abaa43f13, type: 3}
   m_Name: BuildingGenerationSettingsLevelDefault
   m_EditorClassIdentifier: 
-  defaultBuildingPrefab: {fileID: 1161062619281861293, guid: ec0a60ee1deebdd4ab0ff5e61e11ade0, type: 3}
-  wideBuildingPrefab: {fileID: 1161062619281861293, guid: 658e0d2708f366b44adf28a5ca17fbbf, type: 3}
-  skyscraperPrefab: {fileID: 1161062619281861293, guid: c337d325ce8c89e4bb3b42bd49107c24, type: 3}
-  warningPrefab: {fileID: 2392637196239052846, guid: c56e1c57cf13f5841b1f7272b9750143, type: 3}
   spawnIntervalMin: 1.6
   spawnIntervalMax: 2.2
   firstGenerationSpaceBetweenBuildings: 8.5
   buildingTypesProbabilities:
   - key: default
-    value: 45
+    value: 20
   - key: wide
-    value: 40
+    value: 20
   - key: skyscraper
-    value: 15
+    value: 60
   dangerousBuildingsNames:
   - skyscraper
   minimumNormalBuildingsInBetweenTwoDangerous: 3

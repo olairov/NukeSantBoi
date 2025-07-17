@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BuildingGenerator : MonoBehaviour
+public class BuildingGenerator : ObjectGenerator
 {
     public BuildingGenerationSettings generationSettings;
 
@@ -31,7 +31,7 @@ public class BuildingGenerator : MonoBehaviour
     }
 
 
-    public void GenerateBuilding()
+    public override void GenerateObject()
     {
         timeToNextGeneration -= Time.deltaTime * ObjectPassingBy.speedMultiplier;
         if (timeToNextGeneration > 0) return;
@@ -181,7 +181,7 @@ public class BuildingGenerator : MonoBehaviour
 
     
 
-    public void FirstGeneration(float startX, float finishX)
+    public override void FirstGeneration(float startX, float finishX)
     {
         Dictionary<string, float> adjustedBuildingProbabilities = AdjustBuildingProbabilities(buildingProbabilities, generationSettings.dangerousBuildingsNames);
 

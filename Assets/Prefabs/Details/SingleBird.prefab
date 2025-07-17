@@ -120,13 +120,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9eb5c201e1fc764f8b229c1f2b6cbc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  passingSpeed: 3
-  realPassingSpeed: -1.5
+  passingSpeed: 3.5
+  realPassingSpeed: -2
   myYpos: 0
-  appearingObject: 0
+  dontSetPosition: 0
   appearingDistance: 8
   background: 0
   fakePassingSpeed: 0
+  appearingObject: 0
   moveInFixedUpdate: 0
 --- !u!114 &23567620550835531
 MonoBehaviour:
