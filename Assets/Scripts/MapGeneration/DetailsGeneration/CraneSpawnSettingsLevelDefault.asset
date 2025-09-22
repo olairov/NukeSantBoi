@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50fe093fa05198e4aa513a4453a18fe1, type: 3}
   m_Name: CraneSpawnSettingsLevelDefault
   m_EditorClassIdentifier: 
-  timeIntervalMin: 16
-  timeIntervalMax: 20
+  timeIntervalMin: 12
+  timeIntervalMax: 18
   firstGenMinDistance: 40
   firstGenMaxDistance: 40
   firstGenMinDistFromRightBorder: 5
@@ -29,6 +29,8 @@ MonoBehaviour:
   maxScale: 1.2
   minRotation: 0
   maxRotation: 0
+  timeIntervalMinForFirstSpawn: 1
+  timeIntervalMaxForFirstSpawn: 10
   appearingObject: 0
   canAppearFlipped: 1
   canAppearDuplicated: 1

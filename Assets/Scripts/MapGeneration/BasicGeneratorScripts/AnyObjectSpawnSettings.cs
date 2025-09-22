@@ -7,7 +7,8 @@ public class AnyObjectSpawnSettings : ScriptableObject
 {
     public float timeIntervalMin, timeIntervalMax, firstGenMinDistance, firstGenMaxDistance,
         firstGenMinDistFromRightBorder, firstGenMaxDistFromRightBorder, firstGenDistFromLeftBorder,
-        yMin, yMax, zMin, zMax, xMin, xMax, minScale, maxScale, minRotation, maxRotation;
+        yMin, yMax, zMin, zMax, xMin, xMax, minScale, maxScale, minRotation, maxRotation,
+        timeIntervalMinForFirstSpawn, timeIntervalMaxForFirstSpawn;
 
     public bool appearingObject, canAppearFlipped, canAppearDuplicated, onlyFirstGeneration, firstGenIsOnlyManual;
     public List<Vector3> firstGeneratedObjectsPositions = new List<Vector3>();

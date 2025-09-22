@@ -12,9 +12,13 @@ public class PlayerBoostController : MonoBehaviour
 
     private bool imEnemyPlane;
 
-    void Start()
+    private void Awake()
     {
         myTrail = transform.Find("BoostTrail").GetComponent<TrailRenderer>();
+    }
+
+    void Start()
+    {
         lightTransform = transform.Find("Light");
 
         imEnemyPlane = transform.parent.name.StartsWith("Enemy");
@@ -43,5 +47,10 @@ public class PlayerBoostController : MonoBehaviour
     {
         if (Time.timeScale <= 0) return;
         myTrail.widthMultiplier = Random.Range(0.7f, 1.3f);
+    }
+
+    public void ResetTrail()
+    {
+        myTrail.Clear();
     }
 }

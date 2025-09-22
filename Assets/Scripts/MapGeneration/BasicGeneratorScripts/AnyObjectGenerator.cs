@@ -36,6 +36,8 @@ public class AnyObjectGenerator : ObjectGenerator
             realFirstGenMinDistance = spawnSettings.firstGenMinDistance;
             realFirstGenMaxDistance = spawnSettings.firstGenMaxDistance;
         }
+
+        timeForNextObject = Random.Range(spawnSettings.timeIntervalMinForFirstSpawn, spawnSettings.timeIntervalMaxForFirstSpawn);
     }
 
     public override void GenerateObject()
@@ -93,7 +95,7 @@ public class AnyObjectGenerator : ObjectGenerator
             {
                 Debug.LogWarning("ObjectPassingBy script NOT Found in " + instantiatedObject.name + "!");
             }
-            else objectPassingByScript.dontSetPosition = true;
+            else objectPassingByScript.DontSetPosition = true;
         }
 
         float xPos = ignoreXPos ? instantiatedObject.position.x : pos.x;
@@ -104,9 +106,12 @@ public class AnyObjectGenerator : ObjectGenerator
         instantiatedObject.eulerAngles = new Vector3(instantiatedObject.eulerAngles.x, instantiatedObject.eulerAngles.y,
             Random.Range(spawnSettings.minRotation, spawnSettings.maxRotation));
 
-        Vector3 defaultScale = new Vector3(spawnSettings.canAppearFlipped && Random.value > 0.5f ? -1 : 1, 1, 1);
-        if (spawnSettings.minScale != 0 || spawnSettings.maxScale != 0) defaultScale *= Random.Range(spawnSettings.minScale, spawnSettings.maxScale);
-        instantiatedObject.localScale = defaultScale;
+        if (spawnSettings.minScale != 0 || spawnSettings.maxScale != 0)
+        {
+            Vector3 defaultScale = new Vector3(spawnSettings.canAppearFlipped && Random.value > 0.5f ? -1 : 1, 1, 1);
+            defaultScale *= Random.Range(spawnSettings.minScale, spawnSettings.maxScale);
+            instantiatedObject.localScale = defaultScale;
+        }
 
         if (instantiatedObject.GetComponent<PooledObject>().alreadyUsed)
         {

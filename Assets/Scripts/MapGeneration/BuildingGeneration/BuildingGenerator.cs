@@ -191,7 +191,7 @@ public class BuildingGenerator : ObjectGenerator
             GameObject generatedBuilding = GenerateBuildingWithAdjustedProbabilities(chosenBuilding, generationSettings.dangerousBuildingsNames);
 
             generatedBuilding.transform.position = new Vector3(actualX, generatedBuilding.transform.position.y, generatedBuilding.transform.position.z);
-            generatedBuilding.GetComponent<ObjectPassingBy>().dontSetPosition = true;
+            generatedBuilding.GetComponent<ObjectPassingBy>().DontSetPosition = true;
         }
     }
 }

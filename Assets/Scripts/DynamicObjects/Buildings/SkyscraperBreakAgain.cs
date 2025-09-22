@@ -164,7 +164,7 @@ public class SkyscraperBreakAgain : MonoBehaviour, ResetPoolObject
         completeDestroyParticlesTransform.eulerAngles = transform.eulerAngles;
 
         Debug.Log("That building didn't deserve it.");
-        if (buildingPieceToDestroy.GetComponent<PooledObject>() != null) buildingPieceToDestroy.GetComponent<PooledObject>().ReturnToPool(gameObject);
+        if (buildingPieceToDestroy.GetComponent<PooledObject>() != null) buildingPieceToDestroy.GetComponent<PooledObject>().ReturnToPool(buildingPieceToDestroy);
         else
         {
             Debug.LogWarning("Pooled Object script not found in " + buildingPieceToDestroy.name);

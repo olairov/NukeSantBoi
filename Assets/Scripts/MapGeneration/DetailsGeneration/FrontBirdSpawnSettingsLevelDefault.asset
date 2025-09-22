@@ -25,8 +25,15 @@ MonoBehaviour:
   zMax: -10
   xMin: 0
   xMax: 0
+  minScale: 0
+  maxScale: 0
+  minRotation: 0
+  maxRotation: 0
+  timeIntervalMinForFirstSpawn: 3
+  timeIntervalMaxForFirstSpawn: 30
   appearingObject: 0
-  appearAllAroundTheScreen: 0
+  canAppearFlipped: 0
+  canAppearDuplicated: 0
   onlyFirstGeneration: 0
   firstGenIsOnlyManual: 1
   firstGeneratedObjectsPositions: []

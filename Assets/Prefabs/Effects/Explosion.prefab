@@ -46,12 +46,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   appearingSpeed: 0
+  disappearingSpeed: 0
+  disappearingFromSceneTime: 0
   disableIfNotThreeDSound: 0
   disableWhenPlayerDie: 0
   ignorePause: 0
   ignoreThreeDsound: 0
   appearingSmoothly: 0
-  disappearingSmoothly: 0
+  disappearingSmoothlyInEndOfScene: 0
+  playWhenPlayerDies: 0
 --- !u!82 &6136076543503989023
 AudioSource:
   m_ObjectHideFlags: 0
@@ -64,7 +67,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 7c15ebd0ce9a3a545b31d69bde5e0c1c, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.6
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -10143,12 +10146,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   appearingSpeed: 0
+  disappearingSpeed: 0
+  disappearingFromSceneTime: 0
   disableIfNotThreeDSound: 0
   disableWhenPlayerDie: 0
   ignorePause: 0
   ignoreThreeDsound: 0
   appearingSmoothly: 0
-  disappearingSmoothly: 0
+  disappearingSmoothlyInEndOfScene: 0
+  playWhenPlayerDies: 0
 --- !u!82 &2988868139547922410
 AudioSource:
   m_ObjectHideFlags: 0
@@ -10257,8 +10263,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bba29c8a228497b42a62575201d20ecf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Explosion2: {fileID: 8300000, guid: abac95c79199cfd41b7c8fa2c6cc41cc, type: 3}
-  Explosion3: {fileID: 8300000, guid: f7f0a5ce623111c42a2791262bd78a29, type: 3}
+  pitchMin: 0.8
+  pitchMax: 1.3
+  volumeMin: 0.6
+  volumeMax: 0.6
+  availableSounds:
+  - {fileID: 8300000, guid: 49961a131264d134a920111d986ebc15, type: 3}
+  - {fileID: 8300000, guid: abac95c79199cfd41b7c8fa2c6cc41cc, type: 3}
+  - {fileID: 8300000, guid: f7f0a5ce623111c42a2791262bd78a29, type: 3}
 --- !u!1 &4611169312251104479
 GameObject:
   m_ObjectHideFlags: 0
@@ -10448,7 +10460,6 @@ MonoBehaviour:
   passingSpeed: 5
   realPassingSpeed: 0
   myYpos: 0
-  dontSetPosition: 0
   appearingDistance: 10
   background: 0
   fakePassingSpeed: 0
@@ -15345,12 +15356,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   appearingSpeed: 0
+  disappearingSpeed: 0
+  disappearingFromSceneTime: 0
   disableIfNotThreeDSound: 0
   disableWhenPlayerDie: 0
   ignorePause: 0
   ignoreThreeDsound: 0
   appearingSmoothly: 0
-  disappearingSmoothly: 0
+  disappearingSmoothlyInEndOfScene: 0
+  playWhenPlayerDies: 0
 --- !u!82 &3953111015412927406
 AudioSource:
   m_ObjectHideFlags: 0

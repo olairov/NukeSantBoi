@@ -7,16 +7,22 @@ public class ModelHandler : MonoBehaviour
     [SerializeField] float rotationAmplitude, additionalRotation, woobleSpeed, woobleForce, rotateForeverSpeed;
     float rotateForeverSpeedRandomizer, lastFrameParentRotation;
 
+    Vector3 originalRotation;
+
     [SerializeField] Material burntMaterial;
+    Material originalMaterial;
 
     [SerializeField] bool imPlayerPlane, XAxis, YAxis, ZAxis;
     bool dead;
 
     [SerializeField] GameObject fireParticles;
+    MeshRenderer myMeshRenderer;
 
-    private void Start()
+    private void Awake()
     {
-        
+        myMeshRenderer = GetComponent<MeshRenderer>();
+        originalMaterial = myMeshRenderer.material;
+        originalRotation = transform.localEulerAngles;
     }
 
     void Update()
@@ -67,7 +73,7 @@ public class ModelHandler : MonoBehaviour
 
     void ChangeMaterial(Material newMaterial)
     {
-        GetComponent<MeshRenderer>().material = newMaterial;
+        myMeshRenderer.material = newMaterial;
     }
 
     void RotateForever()
@@ -77,12 +83,21 @@ public class ModelHandler : MonoBehaviour
 
     void Die()
     {
+        if (dead) return;
+        dead = true;
+
         rotateForeverSpeedRandomizer = Random.value;
         if (Random.value >= 0.5) rotateForeverSpeedRandomizer *= -1;
 
         if (fireParticles != null) fireParticles.SetActive(true);
-        dead = true;
 
         ChangeMaterial(burntMaterial);
+    }
+
+    public void ResetState()
+    {
+        dead = false;
+        ChangeMaterial(originalMaterial);
+        transform.localEulerAngles = originalRotation;
     }
 }

@@ -9,16 +9,28 @@ public class ObjectPassingBy : MonoBehaviour, ResetPoolObject
     public static float speedMultiplier, realSpeedMultiplier;
     public float passingSpeed, realPassingSpeed, myYpos;
     private float lastCameraYpos, movementFixSpeed, originalSceneMovement;
-    public bool dontSetPosition;
-    // movementFixMultiplier is used for assigning an initial speed to the moving object, so that it moves accordingly to the original velocity.
-    public float OriginalMovement
-    {
-        set { originalSceneMovement = value; }
-    }
+    private bool dontSetPosition;
 
     [SerializeField] private float appearingDistance;
     [SerializeField] private bool background, fakePassingSpeed, appearingObject;
     [SerializeField] public bool moveInFixedUpdate;
+    public float AppearingDistance
+    {
+        get { return appearingDistance; }
+    }
+    public float OriginalMovement
+    {
+        set { originalSceneMovement = value; }
+    }
+    public bool FakePassingSpeed
+    {
+        set { fakePassingSpeed = value; }
+    }
+    public bool DontSetPosition
+    {
+        set { dontSetPosition = value; }
+        get { return dontSetPosition; }
+    }
 
     private void Start()
     {
@@ -51,7 +63,7 @@ public class ObjectPassingBy : MonoBehaviour, ResetPoolObject
 
     void CheckIfGone()
     {
-        // Multiplied by 5 so that the bombs have time to hit passed buildings and some other reasons.
+        // Multiplied by 5 so that the bombs have time to hit passed buildings and because of other reasons.
         if (transform.position.x > Camera.main.ScreenToWorldPoint(Vector3.zero).x - appearingDistance * 5) return;
 
         if (GetComponent<PooledObject>() != null) GetComponent<PooledObject>().ReturnToPool(gameObject);

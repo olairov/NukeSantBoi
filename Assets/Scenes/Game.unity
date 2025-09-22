@@ -558,12 +558,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   appearingSpeed: 0
+  disappearingSpeed: 0
+  disappearingFromSceneTime: 0
   disableIfNotThreeDSound: 0
   disableWhenPlayerDie: 0
   ignorePause: 1
   ignoreThreeDsound: 1
   appearingSmoothly: 0
-  disappearingSmoothly: 0
+  disappearingSmoothlyInEndOfScene: 0
+  playWhenPlayerDies: 0
 --- !u!1 &14265396
 GameObject:
   m_ObjectHideFlags: 0
@@ -7336,6 +7339,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 401818626}
+  - {fileID: 1407914967}
+  - {fileID: 1146625198}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &269763117
@@ -8991,12 +8996,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   appearingSpeed: 1
+  disappearingSpeed: 1
+  disappearingFromSceneTime: 1
   disableIfNotThreeDSound: 0
   disableWhenPlayerDie: 0
   ignorePause: 1
   ignoreThreeDsound: 1
   appearingSmoothly: 1
-  disappearingSmoothly: 1
+  disappearingSmoothlyInEndOfScene: 1
+  playWhenPlayerDies: 0
 --- !u!1 &410537764
 GameObject:
   m_ObjectHideFlags: 0
@@ -15353,12 +15361,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   appearingSpeed: 1
+  disappearingSpeed: 1
+  disappearingFromSceneTime: 1
   disableIfNotThreeDSound: 0
   disableWhenPlayerDie: 1
   ignorePause: 0
   ignoreThreeDsound: 1
   appearingSmoothly: 1
-  disappearingSmoothly: 0
+  disappearingSmoothlyInEndOfScene: 1
+  playWhenPlayerDies: 0
 --- !u!1 &1139826888
 GameObject:
   m_ObjectHideFlags: 0
@@ -15431,6 +15442,157 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1139826888}
   m_CullTransparentMesh: 1
+--- !u!1 &1146625197
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1146625198}
+  - component: {fileID: 1146625200}
+  - component: {fileID: 1146625199}
+  m_Layer: 0
+  m_Name: HeavyCrash
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1146625198
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1146625197}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -30, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 269611661}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1146625199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1146625197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bfaefafd4640f94681268d984a00088, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  appearingSpeed: 0
+  disappearingSpeed: 0
+  disappearingFromSceneTime: 0
+  disableIfNotThreeDSound: 0
+  disableWhenPlayerDie: 0
+  ignorePause: 0
+  ignoreThreeDsound: 0
+  appearingSmoothly: 0
+  disappearingSmoothlyInEndOfScene: 0
+  playWhenPlayerDies: 1
+--- !u!82 &1146625200
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1146625197}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 65cbac7086d776c458f13c9cca8fb4e9, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 0.65
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1148427100
 GameObject:
   m_ObjectHideFlags: 0
@@ -17555,6 +17717,157 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1404562705}
   m_CullTransparentMesh: 1
+--- !u!1 &1407914966
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1407914967}
+  - component: {fileID: 1407914970}
+  - component: {fileID: 1407914968}
+  m_Layer: 0
+  m_Name: SystemShutdownSound
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1407914967
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1407914966}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -30, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 269611661}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1407914968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1407914966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bfaefafd4640f94681268d984a00088, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  appearingSpeed: 0
+  disappearingSpeed: 0
+  disappearingFromSceneTime: 0
+  disableIfNotThreeDSound: 0
+  disableWhenPlayerDie: 0
+  ignorePause: 0
+  ignoreThreeDsound: 0
+  appearingSmoothly: 0
+  disappearingSmoothlyInEndOfScene: 0
+  playWhenPlayerDies: 1
+--- !u!82 &1407914970
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1407914966}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 5fe2a1c3a3c3e0c4794019a0911353da, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 0.18
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1410029294
 GameObject:
   m_ObjectHideFlags: 0
@@ -17648,12 +17961,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   appearingSpeed: 0
+  disappearingSpeed: 0
+  disappearingFromSceneTime: 0
   disableIfNotThreeDSound: 0
   disableWhenPlayerDie: 0
   ignorePause: 1
   ignoreThreeDsound: 1
   appearingSmoothly: 0
-  disappearingSmoothly: 0
+  disappearingSmoothlyInEndOfScene: 0
+  playWhenPlayerDies: 0
 --- !u!82 &1412388436
 AudioSource:
   m_ObjectHideFlags: 0
@@ -19343,12 +19659,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   appearingSpeed: 0
+  disappearingSpeed: 0
+  disappearingFromSceneTime: 0
   disableIfNotThreeDSound: 0
   disableWhenPlayerDie: 0
   ignorePause: 1
   ignoreThreeDsound: 1
   appearingSmoothly: 0
-  disappearingSmoothly: 0
+  disappearingSmoothlyInEndOfScene: 0
+  playWhenPlayerDies: 0
 --- !u!1 &1637547470
 GameObject:
   m_ObjectHideFlags: 0
@@ -19718,12 +20037,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   appearingSpeed: 0
+  disappearingSpeed: 0
+  disappearingFromSceneTime: 0
   disableIfNotThreeDSound: 0
   disableWhenPlayerDie: 0
   ignorePause: 1
   ignoreThreeDsound: 1
   appearingSmoothly: 0
-  disappearingSmoothly: 0
+  disappearingSmoothlyInEndOfScene: 0
+  playWhenPlayerDies: 0
 --- !u!82 &1648483374
 AudioSource:
   m_ObjectHideFlags: 0
@@ -22801,12 +23123,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   appearingSpeed: 0
+  disappearingSpeed: 0
+  disappearingFromSceneTime: 0
   disableIfNotThreeDSound: 0
   disableWhenPlayerDie: 0
   ignorePause: 1
   ignoreThreeDsound: 1
   appearingSmoothly: 0
-  disappearingSmoothly: 0
+  disappearingSmoothlyInEndOfScene: 0
+  playWhenPlayerDies: 0
 --- !u!82 &2028327701
 AudioSource:
   m_ObjectHideFlags: 0
@@ -23981,8 +24306,8 @@ SceneRoots:
   - {fileID: 943160981}
   - {fileID: 1282526451}
   - {fileID: 137313512}
-  - {fileID: 269611661}
   - {fileID: 2049208494}
+  - {fileID: 269611661}
   - {fileID: 1291379189}
   - {fileID: 1246952115}
   - {fileID: 636325994}

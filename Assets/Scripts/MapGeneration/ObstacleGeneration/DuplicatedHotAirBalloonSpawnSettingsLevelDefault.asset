@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60bf5707133b74043a4be731cf28898d, type: 3}
   m_Name: DuplicatedHotAirBalloonSpawnSettingsLevelDefault
   m_EditorClassIdentifier: 
-  chanceOfDuplication: 100
+  chanceOfDuplication: 25
   minPositionAdder: {x: 2, y: 2, z: 0}
   maxPositionAdder: {x: 3, y: 3, z: 0}
   minRotationAdder: 0

@@ -14,12 +14,22 @@ public class EnemyMissileController : Entity, ResetPoolObject
     private Transform playerTransform;
 
     private InGameSound boostSoundOptionsModifier;
-
+    private PlayerBoostController myTrailScript;
+    private ModelHandler myModelHandlerScript;
     private Rigidbody2D rb;
+    private Collider2D myCollider;
+    private ObjectPassingBy objectPassingByScript;
+    private RandomAudioPlayer myAudioPlayer;
 
     protected override void Start()
     {
         base.Start();
+
+        myTrailScript = transform.Find("Boost").GetComponent<PlayerBoostController>();
+        myCollider = transform.GetComponent<Collider2D>();
+        objectPassingByScript = transform.GetComponent<ObjectPassingBy>();
+        myModelHandlerScript = transform.Find("Mesh").GetComponent<ModelHandler>();
+        myAudioPlayer = transform.Find("Boost/BoostSound").GetComponent<RandomAudioPlayer>();
 
         Initialize();
 
@@ -39,7 +49,19 @@ public class EnemyMissileController : Entity, ResetPoolObject
 
         if (!dead) RotateAndMove();
 
-        if (transform.position.y < Camera.main.ScreenToWorldPoint(Vector3.zero).y - 5 || transform.position.y > Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y + 5) Destroy(gameObject);
+        if (transform.position.y < Camera.main.ScreenToWorldPoint(Vector3.zero).y - 5 || transform.position.y > Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y + 5)
+        {
+            if (GetComponent<PooledObject>() != null)
+            {
+                GetComponent<PooledObject>().ReturnToPool(gameObject);
+            }
+            else
+            {
+                Debug.LogWarning("Pooled Object script not found in " + transform.name);
+                Destroy(gameObject);
+            }
+        }
+
 
         if (transform.position.x > playerXpos && !InGameSound.threeDsound) BoostSoundAppear();
         if (transform.position.x < playerXpos) BoostSoundDecay();
@@ -113,7 +135,7 @@ public class EnemyMissileController : Entity, ResetPoolObject
         // 0 is the enemy's appearing X position. Then it's multiplied by the boost sound volume
         // so that the volume doesn't start increasing until 1 regardless the default volume.
 
-        boostSoundOptionsModifier.SetRealVolume = appearingProgress;
+        boostSoundOptionsModifier.RealVolume = appearingProgress;
         // Then, the boost sound volume is set to the decay progress (from 0.25 to 0) progressively, so that the sound disappears smoothly.
     }
 
@@ -124,7 +146,7 @@ public class EnemyMissileController : Entity, ResetPoolObject
         // 1 is the exact X player position, 0 is the enemy's disappearing X position (defined by ObjectPassingBy).
         // Then it's multiplied by the boost sound volume so that the volume doesn't start decreasing from 1 regardless the default volume.
 
-        boostSoundOptionsModifier.SetRealVolume = decayProgress;
+        boostSoundOptionsModifier.RealVolume = decayProgress;
         // Then, the boost sound volume is set to the decay progress (from 0.25 to 0) progressively, so that the sound disappears smoothly.
     }
 
@@ -133,16 +155,15 @@ public class EnemyMissileController : Entity, ResetPoolObject
         if (dead) return;
         dead = true;
 
-        rb.angularDrag = 0;
         rb.gravityScale = 2;
 
         rb.AddTorque(Random.Range(80f, 240f));
         if (Random.value > 0.5f) rb.angularVelocity *= -1;
         rb.AddForce(new Vector2(Random.Range(-2, 3), 5), ForceMode2D.Impulse);
 
-        transform.GetComponent<Collider2D>().enabled = false;
-        transform.GetComponent<ObjectPassingBy>().enabled = false;
-        transform.Find("Boost").gameObject.SetActive(false);
+        myCollider.enabled = false;
+        objectPassingByScript.enabled = false;
+        boostSoundOptionsModifier.DisappearSmoothly();
     }
 
 
@@ -151,12 +172,19 @@ public class EnemyMissileController : Entity, ResetPoolObject
     public override void ResetState()
     {
         base.ResetState();
+        boostSoundOptionsModifier.Initialize();
 
-        dead = dutyFinished = enteredCloseRange = false;
+        dutyFinished = enteredCloseRange = false;
         actualRotationSpeed = rotationWhenDutyFinished = stabilizerLerp = rotationToAddWhenClose = XdistanceWhenEnteredCloseRange =
-        timeAfterDutyFinished = rotSpeedWhenFinished = residualRotation = boostSoundVolume = 0;
+        timeAfterDutyFinished = rotSpeedWhenFinished = residualRotation = 0;
+
+        myCollider.enabled = true;
+        objectPassingByScript.enabled = true;
+        myModelHandlerScript.ResetState();
+
         rb.velocity = Vector2.zero;
         rb.angularVelocity = 0;
+        rb.gravityScale = 0;
         rb.rotation = 0f;
     }
 
@@ -167,7 +195,9 @@ public class EnemyMissileController : Entity, ResetPoolObject
         if (PlayerController.dead) dutyFinished = true;
         else playerTransform = GameObject.Find("Player").transform;
 
-        transform.position = new Vector3(transform.position.x, Random.Range(Camera.main.ScreenToWorldPoint(Vector3.zero).y, Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y), transform.position.z);
         appearingXpos = transform.position.x;
+
+        myTrailScript.ResetTrail();
+        myAudioPlayer.PlayAudio();
     }
 }

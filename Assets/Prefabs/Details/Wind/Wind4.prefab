@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5565454798818487718}
   - component: {fileID: 5565454798818487707}
   - component: {fileID: 5565454798818487706}
+  - component: {fileID: -4137476907130919532}
   m_Layer: 0
   m_Name: Wind4
   m_TagString: Untagged
@@ -123,10 +124,10 @@ MonoBehaviour:
   passingSpeed: 7
   realPassingSpeed: 0
   myYpos: 0
-  appearingObject: 1
   appearingDistance: 1
   background: 0
   fakePassingSpeed: 0
+  appearingObject: 1
   moveInFixedUpdate: 0
 --- !u!114 &5565454798818487706
 MonoBehaviour:
@@ -140,3 +141,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abf88c352d5021a4fa8fb9bb07eba6d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-4137476907130919532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5565454798818487719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4b258896ff7b2345867f3474b46d51e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectToDestroy: {fileID: 0}

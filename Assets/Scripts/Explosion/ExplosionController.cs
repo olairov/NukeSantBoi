@@ -9,6 +9,7 @@ public class ExplosionController : MonoBehaviour, ResetPoolObject
     AudioSource concreteSound, glassSound;
     HudController hudScript;
     MapGenerator mapScript;
+    RandomAudioPlayer myExplosionAudioPlayer;
 
     GameObject visuals;
     private Transform playerTramsform, obstaclesContainer, buildingsContainer;
@@ -34,6 +35,7 @@ public class ExplosionController : MonoBehaviour, ResetPoolObject
         visuals = transform.Find("Visuals").gameObject;
         playerTramsform = GameObject.Find("Player").transform;
 
+        myExplosionAudioPlayer = transform.Find("Sounds/ExplosionSound").GetComponent<RandomAudioPlayer>();
         concreteSound = transform.Find("Sounds/ConcreteSound").GetComponent<AudioSource>();
         glassSound = transform.Find("Sounds/GlassSound").GetComponent<AudioSource>();
 
@@ -208,5 +210,6 @@ public class ExplosionController : MonoBehaviour, ResetPoolObject
         Camera.main.GetComponent<ShakeController>().Shake(1);
         mapScript.ExplosionGenerated();
         PushObjects();
+        myExplosionAudioPlayer.PlayAudio();
     }
 }

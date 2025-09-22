@@ -47,7 +47,7 @@ public class BackgroundGenerator : ObjectGenerator
                 GameObject instantiatedBackground = EveryLayerBackgroundGeneration(idx);
 
                 instantiatedBackground.transform.position = new Vector3(actualX, 0, instantiatedBackground.transform.position.z);
-                instantiatedBackground.GetComponent<ObjectPassingBy>().dontSetPosition = true;
+                instantiatedBackground.GetComponent<ObjectPassingBy>().DontSetPosition = true;
             }
         }
 

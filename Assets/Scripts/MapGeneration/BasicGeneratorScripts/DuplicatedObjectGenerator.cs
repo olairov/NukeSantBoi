@@ -12,10 +12,19 @@ public class DuplicatedObjectGenerator : MonoBehaviour
 
         Transform duplicatedObject = objectToDuplicate.GetComponent<PooledObject>().myObjectPool.GetObject(false).transform;
 
-        Vector3 position = objectToDuplicate.position + new Vector3(Random.Range(spawnSettings.minPositionAdder.x, spawnSettings.maxPositionAdder.x),
-            Random.Range(spawnSettings.minPositionAdder.y, spawnSettings.maxPositionAdder.y),
-            Random.Range(spawnSettings.minPositionAdder.z, spawnSettings.maxPositionAdder.z));
-        if (spawnSettings.canAppearOnTheOtherSide && Random.value > 0.5f) position = new Vector3(-position.x, position.y, position.z);
+        Vector3 originalObjectPos = objectToDuplicate.position;
+        ObjectPassingBy originalObjectPassingByScript = objectToDuplicate.GetComponent<ObjectPassingBy>();
+        if (originalObjectPassingByScript != null && !originalObjectPassingByScript.DontSetPosition)
+        {
+            float xPos = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x + originalObjectPassingByScript.AppearingDistance;
+            originalObjectPos = new Vector3(xPos, originalObjectPos.y, originalObjectPos.z);
+        }
+
+        float xPosAdder = Random.Range(spawnSettings.minPositionAdder.x, spawnSettings.maxPositionAdder.x);
+        float yPosAdder = Random.Range(spawnSettings.minPositionAdder.y, spawnSettings.maxPositionAdder.y);
+        float zPosAdder = Random.Range(spawnSettings.minPositionAdder.z, spawnSettings.maxPositionAdder.z);
+        if (spawnSettings.canAppearOnTheOtherSide && Random.value > 0.5f) xPosAdder *= -1;
+        Vector3 position = originalObjectPos + new Vector3(xPosAdder, yPosAdder, zPosAdder);
 
         Vector3 rotation = objectToDuplicate.eulerAngles + new Vector3(0, 0, Random.Range(spawnSettings.minRotationAdder, spawnSettings.maxRotationAdder));
 
@@ -24,7 +33,7 @@ public class DuplicatedObjectGenerator : MonoBehaviour
         if (spawnSettings.canAppearFlipped && Random.value > 0.5f) scale = new Vector3(-scale.x, scale.y, scale.z);
 
         ObjectPassingBy objectPassingByScript = duplicatedObject.GetComponent<ObjectPassingBy>();
-        if (objectPassingByScript != null) objectPassingByScript.dontSetPosition = true;
+        if (objectPassingByScript != null) objectPassingByScript.DontSetPosition = true;
 
         if (duplicatedObject.GetComponent<PooledObject>().alreadyUsed)
         {

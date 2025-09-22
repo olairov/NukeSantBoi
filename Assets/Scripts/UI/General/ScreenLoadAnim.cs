@@ -129,7 +129,7 @@ public class ScreenLoadAnim : MonoBehaviour
         transform.position = new Vector3(safeDistanceFromCamera, transform.position.y, transform.position.z);
         sceneToLoad = scene;
 
-        InGameSound.disappearing = true;
+        InGameSound.allSoundsDisappearing = true;
     }
 
     public void RestartStats()

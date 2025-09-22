@@ -19,7 +19,7 @@ MonoBehaviour:
   firstGenMinDistFromRightBorder: 0
   firstGenMaxDistFromRightBorder: 0
   firstGenDistFromLeftBorder: 0
-  yMin: -3
+  yMin: -2
   yMax: 5
   zMin: -18
   zMax: -18
@@ -29,7 +29,11 @@ MonoBehaviour:
   maxScale: 0
   minRotation: 0
   maxRotation: 0
+  timeIntervalMinForFirstSpawn: 2
+  timeIntervalMaxForFirstSpawn: 3
   appearingObject: 0
+  canAppearFlipped: 0
+  canAppearDuplicated: 0
   onlyFirstGeneration: 0
   firstGenIsOnlyManual: 1
   firstGeneratedObjectsPositions: []

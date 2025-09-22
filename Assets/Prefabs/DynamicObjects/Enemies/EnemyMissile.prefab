@@ -150,6 +150,7 @@ GameObject:
   - component: {fileID: 5336485685742769736}
   - component: {fileID: 5656116128556173200}
   - component: {fileID: 246086253803217977}
+  - component: {fileID: 7911532156330426489}
   m_Layer: 0
   m_Name: BoostSound
   m_TagString: Untagged
@@ -183,7 +184,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: e2664402cad763c489af502df7291494, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 1
@@ -280,13 +281,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bfaefafd4640f94681268d984a00088, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  appearingSpeed: 0
+  appearingSpeed: 0.5
+  disappearingSpeed: 0.5
+  disappearingFromSceneTime: 1
   disableIfNotThreeDSound: 0
   disableWhenPlayerDie: 0
   ignorePause: 0
   ignoreThreeDsound: 0
-  appearingSmoothly: 0
-  disappearingSmoothly: 0
+  appearingSmoothly: 1
+  disappearingSmoothlyInEndOfScene: 1
+  playWhenPlayerDies: 0
+--- !u!114 &7911532156330426489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 547416164985329952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bba29c8a228497b42a62575201d20ecf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pitchMin: 0.9
+  pitchMax: 1.1
+  volumeMin: 1
+  volumeMax: 1
+  availableSounds: []
 --- !u!1 &1062903811407335225
 GameObject:
   m_ObjectHideFlags: 0
@@ -580,10 +601,10 @@ MonoBehaviour:
   passingSpeed: 4
   realPassingSpeed: 6
   myYpos: 0
-  appearingObject: 0
   appearingDistance: 8
   background: 0
   fakePassingSpeed: 0
+  appearingObject: 0
   moveInFixedUpdate: 0
 --- !u!114 &2503070929597295560
 MonoBehaviour:
@@ -597,16 +618,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd2ae6a6b15331d44a310ff963d85c77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  burnColor: {r: 0.2735849, g: 0.19486472, b: 0.19486472, a: 1}
-  possibleColor1: {r: 0.8301887, g: 0.8301887, b: 0.8301887, a: 1}
-  possibleColor2: {r: 1, g: 0.95518863, b: 0.7311321, a: 1}
-  possibleColor3: {r: 1, g: 0.7971698, b: 0.7971698, a: 1}
+  dead: 0
   moveSpeed: 0.1
   rotFactor: 13
   playerRotationSensitivity: 0.1
   pushForce: 50
   actualRotationSpeed: 0
-  dead: 0
   dutyFinished: 0
   enteredCloseRange: 0
 --- !u!1 &2619716988857138339
@@ -1952,7 +1969,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 58ed1ce4407e47944adeb71a7ed67a1e, type: 2}
     - target: {fileID: 919132149155446097, guid: 2c251d1ae42fa244582a3726a9df1a53, type: 3}
       propertyPath: m_Name
-      value: BasicMissile
+      value: Mesh
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
