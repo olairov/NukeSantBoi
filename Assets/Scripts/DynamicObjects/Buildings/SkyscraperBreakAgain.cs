@@ -105,7 +105,7 @@ public class SkyscraperBreakAgain : MonoBehaviour, ResetPoolObject
 
             if (transform.eulerAngles.z <= 90)
             {
-                GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+                GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
                 GetComponent<Rigidbody2D>().AddForce(Vector2.up * 7, ForceMode2D.Impulse);
             }
             else
@@ -138,7 +138,7 @@ public class SkyscraperBreakAgain : MonoBehaviour, ResetPoolObject
             }
             else
             {
-                GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+                GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
                 GetComponent<Rigidbody2D>().AddForce(Vector2.up * 7, ForceMode2D.Impulse);
             }
         }
@@ -251,11 +251,11 @@ public class SkyscraperBreakAgain : MonoBehaviour, ResetPoolObject
                 // LowerPartMultiplierForHeight is calculated here because in case partType == 0, this won't be needed.
                 float lowerPartMultiplierForHeight = (30 - lowerPartHeight) / 60; // Same as upperPartMultiplierForHeight.
                 newPartRB.AddTorque(-600 * lowerPartMultiplierForHeight);
-                newPartRB.velocity = rb.velocity;
+                newPartRB.linearVelocity = rb.linearVelocity;
             }
 
             // Adding RB forces to give space for the player to go through.
-            rb.velocity = Vector2.zero;
+            rb.linearVelocity = Vector2.zero;
             rb.AddTorque(600 * upperPartMultiplierForHeight);
             rb.AddForce(Vector2.up * 7 * forceToAddRotationMultiplier, ForceMode2D.Impulse);
         }
@@ -329,7 +329,7 @@ public class SkyscraperBreakAgain : MonoBehaviour, ResetPoolObject
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
         if (rb != null)
         {
-            rb.velocity = Vector2.zero;
+            rb.linearVelocity = Vector2.zero;
             rb.angularVelocity = 0f;
             rb.rotation = 0f;
         }

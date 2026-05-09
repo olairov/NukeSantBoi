@@ -297,10 +297,10 @@ MonoBehaviour:
   passingSpeed: 5
   realPassingSpeed: 0
   myYpos: 0
-  appearingObject: 0
   appearingDistance: 8
   background: 0
   fakePassingSpeed: 0
+  appearingObject: 0
   moveInFixedUpdate: 0
 --- !u!114 &8916123517466623644
 MonoBehaviour:
@@ -314,6 +314,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5bceac0d011a784496113bb46ee309a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dead: 0
   burnColor: {r: 0.1509434, g: 0.1509434, b: 0.1509434, a: 1}
   possibleColor1: {r: 0.16509432, g: 1, b: 0.30265865, a: 1}
   possibleColor2: {r: 1, g: 0.23113209, b: 0.23113209, a: 1}

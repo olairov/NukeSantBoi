@@ -32,7 +32,7 @@ public class HotAirBalloonScript : Entity, ResetPoolObject
     {
         base.Update();
 
-        if (rb.velocity.magnitude < speedMax) rb.AddForce(actualDirection * Time.deltaTime * speed);
+        if (rb.linearVelocity.magnitude < speedMax) rb.AddForce(actualDirection * Time.deltaTime * speed);
 
         if (!dead) transform.eulerAngles = new Vector3(0, 0, Mathf.Cos(Time.time * rotSpeed + randRotDelay) * 12);
 
@@ -58,10 +58,10 @@ public class HotAirBalloonScript : Entity, ResetPoolObject
         if (dead) return;
         dead = true;
 
-        rb.angularDrag = 0;
+        rb.angularDamping = 0;
         rb.gravityScale = 2;
-        rb.drag = 0;
-        rb.velocity = Vector2.zero;
+        rb.linearDamping = 0;
+        rb.linearVelocity = Vector2.zero;
 
         rb.AddTorque(Random.Range(80f, 240f));
         if (Random.value > 0.5f) rb.angularVelocity *= -1;
@@ -80,7 +80,7 @@ public class HotAirBalloonScript : Entity, ResetPoolObject
 
     public void SlowDown()
     {
-        if (!dead) rb.velocity *= 1 - Time.deltaTime * slowDownSpeed;
+        if (!dead) rb.linearVelocity *= 1 - Time.deltaTime * slowDownSpeed;
     }
 
 
@@ -90,7 +90,7 @@ public class HotAirBalloonScript : Entity, ResetPoolObject
     {
         base.ResetState();
 
-        rb.velocity = Vector2.zero;
+        rb.linearVelocity = Vector2.zero;
         rb.angularVelocity = 0;
         actualDirection = Vector2.zero;
         rb.rotation = 0f;

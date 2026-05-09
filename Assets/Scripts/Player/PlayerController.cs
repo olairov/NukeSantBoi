@@ -182,7 +182,7 @@ public class PlayerController : MonoBehaviour
 
         newBombDropAnim.transform.position = transform.position + new Vector3(bombDirection.x, bombDirection.y, 0);
         newBombDropAnim.transform.up = bombDirection;
-        newBombDropAnim.GetComponent<Rigidbody2D>().velocity = new Vector2(0, Yvelocity);
+        newBombDropAnim.GetComponent<Rigidbody2D>().linearVelocity = new Vector2(0, Yvelocity);
     }
 
     void PlayDropBombSound()
@@ -225,7 +225,7 @@ public class PlayerController : MonoBehaviour
     void RandomDeathImpulse()
     {
         rb.gravityScale = 2;
-        rb.angularDrag = 0;
+        rb.angularDamping = 0;
         rb.angularVelocity = 0;
 
         rb.AddForce(new Vector2(Random.Range(-3f, 5f), Random.Range(10f, 15f)), ForceMode2D.Impulse);

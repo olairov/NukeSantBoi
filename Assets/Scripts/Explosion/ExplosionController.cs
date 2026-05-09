@@ -6,7 +6,7 @@ using TMPro;
 public class ExplosionController : MonoBehaviour, ResetPoolObject
 {
     SpriteRenderer mySprite;
-    AudioSource concreteSound, glassSound;
+    AudioSource concreteSound, glassSound, balloonPopSound;
     HudController hudScript;
     MapGenerator mapScript;
     RandomAudioPlayer myExplosionAudioPlayer;
@@ -38,6 +38,7 @@ public class ExplosionController : MonoBehaviour, ResetPoolObject
         myExplosionAudioPlayer = transform.Find("Sounds/ExplosionSound").GetComponent<RandomAudioPlayer>();
         concreteSound = transform.Find("Sounds/ConcreteSound").GetComponent<AudioSource>();
         glassSound = transform.Find("Sounds/GlassSound").GetComponent<AudioSource>();
+        balloonPopSound = transform.Find("Sounds/BalloonPopSound").GetComponent<AudioSource>();
 
         Initialize();
     }
@@ -127,6 +128,7 @@ public class ExplosionController : MonoBehaviour, ResetPoolObject
         {
             pointsToAdd += 1;
             other.GetComponent<HotAirBalloonScript>().Die();
+            if (other.name.Contains("Balloon")) balloonPopSound.Play();
 
             comboNum++;
         }

@@ -30,14 +30,14 @@ public class BombController : MonoBehaviour, ResetPoolObject
     public void SetDirection(Vector2 normalDir, Vector2 yAdder, float playerRotiationIndicator)
     {
         float speedMultiplier = ObjectPassingBy.realSpeedMultiplier / 2f + 0.5f; // Why did I do this
-        GetComponent<Rigidbody2D>().velocity = normalDir * speedMultiplier * bombThrowSpeed + yAdder;
+        GetComponent<Rigidbody2D>().linearVelocity = normalDir * speedMultiplier * bombThrowSpeed + yAdder;
 
         GetComponent<ObjectPassingBy>().OriginalMovement = playerRotiationIndicator * 5;
     }
 
     void UpdateRotation()
     {
-        transform.up = rb.velocity + new Vector2(5 * ObjectPassingBy.realSpeedMultiplier, 0);
+        transform.up = rb.linearVelocity + new Vector2(5 * ObjectPassingBy.realSpeedMultiplier, 0);
         transform.eulerAngles = new Vector3(0, 0, transform.eulerAngles.z + 110);
     }
 
@@ -71,7 +71,7 @@ public class BombController : MonoBehaviour, ResetPoolObject
     public void ResetState()
     {
         alreadyExploded = false;
-        rb.velocity = Vector2.zero;
+        rb.linearVelocity = Vector2.zero;
         transform.GetComponent<SpriteRenderer>().enabled = true;
         transform.GetComponent<Collider2D>().enabled = true;
     }
@@ -79,6 +79,6 @@ public class BombController : MonoBehaviour, ResetPoolObject
     public void Initialize()
     {
         transform.position += new Vector3(0, 0, 2);
-        transform.position += (Vector3)rb.velocity * 0.06f;
+        transform.position += (Vector3)rb.linearVelocity * 0.06f;
     }
 }

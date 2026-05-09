@@ -182,7 +182,7 @@ public class EnemyMissileController : Entity, ResetPoolObject
         objectPassingByScript.enabled = true;
         myModelHandlerScript.ResetState();
 
-        rb.velocity = Vector2.zero;
+        rb.linearVelocity = Vector2.zero;
         rb.angularVelocity = 0;
         rb.gravityScale = 0;
         rb.rotation = 0f;
