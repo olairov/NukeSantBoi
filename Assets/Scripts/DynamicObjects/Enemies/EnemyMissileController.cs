@@ -132,9 +132,9 @@ public class EnemyMissileController : Entity, ResetPoolObject
         // Gives the index of remoteness from the player since the enemy appears (from 1 to 0). 1 is the exact X player position,
         // 0 is the enemy's appearing X position. Then it's multiplied by the boost sound volume
         // so that the volume doesn't start increasing until 1 regardless of the default volume.
-        Debug.Log("APPEAR: " + appearingProgress);
+        
         boostSoundOptionsModifier.RealVolume = appearingProgress;
-        // Then, the boost sound volume is set to the decay progress (from 0.25 to 0) progressively, so that the sound disappears smoothly.
+        // Then, the boost sound volume is set to the decay progress, so that the sound appears smoothly.
     }
 
     void BoostSoundDecay() // Make the Boost Sound disappear smoothly, instead of a hard cut when the plane disappears once out of camera.
@@ -144,9 +144,8 @@ public class EnemyMissileController : Entity, ResetPoolObject
         // 1 is the exact X player position, 0 is the enemy's disappearing X position (defined by ObjectPassingBy).
         // Then it's multiplied by the boost sound volume so that the volume doesn't start decreasing from 1 regardless of the default volume.
 
-        Debug.Log("DECAY: " + decayProgress);
         boostSoundOptionsModifier.RealVolume = decayProgress;
-        // Then, the boost sound volume is set to the decay progress (from 0.25 to 0) progressively, so that the sound disappears smoothly.
+        // Then, the boost sound volume is set to the decay progress, so that the sound disappears smoothly.
     }
 
     public void Die()

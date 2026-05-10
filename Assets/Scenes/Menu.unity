@@ -1751,6 +1751,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1ab5bce864c99c4890e639a1e2f0b56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defaultVolume: 0.3
   defaultGameVolume: 1
   defaultUiVolume: 1
   DefaultMusicVolume: 0.6
@@ -2955,7 +2956,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce9301667e745e441a948e598fd55f55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eraseALLStats: 1
+  eraseALLStats: 0
 --- !u!1 &1059087673
 GameObject:
   m_ObjectHideFlags: 0
@@ -5168,7 +5169,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1795164076
 RectTransform:
   m_ObjectHideFlags: 0
