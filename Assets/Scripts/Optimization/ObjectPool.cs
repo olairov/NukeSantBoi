@@ -28,7 +28,7 @@ public class ObjectPool : MonoBehaviour
             dequeuedObject.SetActive(true);
             if (dequeuedObject.GetComponent<PooledObject>().alreadyUsed)
             {
-                foreach (var poolable in dequeuedObject.GetComponents<ResetPoolObject>())
+                foreach (ResetPoolObject poolable in dequeuedObject.GetComponents<ResetPoolObject>())
                 {
                     poolable.ResetState();
                     if (resetObject) poolable.Initialize();

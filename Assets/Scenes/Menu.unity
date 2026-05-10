@@ -1751,7 +1751,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1ab5bce864c99c4890e639a1e2f0b56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imFromGameScene: 0
+  defaultGameVolume: 1
+  defaultUiVolume: 1
+  DefaultMusicVolume: 0.6
 --- !u!4 &670694286
 Transform:
   m_ObjectHideFlags: 0
@@ -2953,7 +2955,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce9301667e745e441a948e598fd55f55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eraseALLStats: 0
+  eraseALLStats: 1
 --- !u!1 &1059087673
 GameObject:
   m_ObjectHideFlags: 0

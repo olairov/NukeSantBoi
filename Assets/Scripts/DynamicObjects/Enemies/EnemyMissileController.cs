@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyMissileController : Entity, ResetPoolObject
@@ -30,17 +29,16 @@ public class EnemyMissileController : Entity, ResetPoolObject
         objectPassingByScript = transform.GetComponent<ObjectPassingBy>();
         myModelHandlerScript = transform.Find("Mesh").GetComponent<ModelHandler>();
         myAudioPlayer = transform.Find("Boost/BoostSound").GetComponent<RandomAudioPlayer>();
+        boostSoundOptionsModifier = transform.Find("Boost/BoostSound").GetComponent<InGameSound>();
+        boostSoundVolume = boostSoundOptionsModifier.gameObject.GetComponent<AudioSource>().volume;
 
         Initialize();
 
         rb = transform.GetComponent<Rigidbody2D>();
-        boostSoundOptionsModifier = transform.Find("Boost/BoostSound").GetComponent<InGameSound>();
 
         dyingXpos = Camera.main.ScreenToWorldPoint(Vector3.zero).x - 10;
         playerXpos = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width / 5, 0)).x;
         maxXdistance = transform.position.x - playerXpos;
-        
-        boostSoundVolume = boostSoundOptionsModifier.gameObject.GetComponent<AudioSource>().volume;
     }
 
     protected override void Update()
@@ -131,10 +129,10 @@ public class EnemyMissileController : Entity, ResetPoolObject
     void BoostSoundAppear() // Make the Boost Sound disappear smoothly, instead of a hard cut when the plane disappears once out of camera.
     {
         float appearingProgress = ((transform.position.x - playerXpos) / (playerXpos - appearingXpos) + 1) * boostSoundVolume;
-        // Gives the index of remoteness from the player since the plane appears (from 1 to 0). 1 is the exact X player position,
+        // Gives the index of remoteness from the player since the enemy appears (from 1 to 0). 1 is the exact X player position,
         // 0 is the enemy's appearing X position. Then it's multiplied by the boost sound volume
-        // so that the volume doesn't start increasing until 1 regardless the default volume.
-
+        // so that the volume doesn't start increasing until 1 regardless of the default volume.
+        Debug.Log("APPEAR: " + appearingProgress);
         boostSoundOptionsModifier.RealVolume = appearingProgress;
         // Then, the boost sound volume is set to the decay progress (from 0.25 to 0) progressively, so that the sound disappears smoothly.
     }
@@ -142,10 +140,11 @@ public class EnemyMissileController : Entity, ResetPoolObject
     void BoostSoundDecay() // Make the Boost Sound disappear smoothly, instead of a hard cut when the plane disappears once out of camera.
     {
         float decayProgress = ((playerXpos - transform.position.x) / (dyingXpos - playerXpos) + 1) * boostSoundVolume;
-        // Gives the index of remoteness from the player once it has passed by the enemy plane (from 1 to 0).
+        // Gives the index of remoteness from the player once it has passed by the enemy (from 1 to 0).
         // 1 is the exact X player position, 0 is the enemy's disappearing X position (defined by ObjectPassingBy).
-        // Then it's multiplied by the boost sound volume so that the volume doesn't start decreasing from 1 regardless the default volume.
+        // Then it's multiplied by the boost sound volume so that the volume doesn't start decreasing from 1 regardless of the default volume.
 
+        Debug.Log("DECAY: " + decayProgress);
         boostSoundOptionsModifier.RealVolume = decayProgress;
         // Then, the boost sound volume is set to the decay progress (from 0.25 to 0) progressively, so that the sound disappears smoothly.
     }
@@ -195,9 +194,18 @@ public class EnemyMissileController : Entity, ResetPoolObject
         if (PlayerController.dead) dutyFinished = true;
         else playerTransform = GameObject.Find("Player").transform;
 
-        appearingXpos = transform.position.x;
-
         myTrailScript.ResetTrail();
         myAudioPlayer.PlayAudio();
+        // This is done because when audio is 3D, the Sound Appear function is not called:
+        if (InGameSound.threeDsound) boostSoundOptionsModifier.RealVolume = boostSoundVolume;
+
+        StartCoroutine(SetAppearingPos());
+    }
+
+    IEnumerator SetAppearingPos()
+    {
+        // We wait a frame to allow the ObjectPassingBy Initialize() func to place the plane correctly, and then we read the value:
+        yield return null;
+        appearingXpos = transform.position.x;
     }
 }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class InGameSound : MonoBehaviour
@@ -23,7 +21,8 @@ public class InGameSound : MonoBehaviour
     void Start()
     {
         if (PlayerPrefs.HasKey("GameVolumeValue")) volumeMultiplier = PlayerPrefs.GetFloat("GameVolumeValue");
-        if (PlayerPrefs.GetInt("ThreeDAudio") < 1) threeDsound = false;
+        if (PlayerPrefs.HasKey("ThreeDAudio") && PlayerPrefs.GetInt("ThreeDAudio") < 1) threeDsound = false;
+        else threeDsound = true;
 
         myAudio = transform.GetComponent<AudioSource>();
         allSoundsDisappearing = false;
@@ -35,7 +34,7 @@ public class InGameSound : MonoBehaviour
     {
         if (PlayerController.dead && !playerDead)
         {
-            if (playWhenPlayerDies)
+            if (playWhenPlayerDies && !myAudio.isPlaying)
             {
                 myAudio.Play();
             }
